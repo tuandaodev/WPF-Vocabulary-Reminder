@@ -1,0 +1,7 @@
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsSetupProject\bin\Debug\cab1.cab
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsSetupProject\bin\Debug\DesktopToastsSetupProject.msi
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsSetupProject\bin\Debug\DesktopToastsSetupProject.wixpdb
+obj\Debug\Product.wixobj
+obj\Debug\DesktopToastsSetupProject.wixproj.BindContentsFileListnull.txt
+obj\Debug\DesktopToastsSetupProject.wixproj.BindOutputsFileListnull.txt
+obj\Debug\DesktopToastsSetupProject.wixproj.BindBuiltOutputsFileListnull.txt

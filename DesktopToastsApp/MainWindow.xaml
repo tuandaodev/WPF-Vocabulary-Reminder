@@ -1,0 +1,54 @@
+﻿<Window x:Class="DesktopToastsApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DesktopToastsApp"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="8*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Margin="0,0,0,0" />
+        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Grid.Row="1" Click="Btn_Import_Click"/>
+        <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="3" Click="Btn_ProcessCrawl_Click" />
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" />
+        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" />
+
+        <Button
+                x:Name="ButtonPopToast"
+                Content="Pop toast"
+                Click="ButtonPopToast_Click"
+                Margin="0,0,6,0"/>
+        <Button
+                Grid.Column="1"
+                x:Name="ButtonClearToasts"
+                Content="Clear toasts"
+                Click="ButtonClearToasts_Click"
+                Margin="6,0,0,0"/>
+
+        <StatusBar Grid.Row="9" Grid.ColumnSpan="5">
+            <ProgressBar x:Name="Status_ProgessBar" Height="10" Width="100" Value="0" Maximum="0"/>
+            <TextBlock TextWrapping="Wrap" Text="|"/>
+            <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
+        </StatusBar>
+    </Grid>
+</Window>

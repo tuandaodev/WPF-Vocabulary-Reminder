@@ -1,0 +1,4 @@
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\bin\Debug\DesktopToastsApp.exe
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\bin\Debug\Microsoft.Toolkit.Uwp.Notifications.dll
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\bin\Debug\QueryString.NETCore.dll
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\bin\Debug\System.Xml.ReaderWriter.dll
