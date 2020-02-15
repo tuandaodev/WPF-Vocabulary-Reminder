@@ -39,7 +39,7 @@ namespace DesktopToastsApp
             {
                 if (arguments.Length == 0)
                 {
-                    OpenWindowIfNeeded();
+                    //OpenWindowIfNeeded();
                     return;
                 }
 
@@ -115,68 +115,8 @@ namespace DesktopToastsApp
                         var success = Windows.System.Launcher.LaunchUriAsync(uriBing);
                         break;
 
-                    // Open the image
-                    case "viewImage":
-
-                        // The URL retrieved from the toast args
-                        string imageUrl = args["imageUrl"];
-
-                        // Make sure we have a window open and in foreground
-                        OpenWindowIfNeeded();
-
-                        // And then show the image
-                        (App.Current.Windows[0] as MainWindow).ShowImage(imageUrl);
-
-                        break;
-
-                    // Open the conversation
-                    case "viewConversation":
-
-                        // The conversation ID retrieved from the toast args
-                        int conversationId = int.Parse(args["conversationId"]);
-
-                        // Make sure we have a window open and in foreground
-                        OpenWindowIfNeeded();
-
-                        // And then show the conversation
-                        (App.Current.Windows[0] as MainWindow).ShowConversation();
-
-                        break;
-
-                    // Background: Quick reply to the conversation
-                    case "reply":
-
-                        // Get the response the user typed
-                        string msg = userInput["tbReply"];
-
-                        // And send this message
-                        ShowToast("Sending message: " + msg);
-
-                        // If there's no windows open, exit the app
-                        if (App.Current.Windows.Count == 0)
-                        {
-                            Application.Current.Shutdown();
-                        }
-
-                        break;
-
-                    // Background: Send a like
-                    case "like":
-
-                        ShowToast("Sending like");
-
-                        // If there's no windows open, exit the app
-                        if (App.Current.Windows.Count == 0)
-                        {
-                            Application.Current.Shutdown();
-                        }
-
-                        break;
-
                     default:
-
-                        OpenWindowIfNeeded();
-
+                        //OpenWindowIfNeeded();
                         break;
                 }
             });

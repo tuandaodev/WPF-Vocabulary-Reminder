@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DesktopToastsApp"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Vocabulary Reminder" Height="768" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -15,9 +15,9 @@
             <RowDefinition Height="1*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.6*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
@@ -34,8 +34,7 @@
         <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" />
 
         <StatusBar Grid.Row="9" Grid.ColumnSpan="5">
-            <ProgressBar x:Name="Status_ProgessBar" Height="10" Width="100" Value="0" Maximum="0"/>
-            <TextBlock TextWrapping="Wrap" Text="|"/>
+            <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
     </Grid>

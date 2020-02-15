@@ -46,6 +46,7 @@ namespace DesktopToastsApp
         public MainWindow()
         {
             InitializeComponent();
+            Status_Reset();
 
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
         }
@@ -68,12 +69,7 @@ namespace DesktopToastsApp
             //};
         }
 
-        private void ButtonClearToasts_Click(object sender, RoutedEventArgs e)
-        {
-            DesktopNotificationManagerCompat.History.Clear();
-        }
-
-        private void HideStatusBar()
+        private void Status_Reset()
         {
             Dispatcher.Invoke(() =>
             {
@@ -104,12 +100,12 @@ namespace DesktopToastsApp
             try
             {
                 string tempInp = this.Inp_ListWord.Text;
-                var ListWord = Regex.Split(tempInp, "\r\n|\r|\n");
-                int TotalWords = ListWord.Length;
-                Dispatcher.Invoke(() =>
-                {
-                    this.Btn_Import.IsEnabled = false;
-                });
+                var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
+                ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
+                int TotalWords = ListWord.Count;
+
+                Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = false);
+
                 Task.Factory.StartNew(() =>
                 {
                     Status_UpdateMessage("Start Importing...");
@@ -117,66 +113,63 @@ namespace DesktopToastsApp
                     int CountSuccess = 0;
                     foreach (var item in ListWord)
                     {
-                        if (!String.IsNullOrEmpty(item))
+                        Count++;
+                        if (DataAccess.AddVocabulary(item) > 0)
                         {
-                            Count++;
-                            if (DataAccess.AddVocabulary(item) > 0)
-                            {
-                                CountSuccess++;
-                            }
+                            CountSuccess++;
                         }
                         Status_UpdateProgressBar(Count, TotalWords);
                     }
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
-                    Dispatcher.Invoke(() =>
-                    {
-                        this.Btn_Import.IsEnabled = true;
-                    });
+                    
+
                 });
             }
             catch (Exception ex)
             {
-                Helper.ShowToast("Import Failed: " + ex.Message);
-                Dispatcher.Invoke(() =>
-                {
-                    this.Btn_Import.IsEnabled = true;
-                });
+                Status_UpdateMessage("Import Failed: " + ex.Message);
             }
+
+            Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
         }
 
         private async void Btn_ProcessCrawl_Click(object sender, RoutedEventArgs e)
         {
+            Dispatcher.Invoke(() => this.Btn_ProcessCrawl.IsEnabled = false );
+
             Status_UpdateMessage("Start Crawling...");
 
             await Task.Run(() =>
             {
-                Helper.ShowToast("[1/3] Start Get Translate...");
+                Status_UpdateMessage("[1/3] Start Get Translate...");
                 ProcessBackgroundTranslate();
-                Helper.ShowToast("[1/3] Finished Get Translate.");
+                Status_UpdateMessage("[1/3] Finished Get Translate.");
             });   // wait to process all
 
             await Task.Run(() =>
             {
-                Helper.ShowToast("[2/3] Start Get Vocabulary Information: Define, Example, Ipa...");
+                Status_UpdateMessage("[2/3] Start Get Vocabulary Information: Define, Example, Ipa...");
                 ProcessBackgroundGetWordDefineInformation();
-                Helper.ShowToast("[2/3] Finished Get Vocabulary Information: Define, Example, Ipa.");
+                Status_UpdateMessage("[2/3] Finished Get Vocabulary Information: Define, Example, Ipa.");
             });   // wait to process all
 
             await Task.Run(() =>
             {
-                Helper.ShowToast("[3/3] Start Get Related Words...");
+                Status_UpdateMessage("[3/3] Start Get Related Words...");
                 ProcessBackgroundGetRelatedWords();
-                Helper.ShowToast("[3/3] Finished Get Related Words.");
+                Status_UpdateMessage("[3/3] Finished Get Related Words.");
             });   // wait to process all
 
-            Helper.ShowToast("All of Crawling Finished. Enjoy the Learning Journey Now!.");
+            Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
+
+            Dispatcher.Invoke(() => this.Btn_ProcessCrawl.IsEnabled = true);
         }
 
         private void Btn_ProcessDeleteData_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Helper.ShowToast("Start Deleting...");
+                Status_UpdateMessage("Start Deleting...");
 
                 if (File.Exists(DataAccess.GetDatabasePath()))
                 {
@@ -189,11 +182,11 @@ namespace DesktopToastsApp
                     file.Close();
                 }
                 DataAccess.InitializeDatabase();
-                Helper.ShowToast("Delete Data Success");
+                Status_UpdateMessage("Delete Data Success");
             }
             catch (Exception ex)
             {
-                Helper.ShowToast("Delete Data Fail: " + ex.Message);
+                Status_UpdateMessage("Delete Data Fail: " + ex.Message);
             }
         }
 
@@ -202,18 +195,21 @@ namespace DesktopToastsApp
             try
             {
                 var ListVocabulary = DataAccess.GetListVocabularyToTranslate();
+                
                 int TotalItems = ListVocabulary.Count;
+                int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetVocabularyTranslate(_item).Wait();
+                    Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
             catch (Exception ex)
             {
-                Helper.ShowToast("Crawling: Process Background Translate Failed: " + ex.Message);
+                Status_UpdateMessage("Crawling: Process Background Translate Failed: " + ex.Message);
             }
         }
 
@@ -222,20 +218,21 @@ namespace DesktopToastsApp
             try
             {
                 var ListVocabulary = DataAccess.GetListVocabularyToGetPlayURL();
-                int count = 0;
-                int total = ListVocabulary.Count;
+
+                int TotalItems = ListVocabulary.Count;
+                int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetWordDefineInformation(_item).Wait();
-                    count++;
+                    Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
             catch (Exception ex)
             {
-                Helper.ShowToast("Crawling: Process Background Get English Define, Ipa, Type, Example, MP3 URL Fail: " + ex.Message);
+                Status_UpdateMessage("Crawling: Process Background Get English Define, Ipa, Type, Example, MP3 URL Fail: " + ex.Message);
             }
 
         }
@@ -246,11 +243,15 @@ namespace DesktopToastsApp
             {
                 var ListVocabulary = DataAccess.GetListVocabularyToGetRelatedWords();
 
+                int TotalItems = ListVocabulary.Count;
+                int Count = 0;
+
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetRelatedWord(_item).Wait();
+                    Status_UpdateProgressBar(++Count, TotalItems);
                 });
 
                 foreach (var _item in ListVocabulary)
@@ -260,7 +261,7 @@ namespace DesktopToastsApp
             }
             catch (Exception ex)
             {
-                Helper.ShowToast("Crawling: Process Background Get Related Words Fail: " + ex.Message);
+                Status_UpdateMessage("Crawling: Process Background Get Related Words Fail: " + ex.Message);
             }
         }
 
@@ -277,12 +278,12 @@ namespace DesktopToastsApp
             //        await Mp3.preloadMp3Multiple(_item);
             //    }));
 
-            //    Helper.ShowToast("Crawling: Process Background Download MP3 Files Finished.");
+            //    Status_UpdateMessage("Crawling: Process Background Download MP3 Files Finished.");
 
             //}
             //catch (Exception ex)
             //{
-            //    Helper.ShowToast("Crawling: Process Background Get Play URL Fail: " + ex.Message);
+            //    Status_UpdateMessage("Crawling: Process Background Get Play URL Fail: " + ex.Message);
             //}
 
         }
