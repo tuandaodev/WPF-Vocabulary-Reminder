@@ -1,7 +1,7 @@
-﻿<Application x:Class="DesktopToastsApp.App"
+﻿<Application x:Class="VocabularyReminderApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:DesktopToastsApp">
+             xmlns:local="clr-namespace:VocabularyReminderApp">
     <Application.Resources>
          
     </Application.Resources>

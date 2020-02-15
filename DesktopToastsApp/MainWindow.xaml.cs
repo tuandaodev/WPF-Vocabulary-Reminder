@@ -35,7 +35,7 @@ using System.Windows.Shapes;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace DesktopToastsApp
+namespace VocabularyReminderApp
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

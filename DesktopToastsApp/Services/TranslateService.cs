@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using DesktopToastsApp;
+using VocabularyReminderApp;
 using DataAccessLibrary;
 
 namespace DesktopNotifications.Services

@@ -25,7 +25,7 @@ using System.Windows;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace DesktopToastsApp
+namespace VocabularyReminderApp
 {
     // The GUID CLSID must be unique to your app. Create a new GUID if copying this code.
     [ClassInterface(ClassInterfaceType.None)]

@@ -20,7 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace DesktopToastsApp
+namespace VocabularyReminderApp
 {
     /// <summary>
     /// Interaction logic for App.xaml

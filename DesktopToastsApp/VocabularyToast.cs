@@ -14,7 +14,7 @@ using Windows.Data.Xml.Dom;
 //using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace DesktopToastsApp
+namespace VocabularyReminderApp
 {
     public class VocabularyToast
     {

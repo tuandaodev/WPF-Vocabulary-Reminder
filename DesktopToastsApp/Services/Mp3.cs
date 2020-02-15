@@ -1,5 +1,5 @@
 ﻿using DataAccessLibrary;
-using DesktopToastsApp;
+using VocabularyReminderApp;
 using System;
 using System.Collections.Generic;
 using System.IO;
