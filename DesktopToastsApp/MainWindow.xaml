@@ -33,18 +33,6 @@
         <Button x:Name="Btn_ProcessDeleteData" Content="Delete Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" />
         <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" />
 
-        <Button
-                x:Name="ButtonPopToast"
-                Content="Pop toast"
-                Click="ButtonPopToast_Click"
-                Margin="0,0,6,0"/>
-        <Button
-                Grid.Column="1"
-                x:Name="ButtonClearToasts"
-                Content="Clear toasts"
-                Click="ButtonClearToasts_Click"
-                Margin="6,0,0,0"/>
-
         <StatusBar Grid.Row="9" Grid.ColumnSpan="5">
             <ProgressBar x:Name="Status_ProgessBar" Height="10" Width="100" Value="0" Maximum="0"/>
             <TextBlock TextWrapping="Wrap" Text="|"/>

@@ -45,22 +45,22 @@ namespace DesktopToastsApp
 
                 // Parse the query string (using NuGet package QueryString.NET)
                 QueryString args = QueryString.Parse(arguments);
-                int WordId;
+                
                 string main_action;
                 args.TryGetValue("action", out main_action);
                 // See what action is being requested 
                 switch (main_action)
                 {
                     case "reload":
-                        WordId = int.Parse(args["WordId"]);
-                        var _item = DataAccess.GetVocabularyById(WordId);
-                        VocabularyToast.loadByVocabularyAsync(_item);
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                        VocabularyToast.loadByVocabulary(_item);
                         _item = null;
                         break;
                     case "play":
-                        WordId = int.Parse(args["WordId"]);
+                        App.GlobalWordId = int.Parse(args["WordId"]);
                         int playId = int.Parse(args["PlayId"]);
-                        if (WordId > 0)
+                        if (App.GlobalWordId > 0)
                         {
                             string _mp3Url;
                             if (VocabularyToast.reloadLastToast())
@@ -69,8 +69,8 @@ namespace DesktopToastsApp
                             }
                             else
                             {
-                                _item = DataAccess.GetVocabularyById(WordId);
-                                VocabularyToast.loadByVocabularyAsync(_item);
+                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                                VocabularyToast.loadByVocabulary(_item);
                                 if (playId == 2)
                                 {
                                     _mp3Url = _item.PlayURL2;
@@ -83,7 +83,8 @@ namespace DesktopToastsApp
 
                             if (!String.IsNullOrEmpty(_mp3Url))
                             {
-                                Mp3.play(_mp3Url);
+                                Task.Run(() => Mp3.PlayFile(_mp3Url));
+                                
                                 //if (mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
                                 //{
                                 //    listPlayMp3.Enqueue(_mp3Url);
@@ -97,18 +98,14 @@ namespace DesktopToastsApp
                         }
                         break;
                     case "next":
-                        WordId = int.Parse(args["WordId"]);
-                        if (WordId > 0)
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        var _item2 = DataAccess.GetVocabularyById(++App.GlobalWordId);
+                        if (_item2.Id == 0)
                         {
-                            WordId++;
+                            App.GlobalWordId = DataAccess.GetFirstWordId();
+                            _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
                         }
-                        else
-                        {
-                            WordId = DataAccess.GetFirstWordId();
-                        }
-                        var _item2 = DataAccess.GetVocabularyById(WordId);
-                        VocabularyToast.loadByVocabularyAsync(_item2);
-                        _item2 = null;
+                        VocabularyToast.loadByVocabulary(_item2);
                         break;
                     case "view":
                         string SearchUrl = args["url"];

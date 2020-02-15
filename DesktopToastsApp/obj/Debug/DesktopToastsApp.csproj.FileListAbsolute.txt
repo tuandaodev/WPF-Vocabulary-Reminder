@@ -33,3 +33,6 @@ E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsAp
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsApp.csproj.CopyComplete
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsApp.exe
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsApp.pdb
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsApp.csprojAssemblyReference.cache
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\Interop.WMPLib.dll
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\DesktopToastsApp.csproj.ResolveComReference.cache

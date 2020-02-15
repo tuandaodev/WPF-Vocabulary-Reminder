@@ -19,7 +19,7 @@ namespace DesktopToastsApp
     public class VocabularyToast
     {
         const string viewDicOnlineUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
-        public static async void loadByVocabularyAsync(Vocabulary _item)
+        public static async void loadByVocabulary(Vocabulary _item)
         {
             if (_item.Id == 0)
             {
@@ -38,7 +38,7 @@ namespace DesktopToastsApp
             //}
 
             Mp3.preloadMp3FileSingle(_item);
-            content = await getToastContentAsync(_item);
+            content = await getToastContent(_item);
 
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(content.GetContent());
@@ -99,15 +99,15 @@ namespace DesktopToastsApp
                 switch (main_action)
                 {
                     case "reload":
-                        MainWindow.GlobalWordId = int.Parse(args["WordId"]);
-                        var _item = DataAccess.GetVocabularyById(MainWindow.GlobalWordId);
-                        VocabularyToast.loadByVocabularyAsync(_item);
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                        VocabularyToast.loadByVocabulary(_item);
                         _item = null;
                         break;
                     case "play":
-                        MainWindow.GlobalWordId = int.Parse(args["WordId"]);
+                        App.GlobalWordId = int.Parse(args["WordId"]);
                         int playId = int.Parse(args["PlayId"]);
-                        if (MainWindow.GlobalWordId > 0)
+                        if (App.GlobalWordId > 0)
                         {
                             string _mp3Url;
                             if (VocabularyToast.reloadLastToast())
@@ -116,8 +116,8 @@ namespace DesktopToastsApp
                             }
                             else
                             {
-                                _item = DataAccess.GetVocabularyById(MainWindow.GlobalWordId);
-                                VocabularyToast.loadByVocabularyAsync(_item);
+                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                                VocabularyToast.loadByVocabulary(_item);
                                 if (playId == 2)
                                 {
                                     _mp3Url = _item.PlayURL2;
@@ -130,7 +130,7 @@ namespace DesktopToastsApp
 
                             if (!String.IsNullOrEmpty(_mp3Url))
                             {
-                                Mp3.play(_mp3Url);
+                                Mp3.PlayFile(_mp3Url);
                                 //if (MainWindow.mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
                                 //{
                                 //    listPlayMp3.Enqueue(_mp3Url);
@@ -144,17 +144,17 @@ namespace DesktopToastsApp
                         }
                         break;
                     case "next":
-                        MainWindow.GlobalWordId = int.Parse(args["WordId"]);
-                        if (MainWindow.GlobalWordId > 0)
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        if (App.GlobalWordId > 0)
                         {
-                            MainWindow.GlobalWordId++;
+                            App.GlobalWordId++;
                         }
                         else
                         {
-                            MainWindow.GlobalWordId = DataAccess.GetFirstWordId();
+                            App.GlobalWordId = DataAccess.GetFirstWordId();
                         }
-                        var _item2 = DataAccess.GetVocabularyById(MainWindow.GlobalWordId);
-                        VocabularyToast.loadByVocabularyAsync(_item2);
+                        var _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
+                        VocabularyToast.loadByVocabulary(_item2);
                         break;
                     case "view":
                         string SearchUrl = args["url"];
@@ -195,7 +195,7 @@ namespace DesktopToastsApp
             Console.WriteLine("Error code:{0}", errorCode);
         }
 
-        private static async Task<ToastContent> getToastContentAsync(Vocabulary _item)
+        private static async Task<ToastContent> getToastContent(Vocabulary _item)
         {
             string _Ipa = _item.Ipa;
             if (_item.Ipa != _item.Ipa2)
@@ -280,20 +280,20 @@ namespace DesktopToastsApp
                         {
                             new ToastButton("\u25B6", new QueryString()
                             {
-                                { "action", "next" },
+                                { "action", "play" },
                                 { "WordId", _item.Id.ToString() },
                                 { "PlayId", "1" },
                                 { "PlayUrl", _item.PlayURL },
                             }.ToString()) {
                                 ActivationType = ToastActivationType.Background,
-                                //ActivationOptions = new ToastActivationOptions()
-                                //{
-                                //    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
-                                //}
+                                ActivationOptions = new ToastActivationOptions()
+                                {
+                                    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
+                                }
                             },
                             new ToastButton("\u25B7", new QueryString()
                             {
-                                { "action", "next" },
+                                { "action", "play" },
                                 { "WordId", _item.Id.ToString() },
                                 { "PlayId", "2" },
                                 { "PlayUrl", _item.PlayURL2 },
@@ -349,7 +349,7 @@ namespace DesktopToastsApp
                     return httpImage;
                 }
 
-                var directory = Directory.CreateDirectory(System.IO.Path.GetTempPath() + "WindowsNotifications.DesktopToasts.Images");
+                var directory = Directory.CreateDirectory(DataAccess.GetImageFolder());
 
                 if (!_hasPerformedCleanup)
                 {

@@ -8,9 +8,20 @@ namespace DataAccessLibrary
     public class DataAccess
     {
         static private string LocalFolder = "VocabularyReminder";
+
         public static string GetApplicationFolderPath()
         {
             return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder);
+        }
+
+        public static string GetMp3Folder()
+        {
+            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, "Mp3");
+        }
+
+        public static string GetImageFolder()
+        {
+            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, "Images");
         }
 
         public static string GetFilePath(string fileName)

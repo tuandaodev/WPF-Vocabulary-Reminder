@@ -27,6 +27,9 @@ namespace DesktopToastsApp
     /// </summary>
     public partial class App : Application
     {
+
+        public static int GlobalWordId = 1;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             DataAccess.InitializeDatabase();
