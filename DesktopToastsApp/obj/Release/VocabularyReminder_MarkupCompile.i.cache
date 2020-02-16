@@ -1,7 +1,7 @@
 ﻿VocabularyReminder
 
 
-exe
+winexe
 C#
 .cs
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\
@@ -16,5 +16,5 @@ E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\App.xaml
 2211434035563
 MainWindow.xaml;
 
-False
+True
 

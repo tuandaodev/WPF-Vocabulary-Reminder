@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="cmp3464F8730E573D338954EC7195CFB4A4" Guid="*">
+                <File Id="fil73F07CE42A5EF653313AD307E0E68BDC" KeyPath="yes" Source="$(var.HarvestPath)\HtmlAgilityPack.dll" />
+            </Component>
+            <Component Id="cmp667CB89A1E43303706D5205D8E0E018B" Guid="*">
+                <File Id="fil06CC2F39CCEE24EF8EEA281FA58DF9BF" KeyPath="yes" Source="$(var.HarvestPath)\HtmlAgilityPack.pdb" />
+            </Component>
+            <Component Id="cmpB14CC8B154928EA6225F174BDE107F6B" Guid="*">
+                <File Id="filB459F36ECC4A67FE3864BCBC2F0D640D" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Data.Sqlite.dll" />
+            </Component>
+            <Component Id="cmpDF2A173873CB2DF4B359397F026B691C" Guid="*">
+                <File Id="filF77BADE6C443F07005CCC8598C0BF253" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Toolkit.Uwp.Notifications.dll" />
+            </Component>
+            <Component Id="cmpF4E298CFF730F398D2990C582E79A49E" Guid="*">
+                <File Id="fil57A97586B2887B74AF2D2C750F465FCD" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Toolkit.Uwp.Notifications.pdb" />
+            </Component>
+            <Component Id="cmpBC4FC00A26E7D32479D42D3411317FC5" Guid="*">
+                <File Id="fil90A8AAD9FC612906D405476D61CEA3F4" KeyPath="yes" Source="$(var.HarvestPath)\Newtonsoft.Json.dll" />
+            </Component>
+            <Component Id="cmpCD74C9744A7101C361A86DF4A2940A5D" Guid="*">
+                <File Id="filA68BDC31667EE91FE192D2531680340E" KeyPath="yes" Source="$(var.HarvestPath)\QueryString.NETCore.dll" />
+            </Component>
+            <Component Id="cmpE6F0D2903C0756D9B36C6E82015C4119" Guid="*">
+                <File Id="fil6CD1546B188090E95877A0863E639376" KeyPath="yes" Source="$(var.HarvestPath)\QueryString.NETCore.pdb" />
+            </Component>
+            <Component Id="cmp64C05AA1C43E0D9DBAD9C14A66C00F23" Guid="*">
+                <File Id="fil5AAF8D55B9964F995719180C0C280633" KeyPath="yes" Source="$(var.HarvestPath)\SQLitePCLRaw.batteries_v2.dll" />
+            </Component>
+            <Component Id="cmp9E349E891D154ADBFB83038532027A46" Guid="*">
+                <File Id="fil64FA3FA0141690B101C8E041EB30B810" KeyPath="yes" Source="$(var.HarvestPath)\SQLitePCLRaw.core.dll" />
+            </Component>
+            <Component Id="cmp961D128A9682D71425BAB40ED679C423" Guid="*">
+                <File Id="fil83F1FA61EE4F339542EAF58CAB277A6E" KeyPath="yes" Source="$(var.HarvestPath)\SQLitePCLRaw.nativelibrary.dll" />
+            </Component>
+            <Component Id="cmpF2AD36504B5E65FCDEC25250DEEE1F52" Guid="*">
+                <File Id="filAAAC5954FA0F471D95A936E56F8E4EB9" KeyPath="yes" Source="$(var.HarvestPath)\SQLitePCLRaw.provider.dynamic_cdecl.dll" />
+            </Component>
+            <Component Id="cmpA748C45814948C0E47F0962CF5A9E2C5" Guid="*">
+                <File Id="filAF63FF48A59E0E5E7F49BFD1CBBB0CC3" KeyPath="yes" Source="$(var.HarvestPath)\System.Buffers.dll" />
+            </Component>
+            <Component Id="cmp642ED5B0D0BD1F16347D1310992C55A0" Guid="*">
+                <File Id="filFA1D7EC932018D1CCB80F9F43D328009" KeyPath="yes" Source="$(var.HarvestPath)\System.Memory.dll" />
+            </Component>
+            <Component Id="cmp89AE5ECEB789ECF60BE6CC568D60B2F9" Guid="*">
+                <File Id="fil07CC506FCE6F39AF87379627460A5FFB" KeyPath="yes" Source="$(var.HarvestPath)\System.Numerics.Vectors.dll" />
+            </Component>
+            <Component Id="cmpAFCF21A15F6EDA45A32D147050609285" Guid="*">
+                <File Id="filAE286E96EA00902BC284AEBF3030D6E4" KeyPath="yes" Source="$(var.HarvestPath)\System.Runtime.CompilerServices.Unsafe.dll" />
+            </Component>
+            <Component Id="cmpBE7B72292500D61F2B2C1DF047CB8238" Guid="*">
+                <File Id="fil8286DE272CC522F02D1E5A7F3FA87F75" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.exe" />
+            </Component>
+            <Component Id="cmp882DED714B342BCEBC0724190EB3C170" Guid="*">
+                <File Id="filBD2A4BB419F332B2A06141A8F07394C8" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.exe.config" />
+            </Component>
+            <Component Id="cmp82B1860F91D5E337E5C9180C0156A210" Guid="*">
+                <File Id="fil664DF2CDE9DB8864FF34BF5DBB126124" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.pdb" />
+            </Component>
+            <Directory Id="dir58E8247E2885C01898CAD009F9EFD8BA" Name="runtimes">
+                <Directory Id="dir9FF0F9C1A7463CA0B24689AA89D869B5" Name="win-arm">
+                    <Directory Id="dir46754318AAFE7C2D3BBAC065B627290B" Name="native">
+                        <Component Id="cmpDF76CDFA0F073AE6CAE38BE68141B800" Guid="*">
+                            <File Id="fil20F2F59E480B8E7CFE29DFCE5820F38B" KeyPath="yes" Source="$(var.HarvestPath)\runtimes\win-arm\native\e_sqlite3.dll" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="dirB9C75524282911E40C3C964A8836A714" Name="win-x64">
+                    <Directory Id="dir1F9DF9DD2FB29AE2942604FAC206D5C4" Name="native">
+                        <Component Id="cmpA9FE95CFE68BB3A9037D1155AED6FAD7" Guid="*">
+                            <File Id="fil0B331E0491A1A27C58D92DDCDB266DC2" KeyPath="yes" Source="$(var.HarvestPath)\runtimes\win-x64\native\e_sqlite3.dll" />
+                        </Component>
+                    </Directory>
+                </Directory>
+                <Directory Id="dir92F336DAA82E5A629052407A3F87EF27" Name="win-x86">
+                    <Directory Id="dir2B43AAE918D399CEF13EC6CBA2D3D5EA" Name="native">
+                        <Component Id="cmp33D08136382ADFFC5979284E4701D9C6" Guid="*">
+                            <File Id="fil7A70FE8106C6D5315BF2EBA10C487BF2" KeyPath="yes" Source="$(var.HarvestPath)\runtimes\win-x86\native\e_sqlite3.dll" />
+                        </Component>
+                    </Directory>
+                </Directory>
+            </Directory>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="HeatGenerated">
+            <ComponentRef Id="cmp3464F8730E573D338954EC7195CFB4A4" />
+            <ComponentRef Id="cmp667CB89A1E43303706D5205D8E0E018B" />
+            <ComponentRef Id="cmpB14CC8B154928EA6225F174BDE107F6B" />
+            <ComponentRef Id="cmpDF2A173873CB2DF4B359397F026B691C" />
+            <ComponentRef Id="cmpF4E298CFF730F398D2990C582E79A49E" />
+            <ComponentRef Id="cmpBC4FC00A26E7D32479D42D3411317FC5" />
+            <ComponentRef Id="cmpCD74C9744A7101C361A86DF4A2940A5D" />
+            <ComponentRef Id="cmpE6F0D2903C0756D9B36C6E82015C4119" />
+            <ComponentRef Id="cmp64C05AA1C43E0D9DBAD9C14A66C00F23" />
+            <ComponentRef Id="cmp9E349E891D154ADBFB83038532027A46" />
+            <ComponentRef Id="cmp961D128A9682D71425BAB40ED679C423" />
+            <ComponentRef Id="cmpF2AD36504B5E65FCDEC25250DEEE1F52" />
+            <ComponentRef Id="cmpA748C45814948C0E47F0962CF5A9E2C5" />
+            <ComponentRef Id="cmp642ED5B0D0BD1F16347D1310992C55A0" />
+            <ComponentRef Id="cmp89AE5ECEB789ECF60BE6CC568D60B2F9" />
+            <ComponentRef Id="cmpAFCF21A15F6EDA45A32D147050609285" />
+            <ComponentRef Id="cmpBE7B72292500D61F2B2C1DF047CB8238" />
+            <ComponentRef Id="cmp882DED714B342BCEBC0724190EB3C170" />
+            <ComponentRef Id="cmp82B1860F91D5E337E5C9180C0156A210" />
+            <ComponentRef Id="cmpDF76CDFA0F073AE6CAE38BE68141B800" />
+            <ComponentRef Id="cmpA9FE95CFE68BB3A9037D1155AED6FAD7" />
+            <ComponentRef Id="cmp33D08136382ADFFC5979284E4701D9C6" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
