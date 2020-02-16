@@ -93,22 +93,6 @@ namespace DesktopNotifications.Services
             });
         }
 
-        public static bool IsFilePresent(string fileName)
-        {
-            if (File.Exists(DataAccess.GetFilePath(fileName)))
-            {
-                //BasicProperties props = await item.GetBasicPropertiesAsync();
-                //if (props.Size == 0)
-                //{
-                //    await item.DeleteAsync();
-                //    return false;
-                //}
-                return true;
-            }
-
-            return false;
-        }
-
         public static async Task preloadMp3MultipleAsync(Vocabulary _item)
         {
             if (!String.IsNullOrEmpty(_item.PlayURL))
