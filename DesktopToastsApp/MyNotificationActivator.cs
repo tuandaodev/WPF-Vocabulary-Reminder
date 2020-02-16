@@ -49,6 +49,7 @@ namespace VocabularyReminder
                 string main_action;
                 args.TryGetValue("action", out main_action);
                 // See what action is being requested 
+                App.LastReaction = DateTime.Now;
                 switch (main_action)
                 {
                     //case "reload":

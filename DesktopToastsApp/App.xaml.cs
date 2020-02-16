@@ -30,6 +30,7 @@ namespace VocabularyReminder
 
         public static int GlobalWordId = 0;
         public static bool isRandomWords = false;
+        public static DateTime LastReaction;
 
         protected override void OnStartup(StartupEventArgs e)
         {

@@ -292,16 +292,26 @@ namespace VocabularyReminder
                 if (TimeRepeat < 0) { TimeRepeat = 1; };
                 TimeRepeat = TimeRepeat * 1000;
 
+                App.LastReaction = new DateTime();
+
                 Task.Factory.StartNew(() =>
                 {
                     while (true)
                     {
-                        LoadVocabulary();
+                        int _waitMore = 0;
+                        while ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
+                        {
+                            _waitMore = (int)(TimeRepeat - (DateTime.Now - App.LastReaction).TotalMilliseconds);
+                            Console.WriteLine(String.Format("Last Reation {0} -> wait more {1} ms", App.LastReaction.ToShortTimeString(), _waitMore));
+                            Thread.Sleep(_waitMore);
+                        }
                         
+                        LoadVocabulary();
+
                         if (_CancelToken.IsCancellationRequested)
                         {
                             Console.WriteLine("task canceled");
-                            VocabularyToast.ClearVocabularyToast();
+                            VocabularyToast.ClearApplicationToast();
                             break;
                         }
                         Thread.Sleep(TimeRepeat);
@@ -395,6 +405,11 @@ namespace VocabularyReminder
         {
             var ImportService = new Import();
             ImportService.ImportDemo3000Words();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            VocabularyToast.ClearApplicationToast();
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
-        Title="Vocabulary Reminder" Height="768" Width="1024">
+        Title="Vocabulary Reminder" Height="768" Width="1024" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -43,7 +43,7 @@
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
-        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="68,3,0,0" Grid.Row="11" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="50" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput"/>
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="68,3,0,0" Grid.Row="11" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="50" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextChanged="Inp_TimeRepeat_TextChanged"/>
         <Label Content="Thời Gian:" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top"/>
         <Label Content="s" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Margin="123,1,0,0"/>
         <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" />

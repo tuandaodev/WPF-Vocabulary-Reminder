@@ -20,7 +20,7 @@ namespace VocabularyReminder
     {
         const string viewDicOnlineUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
         
-        public static void ClearVocabularyToast()
+        public static void ClearApplicationToast()
         {
             DesktopNotificationManagerCompat.History.Clear();
         }
