@@ -62,14 +62,14 @@ namespace DesktopNotifications.Services
         {
             if ((WMPLib.WMPPlayState)NewState == WMPLib.WMPPlayState.wmppsStopped)
             {
-                Player.close();
+                //Player.close();
             }
         }
 
         private static void Player_MediaError(object pMediaObject)
         { 
             Console.WriteLine("Cannot play media file.");
-            Player.close();
+            //Player.close();
         }
 
         public static void preloadMp3FileSingle(Vocabulary _item)
@@ -92,6 +92,7 @@ namespace DesktopNotifications.Services
                 }
             });
         }
+
 
         public static async Task preloadMp3MultipleAsync(Vocabulary _item)
         {

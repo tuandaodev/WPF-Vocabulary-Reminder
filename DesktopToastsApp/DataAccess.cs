@@ -24,6 +24,11 @@ namespace DataAccessLibrary
             return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, "Images");
         }
 
+        public static string GetChildFolder(string folderName)
+        {
+            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, folderName);
+        }
+
         public static string GetFilePath(string fileName)
         {
             return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, fileName);
@@ -525,7 +530,7 @@ namespace DataAccessLibrary
         }
 
 
-        public static List<Vocabulary> GetListVocabularyToGetPlayURL()
+        public static List<Vocabulary> GetListVocabularyToGetDefineExampleMp3URL()
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 

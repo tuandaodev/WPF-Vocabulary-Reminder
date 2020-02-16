@@ -33,18 +33,18 @@ namespace VocabularyReminder
                 return;
             }
             ToastContent content;
-            //if (String.IsNullOrEmpty(_item.PlayURL))
-            //{
-            //    content = getToastContentWithoutPlay(_item);
-            //}
-            //else
-            //{
-            //    Mp3.preloadMp3FileSingle(_item);
-            //    content = getToastContent(_item);
-            //}
+            if (String.IsNullOrEmpty(_item.PlayURL))
+            {
+                content = await getToastContentWithoutPlayAsync(_item);
+            }
+            else
+            {
+                Mp3.preloadMp3FileSingle(_item);
+                content = await getToastContent(_item);
+            }
 
             Mp3.preloadMp3FileSingle(_item);
-            content = await getToastContent(_item);
+            //content = await getToastContent(_item);
 
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(content.GetContent());
@@ -54,13 +54,6 @@ namespace VocabularyReminder
                 Group = "Reminder",
             };
 
-            //_toastItem.Activated += ToastActivated;
-            //_toastItem.Dismissed += ToastDismissed;
-            //_toastItem.Failed += ToastFailed;
-            //_toastItem.Priority = ToastNotificationPriority.High;
-
-
-            //ToastNotificationManager.CreateToastNotifier(MainWindow.APP_ID).Show(_toastItem);
             DesktopNotificationManagerCompat.CreateToastNotifier().Show(_toastItem);
         }
 
@@ -76,86 +69,6 @@ namespace VocabularyReminder
             }
             return false;
         }
-
-        //private static void processCustomAction(string main_action, QueryString args)
-        //{
-        //    try
-        //    {
-        //        switch (main_action)
-        //        {
-        //            case "reload":
-        //                App.GlobalWordId = int.Parse(args["WordId"]);
-        //                var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-        //                VocabularyToast.loadByVocabulary(_item);
-        //                _item = null;
-        //                break;
-        //            case "play":
-        //                App.GlobalWordId = int.Parse(args["WordId"]);
-        //                int playId = int.Parse(args["PlayId"]);
-        //                if (App.GlobalWordId > 0)
-        //                {
-        //                    string _mp3Url;
-        //                    if (VocabularyToast.reloadLastToast())
-        //                    {
-        //                        _mp3Url = args["PlayUrl"];
-        //                    }
-        //                    else
-        //                    {
-        //                        _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-        //                        VocabularyToast.loadByVocabulary(_item);
-        //                        if (playId == 2)
-        //                        {
-        //                            _mp3Url = _item.PlayURL2;
-        //                        }
-        //                        else
-        //                        {
-        //                            _mp3Url = _item.PlayURL;
-        //                        }
-        //                    }
-
-        //                    if (!String.IsNullOrEmpty(_mp3Url))
-        //                    {
-        //                        Mp3.PlayFile(_mp3Url);
-        //                        //if (MainWindow.mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
-        //                        //{
-        //                        //    listPlayMp3.Enqueue(_mp3Url);
-        //                        //}
-        //                        //else
-        //                        //{
-        //                        //    checkMediaPlayer();
-        //                        //    Mp3.play(_mp3Url);
-        //                        //}
-        //                    }
-        //                }
-        //                break;
-        //            case "next":
-        //                App.GlobalWordId = int.Parse(args["WordId"]);
-        //                if (App.GlobalWordId > 0)
-        //                {
-        //                    App.GlobalWordId++;
-        //                }
-        //                else
-        //                {
-        //                    App.GlobalWordId = DataAccess.GetFirstWordId();
-        //                }
-        //                var _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
-        //                VocabularyToast.loadByVocabulary(_item2);
-        //                break;
-                    
-        //            case "view":
-        //            case "vocabulary-reminder":
-        //            default:
-        //                string SearchUrl = args["url"];
-        //                // The URI to launch
-        //                var success = System.Diagnostics.Process.Start(SearchUrl);
-        //                break;
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Helper.ShowToast("Action Background Error: " + ex.Message);
-        //    }
-        //}
 
         private static async Task<ToastContent> getToastContent(Vocabulary _item)
         {
@@ -350,50 +263,87 @@ namespace VocabularyReminder
             catch { return ""; }
         }
 
-        private static ToastContent getToastContentWithoutPlay(Vocabulary _item)
+        private static async Task<ToastContent> getToastContentWithoutPlayAsync(Vocabulary _item)
         {
+            string _Ipa = _item.Ipa;
+            if (_item.Ipa != _item.Ipa2)
+            {
+                _Ipa = _item.Ipa + " " + _item.Ipa2;
+            }
+
             ToastContent content = new ToastContent()
             {
+
+                Duration = ToastDuration.Long,
                 Launch = "vocabulary-reminder",
                 Audio = new ToastAudio() { Silent = true },
                 Visual = new ToastVisual()
                 {
                     BindingGeneric = new ToastBindingGeneric()
                     {
+                        Attribution = new ToastGenericAttributionText()
+                        {
+                            Text = _item.Type
+                        },
                         Children =
                         {
                             new AdaptiveText()
                             {
-                                Text = _item.Word,
-                                HintMaxLines = 1
+                                Text = _item.Define,
                             },
 
                             new AdaptiveText()
                             {
-                                Text = _item.Ipa,
+                                Text = _item.Example,
                             },
 
                             new AdaptiveText()
                             {
-                                Text = _item.Translate
+                                Text = _item.Example2,
+                            },
+
+                            new AdaptiveGroup()
+                            {
+                                Children =
+                                {
+                                    new AdaptiveSubgroup()
+                                    {
+                                        Children =
+                                        {
+                                            new AdaptiveText()
+                                            {
+                                                Text = _item.Word + " " + _Ipa,
+                                                HintStyle = AdaptiveTextStyle.Subtitle,
+                                            },
+                                            new AdaptiveText()
+                                            {
+                                                Text = _item.Translate,
+                                                HintStyle = AdaptiveTextStyle.Base,
+                                            },
+                                            new AdaptiveText()
+                                            {
+                                                Text = _item.Related,
+                                                HintStyle = AdaptiveTextStyle.CaptionSubtle
+                                            }
+                                        }
+                                    },
+                                }
                             }
                         },
                         HeroImage = new ToastGenericHeroImage()
                         {
-                            Source = "https://picsum.photos/364/180?image=1043"
+                            Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
                         },
-
                     }
                 },
-                Scenario = ToastScenario.Reminder,
                 Actions = new ToastActionsCustom()
                 {
                     Buttons =
                         {
                             new ToastButton("Next", new QueryString()
                             {
-                                { "WordId", _item.Id.ToString() },
                                 { "action", "next" },
+                                { "WordId", _item.Id.ToString() },
                             }.ToString())
                             {
                                 ActivationType = ToastActivationType.Background,
@@ -403,15 +353,15 @@ namespace VocabularyReminder
                                 }
                             },
                             new ToastButton("View", new QueryString()
-                                {
-                                    { "action", "view" },
-                                    { "url", viewDicOnlineUrl + _item.Word }
-
-                                }.ToString()),
-                            new ToastButton("Skip", "dismiss")
                             {
-                                ActivationType = ToastActivationType.Background
-                            },
+                                { "action", "view" },
+                                { "url", viewDicOnlineUrl + _item.Word }
+                            }.ToString()),
+                            new ToastButton("Skip", new QueryString()
+                            {
+                                { "action", "skip" },
+                                { "WordId", _item.Id.ToString() },
+                            }.ToString()),
                         }
                 },
 

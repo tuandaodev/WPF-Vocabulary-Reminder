@@ -33,10 +33,10 @@
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="3" Grid.RowSpan="7" AcceptsReturn="True" Margin="0,0,0,0" Grid.ColumnSpan="3" />
-        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Grid.Row="3" Click="Btn_Import_Click"/>
-        <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="5" Click="Btn_ProcessCrawl_Click" />
-        <Button x:Name="Btn_ProcessDeleteData" Content="Delete Data" Grid.Column="1" Grid.Row="9" Click="Btn_ProcessDeleteData_Click" Margin="0,1,0,0" />
+        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="9" AcceptsReturn="True" Margin="0,0,0,0" Grid.ColumnSpan="3" />
+        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Margin="0,37,0,1" Grid.RowSpan="2"/>
+        <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="3" Click="Btn_ProcessCrawl_Click" />
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" Margin="0,1,0,0" />
         <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="11" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" />
 
         <StatusBar Grid.Row="13" Grid.ColumnSpan="7">
@@ -46,8 +46,8 @@
         <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="68,3,0,0" Grid.Row="11" TextWrapping="Wrap" Text="60" VerticalAlignment="Top" Width="50" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput"/>
         <Label Content="Thời Gian:" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top"/>
         <Label Content="s" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="11" VerticalAlignment="Top" Margin="123,1,0,0"/>
-        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="7" Click="Btn_PreloadMp3_Click" />
+        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" />
         <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="5,31,0,0" Grid.Row="11" IsChecked="True" Height="15"/>
-        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="5" Click="Btn_Import_Click" Margin="1,37,144,1" Grid.RowSpan="2"/>
+        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="1" Grid.Row="9" Click="Btn_Import_Auto_Click"/>
     </Grid>
 </Window>

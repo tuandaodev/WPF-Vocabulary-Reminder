@@ -33,6 +33,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VocabularyReminder.Services;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
@@ -230,7 +231,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var ListVocabulary = DataAccess.GetListVocabularyToGetPlayURL();
+                var ListVocabulary = DataAccess.GetListVocabularyToGetDefineExampleMp3URL();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -356,18 +357,18 @@ namespace VocabularyReminder
 
         private void Btn_PreloadMp3_Click(object sender, RoutedEventArgs e)
         {
-            this.Btn_PreloadMp3.IsEnabled = false;
             Task.Run(() => {
+                this.Btn_PreloadMp3.IsEnabled = false;
                 ProcessBackgroundDownloadMp3();
+                this.Btn_PreloadMp3.IsEnabled = true;
             });
-            this.Btn_PreloadMp3.IsEnabled = true;
         }
 
         private void ProcessBackgroundDownloadMp3()
         {
             try
             {
-                Status_UpdateMessage("Crawling: Downloading Mp3...");
+                Status_UpdateMessage("Downloading Mp3...");
 
                 var ListVocabulary = DataAccess.GetListVocabularyToPreloadMp3();
 
@@ -382,12 +383,18 @@ namespace VocabularyReminder
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
 
-                Status_UpdateMessage("Crawling: Downloading MP3 Files Finished.");
+                Status_UpdateMessage("Downloading MP3 Files Finished.");
             }
             catch (Exception ex)
             {
-                Status_UpdateMessage("Crawling: Downloading MP3 Files Failed: " + ex.Message);
+                Status_UpdateMessage("Downloading MP3 Files Failed: " + ex.Message);
             }
+        }
+
+        private void Btn_Import_Auto_Click(object sender, RoutedEventArgs e)
+        {
+            var ImportService = new Import();
+            ImportService.ImportDemo3000Words();
         }
     }
 }

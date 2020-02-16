@@ -29,7 +29,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = mainTranslateUrl + item.Word;
+                string _wordUrl = mainTranslateUrl + item.Word.ToLower();
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
@@ -87,7 +87,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = mainGetPlayUrl + item.Word;
+                string _wordUrl = mainGetPlayUrl + item.Word.ToLower();
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
@@ -164,7 +164,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = relatedAPIUrl + item.Word;
+                string _wordUrl = relatedAPIUrl + item.Word.ToLower();
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
 
