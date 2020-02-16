@@ -1,7 +1,7 @@
-﻿<Application x:Class="VocabularyReminderApp.App"
+﻿<Application x:Class="VocabularyReminder.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:VocabularyReminderApp">
+             xmlns:local="clr-namespace:VocabularyReminder">
     <Application.Resources>
          
     </Application.Resources>

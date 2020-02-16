@@ -24,10 +24,10 @@
     <Fragment>
         <DirectoryRef Id="ProgramMenuFolder">
             <Component Id="ApplicationShortcut" Guid="c7a62885-eb05-40ee-9351-20cce2092d00">
-                <Shortcut Id="ApplicationStartMenuShortcut" Name="Desktop Toasts" Description="Desktop Toasts Sample" Target="[INSTALLFOLDER]DesktopToastsApp.exe" WorkingDirectory="INSTALLFOLDER">
+                <Shortcut Id="ApplicationStartMenuShortcut" Name="Desktop Toasts" Description="Desktop Toasts Sample" Target="[INSTALLFOLDER]VocabularyReminder.exe" WorkingDirectory="INSTALLFOLDER">
 
                     <!--AUMID-->
-                    <ShortcutProperty Key="System.AppUserModel.ID" Value="WindowsNotifications.DesktopToasts"/>
+                    <ShortcutProperty Key="System.AppUserModel.ID" Value="FreelancerHCM.DesktopToasts"/>
 
                     <!--COM CLSID, specifying which CLSID to activate when toast clicked-->
                     <ShortcutProperty Key="System.AppUserModel.ToastActivatorCLSID" Value="{50cfb67f-bc8a-477d-938c-93cf6bfb3320}"/>
@@ -46,17 +46,14 @@
             <!-- <Component Id="ProductComponent"> -->
             <!-- TODO: Insert files, registry keys, and other resources here. -->
             <!-- </Component> -->
-            <Component Id="DesktopToastsApp.exe" Guid="53c731ab-8f18-4e42-9cd2-cfcc7ad62a52">
-                <File Id="DesktopToastsApp.exe" Name="DesktopToastsApp.exe" Source="$(var.DesktopToastsApp.TargetDir)DesktopToastsApp.exe"/>
+            <Component Id="VocabularyReminder.exe" Guid="53c731ab-8f18-4e42-9cd2-cfcc7ad62a52">
+                <File Id="VocabularyReminder.exe" Name="VocabularyReminder.exe" Source="$(var.VocabularyReminder.TargetDir)VocabularyReminder.exe"/>
             </Component>
             <Component Id="Microsoft.Toolkit.Uwp.Notifications.dll" Guid="fd08f63d-48d6-4bac-a3d4-f788af135ae7">
-                <File Id="Microsoft.Toolkit.Uwp.Notifications.dll" Name="Microsoft.Toolkit.Uwp.Notifications.dll" Source="$(var.DesktopToastsApp.TargetDir)Microsoft.Toolkit.Uwp.Notifications.dll"/>
+                <File Id="Microsoft.Toolkit.Uwp.Notifications.dll" Name="Microsoft.Toolkit.Uwp.Notifications.dll" Source="$(var.VocabularyReminder.TargetDir)Microsoft.Toolkit.Uwp.Notifications.dll"/>
             </Component>
             <Component Id="QueryString.NETCore.dll" Guid="16817a82-b30c-4cc6-acf4-a68055c6016a">
-                <File Id="QueryString.NETCore.dll" Name="QueryString.NETCore.dll" Source="$(var.DesktopToastsApp.TargetDir)QueryString.NETCore.dll"/>
-            </Component>
-            <Component Id="System.Xml.ReaderWriter.dll" Guid="79cb87d7-96c9-4d21-915b-8472963b195f">
-                <File Id="System.Xml.ReaderWriter.dll" Name="System.Xml.ReaderWriter.dll" Source="$(var.DesktopToastsApp.TargetDir)System.Xml.ReaderWriter.dll"/>
+                <File Id="QueryString.NETCore.dll" Name="QueryString.NETCore.dll" Source="$(var.VocabularyReminder.TargetDir)QueryString.NETCore.dll"/>
             </Component>
 
             <!--Tell WiX to install the shortcut-->

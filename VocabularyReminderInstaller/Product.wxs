@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="VocabularyReminderInstaller" Language="1033" Version="1.0.0.0" Manufacturer="FreelancerHCM" UpgradeCode="720004b2-f7a7-4862-a90a-24c249d44a7d">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="Vocabulary Reminder" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="Vocabulary Reminder" />
+			</Directory>
+      <Directory Id="ProgramMenuFolder">
+      </Directory>
+		</Directory>
+	</Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="ApplicationShortcut" Guid="319c166a-ff20-4bc0-babb-ad2b3253b95c">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="Vocabulary Reminder" Description="Vocabulary Reminder - Fastest way to learn English vocabulary" Target="[INSTALLFOLDER]VocabularyReminder.exe" WorkingDirectory="INSTALLFOLDER">
+
+          <!--AUMID-->
+          <ShortcutProperty Key="System.AppUserModel.ID" Value="FreelancerHCM.VocabularyReminder"/>
+
+          <!--COM CLSID, specifying which CLSID to activate when toast clicked-->
+          <ShortcutProperty Key="System.AppUserModel.ToastActivatorCLSID" Value="{3b185435-0bd1-4437-b481-0734438718e0}"/>
+
+        </Shortcut>
+
+        <RemoveFile Id="RemoveApplicationShortcut" Directory="ProgramMenuFolder" Name="Vocabulary Reminder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\VocabularyReminder" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+  
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+      <Component Id="VocabularyReminder.exe" Guid="9defff22-a480-4e47-9c09-6ff803ec48d2">
+        <File Id="VocabularyReminder.exe" Name="VocabularyReminder.exe" Source="$(var.VocabularyReminder.TargetDir)VocabularyReminder.exe"/>
+      </Component>
+      <Component Id="Microsoft.Toolkit.Uwp.Notifications.dll" Guid="fd08f63d-48d6-4bac-a3d4-f788af135ae7">
+        <File Id="Microsoft.Toolkit.Uwp.Notifications.dll" Name="Microsoft.Toolkit.Uwp.Notifications.dll" Source="$(var.VocabularyReminder.TargetDir)Microsoft.Toolkit.Uwp.Notifications.dll"/>
+      </Component>
+      <Component Id="QueryString.NETCore.dll" Guid="16817a82-b30c-4cc6-acf4-a68055c6016a">
+        <File Id="QueryString.NETCore.dll" Name="QueryString.NETCore.dll" Source="$(var.VocabularyReminder.TargetDir)QueryString.NETCore.dll"/>
+      </Component>
+      
+      <ComponentRef Id="ApplicationShortcut"/>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

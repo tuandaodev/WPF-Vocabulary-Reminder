@@ -14,12 +14,18 @@ using Windows.Data.Xml.Dom;
 //using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace VocabularyReminderApp
+namespace VocabularyReminder
 {
     public class VocabularyToast
     {
         const string viewDicOnlineUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
-        public static async void loadByVocabulary(Vocabulary _item)
+        
+        public static void ClearVocabularyToast()
+        {
+            DesktopNotificationManagerCompat.History.Clear();
+        }
+
+        public static async void showToastByVocabularyItem(Vocabulary _item)
         {
             if (_item.Id == 0)
             {
@@ -71,129 +77,85 @@ namespace VocabularyReminderApp
             return false;
         }
 
-        private static void ToastActivated(ToastNotification sender, object e)
-        {
-            if (e is ToastActivatedEventArgs)
-            {
-                ToastActivatedEventArgs args = (ToastActivatedEventArgs)e;
-                QueryString qs = QueryString.Parse(args.Arguments);
-                if (qs.TryGetValue("action", out string action))
-                {
-                    processCustomAction(action, qs);
-                }
-            }
-        }
-
-        //public void ToastActivated()
+        //private static void processCustomAction(string main_action, QueryString args)
         //{
-        //    //Dispatcher.Invoke(() =>
-        //    //{
-        //    //    processCustomAction();
-        //    //});
+        //    try
+        //    {
+        //        switch (main_action)
+        //        {
+        //            case "reload":
+        //                App.GlobalWordId = int.Parse(args["WordId"]);
+        //                var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+        //                VocabularyToast.loadByVocabulary(_item);
+        //                _item = null;
+        //                break;
+        //            case "play":
+        //                App.GlobalWordId = int.Parse(args["WordId"]);
+        //                int playId = int.Parse(args["PlayId"]);
+        //                if (App.GlobalWordId > 0)
+        //                {
+        //                    string _mp3Url;
+        //                    if (VocabularyToast.reloadLastToast())
+        //                    {
+        //                        _mp3Url = args["PlayUrl"];
+        //                    }
+        //                    else
+        //                    {
+        //                        _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+        //                        VocabularyToast.loadByVocabulary(_item);
+        //                        if (playId == 2)
+        //                        {
+        //                            _mp3Url = _item.PlayURL2;
+        //                        }
+        //                        else
+        //                        {
+        //                            _mp3Url = _item.PlayURL;
+        //                        }
+        //                    }
+
+        //                    if (!String.IsNullOrEmpty(_mp3Url))
+        //                    {
+        //                        Mp3.PlayFile(_mp3Url);
+        //                        //if (MainWindow.mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+        //                        //{
+        //                        //    listPlayMp3.Enqueue(_mp3Url);
+        //                        //}
+        //                        //else
+        //                        //{
+        //                        //    checkMediaPlayer();
+        //                        //    Mp3.play(_mp3Url);
+        //                        //}
+        //                    }
+        //                }
+        //                break;
+        //            case "next":
+        //                App.GlobalWordId = int.Parse(args["WordId"]);
+        //                if (App.GlobalWordId > 0)
+        //                {
+        //                    App.GlobalWordId++;
+        //                }
+        //                else
+        //                {
+        //                    App.GlobalWordId = DataAccess.GetFirstWordId();
+        //                }
+        //                var _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
+        //                VocabularyToast.loadByVocabulary(_item2);
+        //                break;
+                    
+        //            case "view":
+        //            case "vocabulary-reminder":
+        //            default:
+        //                string SearchUrl = args["url"];
+        //                // The URI to launch
+        //                var success = System.Diagnostics.Process.Start(SearchUrl);
+        //                break;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Helper.ShowToast("Action Background Error: " + ex.Message);
+        //    }
         //}
-
-        private static void processCustomAction(string main_action, QueryString args)
-        {
-            try
-            {
-                switch (main_action)
-                {
-                    case "reload":
-                        App.GlobalWordId = int.Parse(args["WordId"]);
-                        var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-                        VocabularyToast.loadByVocabulary(_item);
-                        _item = null;
-                        break;
-                    case "play":
-                        App.GlobalWordId = int.Parse(args["WordId"]);
-                        int playId = int.Parse(args["PlayId"]);
-                        if (App.GlobalWordId > 0)
-                        {
-                            string _mp3Url;
-                            if (VocabularyToast.reloadLastToast())
-                            {
-                                _mp3Url = args["PlayUrl"];
-                            }
-                            else
-                            {
-                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-                                VocabularyToast.loadByVocabulary(_item);
-                                if (playId == 2)
-                                {
-                                    _mp3Url = _item.PlayURL2;
-                                }
-                                else
-                                {
-                                    _mp3Url = _item.PlayURL;
-                                }
-                            }
-
-                            if (!String.IsNullOrEmpty(_mp3Url))
-                            {
-                                Mp3.PlayFile(_mp3Url);
-                                //if (MainWindow.mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
-                                //{
-                                //    listPlayMp3.Enqueue(_mp3Url);
-                                //}
-                                //else
-                                //{
-                                //    checkMediaPlayer();
-                                //    Mp3.play(_mp3Url);
-                                //}
-                            }
-                        }
-                        break;
-                    case "next":
-                        App.GlobalWordId = int.Parse(args["WordId"]);
-                        if (App.GlobalWordId > 0)
-                        {
-                            App.GlobalWordId++;
-                        }
-                        else
-                        {
-                            App.GlobalWordId = DataAccess.GetFirstWordId();
-                        }
-                        var _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
-                        VocabularyToast.loadByVocabulary(_item2);
-                        break;
-                    case "view":
-                        string SearchUrl = args["url"];
-                        // The URI to launch
-                        var success = System.Diagnostics.Process.Start(SearchUrl);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Helper.ShowToast("Action Background Error: " + ex.Message);
-            }
-        }
-
-        private static void ToastDismissed(object source, ToastDismissedEventArgs e)
-        {
-            switch (e.Reason)
-            {
-                case ToastDismissalReason.ApplicationHidden:
-                    // Application hid the toast with ToastNotifier.Hide
-                    Console.WriteLine("Application Hidden");
-                    break;
-                case ToastDismissalReason.UserCanceled:
-                    Console.WriteLine("User dismissed the toast");
-                    break;
-                case ToastDismissalReason.TimedOut:
-                    Console.WriteLine("Toast timeout elapsed");
-                    break;
-            }
-
-            Console.WriteLine("Toast Dismissed: " + e.Reason.ToString());
-        }
-
-        private static void ToastFailed(object source, ToastFailedEventArgs e)
-        {
-            // Check the error code
-            var errorCode = e.ErrorCode;
-            Console.WriteLine("Error code:{0}", errorCode);
-        }
 
         private static async Task<ToastContent> getToastContent(Vocabulary _item)
         {
@@ -269,13 +231,13 @@ namespace VocabularyReminderApp
                         },
                     }
                 },
-                Scenario = ToastScenario.Reminder,
+                //Scenario = ToastScenario.Reminder,
                 Actions = new ToastActionsCustom()
                 {
-                    ContextMenuItems =
-                    {
-                        new ToastContextMenuItem("Reload", "action=reload&WordId=" + _item.Id.ToString())
-                    },
+                    //ContextMenuItems =
+                    //{
+                    //    new ToastContextMenuItem("Reload", "action=reload&WordId=" + _item.Id.ToString())
+                    //},
                     Buttons =
                         {
                             new ToastButton("\u25B6", new QueryString()
@@ -322,10 +284,11 @@ namespace VocabularyReminderApp
                                 { "action", "view" },
                                 { "url", viewDicOnlineUrl + _item.Word }
                             }.ToString()),
-                            //new ToastButton("Close", "dismiss")
-                            //{
-                            //    ActivationType = ToastActivationType.Background
-                            //},
+                            new ToastButton("Skip", new QueryString()
+                            {
+                                { "action", "skip" },
+                                { "WordId", _item.Id.ToString() },
+                            }.ToString()),
                         }
                 },
 

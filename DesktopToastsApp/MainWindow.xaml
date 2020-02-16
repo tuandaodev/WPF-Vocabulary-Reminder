@@ -1,13 +1,15 @@
-﻿<Window x:Class="VocabularyReminderApp.MainWindow"
+﻿<Window x:Class="VocabularyReminder.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VocabularyReminderApp"
+        xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
         Title="Vocabulary Reminder" Height="768" Width="1024">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="1*"/>
@@ -23,19 +25,26 @@
             <ColumnDefinition Width="1*"></ColumnDefinition>
             <ColumnDefinition Width="2*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="8*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Margin="0,0,0,0" />
+        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="7" AcceptsReturn="True" Margin="0,0,0,0" Grid.ColumnSpan="3" />
         <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Grid.Row="1" Click="Btn_Import_Click"/>
         <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="3" Click="Btn_ProcessCrawl_Click" />
-        <Button x:Name="Btn_ProcessDeleteData" Content="Delete Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" />
-        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" />
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" Margin="0,1,0,0" />
+        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="9" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" />
 
-        <StatusBar Grid.Row="9" Grid.ColumnSpan="5">
+        <StatusBar Grid.Row="11" Grid.ColumnSpan="7">
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="68,3,0,0" Grid.Row="9" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="50" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput"/>
+        <Label Content="Thời Gian:" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top"/>
+        <Label Content="s" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top" Margin="123,1,0,0"/>
+        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" />
+        <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="5,31,0,0" Grid.Row="9" IsChecked="True" Height="15"/>
     </Grid>
 </Window>

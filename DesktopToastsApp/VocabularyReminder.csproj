@@ -5,9 +5,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{85B9B3A4-F6C9-4D16-A6A6-D096FE784BFC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>VocabularyReminderApp</RootNamespace>
-    <AssemblyName>Vocabulary Reminder</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>VocabularyReminder</RootNamespace>
+    <AssemblyName>VocabularyReminder</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetPlatformVersion>10.0.10240.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>

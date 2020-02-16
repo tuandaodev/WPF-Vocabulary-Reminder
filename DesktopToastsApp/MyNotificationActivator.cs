@@ -25,12 +25,12 @@ using System.Windows;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace VocabularyReminderApp
+namespace VocabularyReminder
 {
     // The GUID CLSID must be unique to your app. Create a new GUID if copying this code.
     [ClassInterface(ClassInterfaceType.None)]
     [ComSourceInterfaces(typeof(INotificationActivationCallback))]
-    [Guid("50cfb67f-bc8a-477d-938c-93cf6bfb3320"), ComVisible(true)]
+    [Guid("3b185435-0bd1-4437-b481-0734438718e0"), ComVisible(true)]
     public class MyNotificationActivator : NotificationActivator
     {
         public override void OnActivated(string arguments, NotificationUserInput userInput, string appUserModelId)
@@ -51,12 +51,12 @@ namespace VocabularyReminderApp
                 // See what action is being requested 
                 switch (main_action)
                 {
-                    case "reload":
-                        App.GlobalWordId = int.Parse(args["WordId"]);
-                        var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-                        VocabularyToast.loadByVocabulary(_item);
-                        _item = null;
-                        break;
+                    //case "reload":
+                    //    App.GlobalWordId = int.Parse(args["WordId"]);
+                    //    var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                    //    VocabularyToast.loadByVocabulary(_item);
+                    //    _item = null;
+                    //    break;
                     case "play":
                         App.GlobalWordId = int.Parse(args["WordId"]);
                         int playId = int.Parse(args["PlayId"]);
@@ -69,8 +69,8 @@ namespace VocabularyReminderApp
                             }
                             else
                             {
-                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-                                VocabularyToast.loadByVocabulary(_item);
+                                var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                                VocabularyToast.showToastByVocabularyItem(_item);
                                 if (playId == 2)
                                 {
                                     _mp3Url = _item.PlayURL2;
@@ -99,24 +99,31 @@ namespace VocabularyReminderApp
                         break;
                     case "next":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        var _item2 = DataAccess.GetVocabularyById(++App.GlobalWordId);
+                        
+                        Vocabulary _item2;
+                        if (App.isRandomWords)
+                        {
+                            _item2 = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                        } else {
+                            _item2 = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                        }
+                        
                         if (_item2.Id == 0)
                         {
-                            App.GlobalWordId = DataAccess.GetFirstWordId();
-                            _item2 = DataAccess.GetVocabularyById(App.GlobalWordId);
+                            _item2 = DataAccess.GetFirstVocabulary();
                         }
-                        VocabularyToast.loadByVocabulary(_item2);
-                        break;
-                    case "view":
-                        string SearchUrl = args["url"];
-                        // The URI to launch
-                        var uriBing = new Uri(SearchUrl);
-                        // Launch the URI
-                        var success = Windows.System.Launcher.LaunchUriAsync(uriBing);
+                        App.GlobalWordId = _item2.Id;
+                        VocabularyToast.showToastByVocabularyItem(_item2);
                         break;
 
-                    default:
-                        //OpenWindowIfNeeded();
+                    case "view":
+                        string url = args["url"];
+                        System.Diagnostics.Process.Start(url);
+                        break;
+
+                    case "skip":
+                        int _removeId = int.Parse(args["WordId"]);
+                        DataAccess.UpdateStatus(_removeId, 0);  // skip this word
                         break;
                 }
             });

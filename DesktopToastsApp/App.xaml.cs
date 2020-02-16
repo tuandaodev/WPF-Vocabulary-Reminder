@@ -20,7 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace VocabularyReminderApp
+namespace VocabularyReminder
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -28,13 +28,14 @@ namespace VocabularyReminderApp
     public partial class App : Application
     {
 
-        public static int GlobalWordId = 1;
+        public static int GlobalWordId = 0;
+        public static bool isRandomWords = false;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             DataAccess.InitializeDatabase();
             // Register AUMID, COM server, and activator
-            DesktopNotificationManagerCompat.RegisterAumidAndComServer<MyNotificationActivator>("WindowsNotifications.DesktopToasts");
+            DesktopNotificationManagerCompat.RegisterAumidAndComServer<MyNotificationActivator>("FreelancerHCM.VocabularyReminder");
             DesktopNotificationManagerCompat.RegisterActivator<MyNotificationActivator>();
 
             // If launched from a toast

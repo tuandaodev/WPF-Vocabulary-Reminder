@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using VocabularyReminderApp;
+using VocabularyReminder;
 using DataAccessLibrary;
 
 namespace DesktopNotifications.Services

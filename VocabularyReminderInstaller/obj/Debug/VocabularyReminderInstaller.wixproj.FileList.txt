@@ -1,0 +1,7 @@
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\VocabularyReminderInstaller.msi
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\VocabularyReminderInstaller.wixpdb
+obj\Debug\Product.wixobj
+obj\Debug\VocabularyReminderInstaller.wixproj.BindContentsFileListnull.txt
+obj\Debug\VocabularyReminderInstaller.wixproj.BindOutputsFileListnull.txt
+obj\Debug\VocabularyReminderInstaller.wixproj.BindBuiltOutputsFileListnull.txt
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\cab1.cab

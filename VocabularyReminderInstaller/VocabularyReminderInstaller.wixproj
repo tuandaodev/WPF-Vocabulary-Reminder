@@ -4,9 +4,9 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>6592e67d-a611-4643-b73f-3f1a7c1c5f50</ProjectGuid>
+    <ProjectGuid>12efe6e6-d42f-447e-9df3-79692bb8aff9</ProjectGuid>
     <SchemaVersion>2.0</SchemaVersion>
-    <OutputName>DesktopToastsSetupProject</OutputName>
+    <OutputName>VocabularyReminderInstaller</OutputName>
     <OutputType>Package</OutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

@@ -22,6 +22,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,38 +36,30 @@ using System.Windows.Shapes;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace VocabularyReminderApp
+namespace VocabularyReminder
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        CancellationTokenSource _TokenSource;
+        CancellationToken _CancelToken;
+
+        private bool IsStarted = false;
         
+
+        private static int Core = 3;
+
         public MainWindow()
         {
             InitializeComponent();
+            App.isRandomWords = (Inp_RandomOption.IsChecked == true);
+
             Status_Reset();
 
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
-        }
 
-        
-        internal void ShowConversation()
-        {
-            //ContentBody.Content = new TextBlock()
-            //{
-            //    Text = "You've just opened a conversation!",
-            //    FontWeight = FontWeights.Bold
-            //};
-        }
-
-        internal void ShowImage(string imageUrl)
-        {
-            //ContentBody.Content = new Image()
-            //{
-            //    Source = new BitmapImage(new Uri(imageUrl))
-            //};
         }
 
         private void Status_Reset()
@@ -111,18 +104,30 @@ namespace VocabularyReminderApp
                     Status_UpdateMessage("Start Importing...");
                     int Count = 0;
                     int CountSuccess = 0;
-                    foreach (var item in ListWord)
+
+                    ParallelOptions parallelOptions = new ParallelOptions();
+                    parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
+                    Parallel.ForEach(ListWord, parallelOptions, _item =>
                     {
-                        Count++;
-                        if (DataAccess.AddVocabulary(item) > 0)
+                        if (DataAccess.AddVocabulary(_item) > 0)
                         {
                             CountSuccess++;
                         }
-                        Status_UpdateProgressBar(Count, TotalWords);
-                    }
-                    Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
-                    
+                        Status_UpdateProgressBar(++Count, TotalWords);
+                    });
 
+
+                    //foreach (var item in ListWord)
+                    //{
+                    //    Count++;
+                    //    if (DataAccess.AddVocabulary(item) > 0)
+                    //    {
+                    //        CountSuccess++;
+                    //    }
+                    //    Status_UpdateProgressBar(Count, TotalWords);
+                    //}
+
+                    Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                 });
             }
             catch (Exception ex)
@@ -171,6 +176,14 @@ namespace VocabularyReminderApp
             {
                 Status_UpdateMessage("Start Deleting...");
 
+                var directoryMp3 = Directory.CreateDirectory(DataAccess.GetApplicationFolderPath());
+                foreach (var d in directoryMp3.EnumerateDirectories())
+                {
+                    d.Delete(true);
+                }
+
+                Status_UpdateMessage("Deleted Mp3 and Images Folder");
+
                 if (File.Exists(DataAccess.GetDatabasePath()))
                 {
                     File.Delete(DataAccess.GetDatabasePath());
@@ -182,7 +195,7 @@ namespace VocabularyReminderApp
                     file.Close();
                 }
                 DataAccess.InitializeDatabase();
-                Status_UpdateMessage("Delete Data Success");
+                Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
             }
             catch (Exception ex)
             {
@@ -200,7 +213,7 @@ namespace VocabularyReminderApp
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetVocabularyTranslate(_item).Wait();
@@ -223,7 +236,7 @@ namespace VocabularyReminderApp
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetWordDefineInformation(_item).Wait();
@@ -247,17 +260,12 @@ namespace VocabularyReminderApp
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * 2;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetRelatedWord(_item).Wait();
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
-
-                foreach (var _item in ListVocabulary)
-                {
-
-                }
             }
             catch (Exception ex)
             {
@@ -265,39 +273,113 @@ namespace VocabularyReminderApp
             }
         }
 
-        private void ProcessBackgroundPreLoadMp3()
-        {
-            //try
-            //{
-            //    var ListVocabulary = DataAccess.GetListVocabularyToPreloadMp3();
-
-            //    ParallelOptions parallelOptions = new ParallelOptions();
-            //    parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount / 2;    // TODO
-            //    await Task.Run(() => Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
-            //    {
-            //        await Mp3.preloadMp3Multiple(_item);
-            //    }));
-
-            //    Status_UpdateMessage("Crawling: Process Background Download MP3 Files Finished.");
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    Status_UpdateMessage("Crawling: Process Background Get Play URL Fail: " + ex.Message);
-            //}
-
-        }
 
         private void Btn_StartLearning_Click(object sender, RoutedEventArgs e)
         {
-            Vocabulary _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+            if (!IsStarted)
+            {
+                IsStarted = true;
+                App.isRandomWords = (Inp_RandomOption.IsChecked == true);
+                this.Btn_StartLearning.Content = "Stop Learning";
+                // Init value
+                _TokenSource = new CancellationTokenSource();
+                _CancelToken = _TokenSource.Token;
+
+                int TimeRepeat;
+                int.TryParse(this.Inp_TimeRepeat.Text, out TimeRepeat);
+
+                if (TimeRepeat < 0) { TimeRepeat = 1; };
+                TimeRepeat = TimeRepeat * 1000;
+
+                Task.Factory.StartNew(() =>
+                {
+                    while (true)
+                    {
+                        LoadVocabulary();
+                        
+                        if (_CancelToken.IsCancellationRequested)
+                        {
+                            Console.WriteLine("task canceled");
+                            VocabularyToast.ClearVocabularyToast();
+                            break;
+                        }
+                        Thread.Sleep(TimeRepeat);
+                    }
+                }, _CancelToken);
+            } else
+            {
+                IsStarted = false;
+                this.Btn_StartLearning.Content = "Start Learning";
+
+                _TokenSource.Cancel();
+                Console.WriteLine("Stop and active Cancel Token");
+            }
+        }
+
+        public void StopLearning()
+        {
+            IsStarted = false;
+            this.Btn_StartLearning.Content = "Start Learning";
+            _TokenSource.Cancel();
+        }
+
+        public void LoadVocabulary()
+        {
+            Vocabulary _item;
+            if (App.isRandomWords)
+            {
+                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+            } else
+            {
+                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+            }
+            
             if (_item.Id == 0)
             {
-                App.GlobalWordId = DataAccess.GetFirstWordId();
-                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                _item = DataAccess.GetFirstVocabulary();
             }
-            VocabularyToast.loadByVocabulary(_item);
-            App.GlobalWordId++;
+            VocabularyToast.showToastByVocabularyItem(_item);
+            App.GlobalWordId = _item.Id;
+        }
+
+        private void Inp_TimeRepeat_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            // Use SelectionStart property to find the caret position.
+            // Insert the previewed text into the existing text in the textbox.
+            var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+
+            double val;
+            // If parsing is successful, set Handled to false
+            e.Handled = !double.TryParse(fullText, out val);
+        }
+
+        private void Btn_PreloadMp3_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Status_UpdateMessage("Crawling: Downloading Mp3...");
+
+                var ListVocabulary = DataAccess.GetListVocabularyToPreloadMp3();
+
+                int TotalItems = ListVocabulary.Count;
+                int Count = 0;
+
+                ParallelOptions parallelOptions = new ParallelOptions();
+                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * Core;    // TODO
+                Task.Run(() => Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
+                {
+                    Mp3.preloadMp3MultipleAsync(_item).Wait();
+                    Status_UpdateProgressBar(++Count, TotalItems);
+                }));
+
+                Status_UpdateMessage("Crawling: Downloading MP3 Files Finished.");
+
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage("Crawling: Downloading MP3 Files Failed: " + ex.Message);
+            }
         }
     }
 }

@@ -52,16 +52,30 @@ namespace DataAccessLibrary
             using (SqliteConnection db = new SqliteConnection($"Filename={dbFilePath}"))
             {
                 db.Open();
-                String tableCommand = "CREATE TABLE IF NOT " +
-                    "EXISTS Dictionary (Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "Name NVARCHAR(2048) NULL, Description NVARCHAR(2048) NULL)";
+                String tableCommand = @"CREATE TABLE IF NOT EXISTS Dictionary (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    Name NVARCHAR(2048) NULL, 
+                    Description NVARCHAR(2048) NULL, 
+                    Status INTEGER NULL DEFAULT 0)";
                 SqliteCommand createTable = new SqliteCommand(tableCommand, db);
                 createTable.ExecuteReader();
                 createTable.Dispose();
 
-                tableCommand = "CREATE TABLE IF NOT " +
-                    "EXISTS Vocabulary (Id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    "Word NVARCHAR(2048) NOT NULL UNIQUE, Type NVARCHAR(100) NULL, Ipa NVARCHAR(100) NULL, Ipa2 NVARCHAR(100) NULL, Translate NVARCHAR(2048) NULL, Define NVARCHAR(2048) NULL, Example NVARCHAR(2048) NULL, Example2 NVARCHAR(2048) NULL, PlayURL NVARCHAR(2048) NULL, PlayURL2 NVARCHAR(2048) NULL, Related NVARCHAR(2048) NULL)";
+                tableCommand = @"CREATE TABLE IF NOT 
+                    EXISTS Vocabulary (
+                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    Word NVARCHAR(2048) NOT NULL UNIQUE, 
+                    Type NVARCHAR(100) NULL, 
+                    Ipa NVARCHAR(100) NULL, 
+                    Ipa2 NVARCHAR(100) NULL, 
+                    Translate NVARCHAR(2048) NULL, 
+                    Define NVARCHAR(2048) NULL, 
+                    Example NVARCHAR(2048) NULL, 
+                    Example2 NVARCHAR(2048) NULL, 
+                    PlayURL NVARCHAR(2048) NULL, 
+                    PlayURL2 NVARCHAR(2048) NULL, 
+                    Related NVARCHAR(2048) NULL, 
+                    Status INTEGER NULL DEFAULT 1)";
                 createTable = new SqliteCommand(tableCommand, db);
                 createTable.ExecuteReader();
 
@@ -194,6 +208,47 @@ namespace DataAccessLibrary
             //}
         }
 
+        public static void UpdateStatus(int _Id, int _Status = 0)
+        {
+            string dbpath = GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+                SqliteCommand updateCommand = new SqliteCommand();
+                updateCommand.Connection = db;
+
+                // Use parameterized query to prevent SQL injection attacks
+                updateCommand.CommandText = "UPDATE Vocabulary SET Status = @Status WHERE Id = @Id";
+                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = _Id;
+                updateCommand.Parameters.Add("@Status", SqliteType.Integer).Value = _Status;
+                updateCommand.ExecuteNonQuery();
+
+                updateCommand.Dispose();
+                db.Close();
+                db.Dispose();
+            }
+        }
+
+        public static void RemoveVocabulary(int _Id)
+        {
+            string dbpath = GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+                SqliteCommand updateCommand = new SqliteCommand();
+                updateCommand.Connection = db;
+
+                // Use parameterized query to prevent SQL injection attacks
+                updateCommand.CommandText = "DELETE FROM Vocabulary WHERE Id = @Id";
+                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = _Id;
+                updateCommand.ExecuteNonQuery();
+
+                updateCommand.Dispose();
+                db.Close();
+                db.Dispose();
+            }
+        }
+
         public static void UpdateRelated(Vocabulary item)
         {
             //try
@@ -252,6 +307,90 @@ namespace DataAccessLibrary
             return _item;
         }
 
+        public static Vocabulary GetNextVocabulary(int Id)
+        {
+            Vocabulary _item = new Vocabulary();
+
+            string dbpath = GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+
+                SqliteCommand selectCommand = new SqliteCommand
+                    ("SELECT * from Vocabulary WHERE Id > " + Id + " AND Status = 1 LIMIT 1;", db);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    _item = GetItemFromRead(query);
+                }
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return _item;
+        }
+
+        public static Vocabulary GetRandomVocabulary(int Id)
+        {
+            Vocabulary _item = new Vocabulary();
+
+            string dbpath = GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+
+                SqliteCommand selectCommand = new SqliteCommand
+                    ("SELECT * from Vocabulary WHERE Id <> " + Id + " AND Status = 1 ORDER BY RANDOM() LIMIT 1;", db);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    _item = GetItemFromRead(query);
+                }
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return _item;
+        }
+
+        public static Vocabulary GetFirstVocabulary()
+        {
+            Vocabulary _item = new Vocabulary();
+
+            string dbpath = GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+
+                SqliteCommand selectCommand = new SqliteCommand
+                    ("SELECT * from Vocabulary WHERE Status = 1 LIMIT 1;", db);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    _item = GetItemFromRead(query);
+                }
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return _item;
+        }
+
         public static int GetFirstWordId()
         {
             int _WordId = 1;
@@ -262,7 +401,7 @@ namespace DataAccessLibrary
                 db.Open();
 
                 SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT Id from Vocabulary LIMIT 1;", db);
+                    ("SELECT Id from Vocabulary WHERE Status = 1 LIMIT 1;", db);
 
                 SqliteDataReader query = selectCommand.ExecuteReader();
 
@@ -351,6 +490,7 @@ namespace DataAccessLibrary
             _item.PlayURL = query.IsDBNull(9) ? "" : query.GetString(9);
             _item.PlayURL2 = query.IsDBNull(10) ? "" : query.GetString(10);
             _item.Related = query.IsDBNull(11) ? "" : query.GetString(11);
+            _item.Status = query.IsDBNull(12) ? 0 : query.GetInt32(12);
 
             return _item;
         }
@@ -466,5 +606,6 @@ namespace DataAccessLibrary
         public string PlayURL { get; set; }
         public string PlayURL2 { get; set; }
         public string Related { get; set; }
+        public int Status { get; set; }
     }
 }

@@ -1857,9 +1857,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\Downloads\\desktop-toasts-master\\CS\\DesktopToastsApp\\DesktopToastsApp.csproj",
-      "projectName": "DesktopToastsApp",
-      "projectPath": "E:\\Downloads\\desktop-toasts-master\\CS\\DesktopToastsApp\\DesktopToastsApp.csproj",
+      "projectUniqueName": "E:\\Downloads\\desktop-toasts-master\\CS\\DesktopToastsApp\\VocabularyReminder.csproj",
+      "projectName": "VocabularyReminder",
+      "projectPath": "E:\\Downloads\\desktop-toasts-master\\CS\\DesktopToastsApp\\VocabularyReminder.csproj",
       "packagesPath": "C:\\Users\\KIM\\.nuget\\packages\\",
       "outputPath": "E:\\Downloads\\desktop-toasts-master\\CS\\DesktopToastsApp\\obj\\",
       "projectStyle": "PackageReference",
