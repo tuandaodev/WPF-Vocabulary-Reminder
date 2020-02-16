@@ -128,14 +128,14 @@ namespace VocabularyReminder
                     //}
 
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
+                    Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
                 });
             }
             catch (Exception ex)
             {
                 Status_UpdateMessage("Import Failed: " + ex.Message);
+                Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
             }
-
-            Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
         }
 
         private async void Btn_ProcessCrawl_Click(object sender, RoutedEventArgs e)
@@ -356,6 +356,15 @@ namespace VocabularyReminder
 
         private void Btn_PreloadMp3_Click(object sender, RoutedEventArgs e)
         {
+            this.Btn_PreloadMp3.IsEnabled = false;
+            Task.Run(() => {
+                ProcessBackgroundDownloadMp3();
+            });
+            this.Btn_PreloadMp3.IsEnabled = true;
+        }
+
+        private void ProcessBackgroundDownloadMp3()
+        {
             try
             {
                 Status_UpdateMessage("Crawling: Downloading Mp3...");
@@ -367,14 +376,13 @@ namespace VocabularyReminder
 
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * Core;    // TODO
-                Task.Run(() => Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
+                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     Mp3.preloadMp3MultipleAsync(_item).Wait();
                     Status_UpdateProgressBar(++Count, TotalItems);
-                }));
+                });
 
                 Status_UpdateMessage("Crawling: Downloading MP3 Files Finished.");
-
             }
             catch (Exception ex)
             {
