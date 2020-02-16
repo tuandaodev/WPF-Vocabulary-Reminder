@@ -149,4 +149,8 @@
     <Resource Include="voca-reminder.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>"%25WIX%25\bin\heat.exe" dir "$(TargetDir)" -gg -sfrag -template:fragment -out Product.wxs
+</PreBuildEvent>
+  </PropertyGroup>
 </Project>

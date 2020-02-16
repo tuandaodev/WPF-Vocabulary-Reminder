@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\
 VocabularyReminder
 none
 false
-DEBUG;TRACE
+TRACE
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\App.xaml
 11151548125
 31674033609
-14260844775
-2211048399554
+15-1105457371
+2211434035563
 MainWindow.xaml;
 
-True
+False
 
