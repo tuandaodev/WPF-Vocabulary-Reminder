@@ -423,6 +423,35 @@ namespace DataAccessLibrary
             return _WordId;
         }
 
+        public static Stats GetStats()
+        {
+            string dbpath = GetDatabasePath();
+            Stats _Stats = new Stats();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                string cmd = @" SELECT COUNT(*) as Total,
+                                (SELECT COUNT(*) FROM Vocabulary WHERE Status = 0) as Remembered
+                                FROM Vocabulary";
+
+                db.Open();
+                SqliteCommand selectCommand = new SqliteCommand(cmd, db);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                
+                while (query.Read())
+                {
+                    _Stats.Total = int.Parse(query.GetString(0));
+                    _Stats.Remembered = int.Parse(query.GetString(1));
+                }
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+            return _Stats;
+        }
+
         public static List<Vocabulary> GetListVocabularyToPreloadMp3()
         {
             List<Vocabulary> entries = new List<Vocabulary>();
@@ -595,6 +624,12 @@ namespace DataAccessLibrary
         public string Name { get; set; }
 
         public List<Vocabulary> Words { get; } = new List<Vocabulary>();
+    }
+
+    public class Stats
+    {
+        public int Total { get; set; }
+        public int Remembered { get; set; }
     }
 
     public class Vocabulary

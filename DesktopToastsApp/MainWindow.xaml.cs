@@ -58,7 +58,6 @@ namespace VocabularyReminder
             App.isRandomWords = (Inp_RandomOption.IsChecked == true);
 
             Status_Reset();
-
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
 
         }
@@ -129,14 +128,17 @@ namespace VocabularyReminder
                     //}
 
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
+                    Reload_Stats();
                     Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
                 });
             }
             catch (Exception ex)
             {
                 Status_UpdateMessage("Import Failed: " + ex.Message);
+                Reload_Stats();
                 Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
             }
+
         }
 
         private async void Btn_ProcessCrawl_Click(object sender, RoutedEventArgs e)
@@ -197,10 +199,12 @@ namespace VocabularyReminder
                 }
                 DataAccess.InitializeDatabase();
                 Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
+                Reload_Stats();
             }
             catch (Exception ex)
             {
                 Status_UpdateMessage("Delete Data Fail: " + ex.Message);
+                Reload_Stats();
             }
         }
 
@@ -272,6 +276,19 @@ namespace VocabularyReminder
             {
                 Status_UpdateMessage("Crawling: Process Background Get Related Words Fail: " + ex.Message);
             }
+        }
+
+        private void Reload_Stats()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (this.IsActive)
+                {
+                    Stats _Stats = DataAccess.GetStats();
+                    this.Label_Stats_ImportedWords.Content = _Stats.Total.ToString();
+                    this.Label_Stats_RememberedWords.Content = _Stats.Remembered.ToString();
+                }
+            });
         }
 
 
@@ -410,6 +427,11 @@ namespace VocabularyReminder
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             VocabularyToast.ClearApplicationToast();
+        }
+
+        private void Frm_MainWindow_Activated(object sender, EventArgs e)
+        {
+            Reload_Stats();
         }
     }
 }

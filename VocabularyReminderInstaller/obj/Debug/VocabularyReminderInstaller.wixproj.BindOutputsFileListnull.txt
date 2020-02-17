@@ -1,3 +1,3 @@
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\cab1.cab
-E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\VocabularyReminderInstaller.msi
-E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\VocabularyReminderInstaller.wixpdb
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\Vocabulary Reminder.msi
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Debug\Vocabulary Reminder.wixpdb

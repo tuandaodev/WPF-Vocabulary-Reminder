@@ -35,3 +35,4 @@ E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\VocabularyRem
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\VocabularyReminder.csproj.CopyComplete
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\VocabularyReminder.exe
 E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\VocabularyReminder.pdb
+E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Release\VocabularyReminder.csprojAssemblyReference.cache
