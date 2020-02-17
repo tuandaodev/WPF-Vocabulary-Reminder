@@ -37,10 +37,10 @@
         <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="7" AcceptsReturn="True" Grid.ColumnSpan="3" />
         <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Grid.Row="1"/>
         <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="3" Click="Btn_ProcessCrawl_Click" />
-        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="1" Grid.Row="7" Click="Btn_ProcessDeleteData_Click" />
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="7" Grid.Row="4" Click="Btn_ProcessDeleteData_Click" Margin="0,44,0,0" Grid.RowSpan="2" />
         <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="9" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" />
 
-        <StatusBar Grid.Row="11" Grid.ColumnSpan="7">
+        <StatusBar Grid.Row="11" Grid.ColumnSpan="10">
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
@@ -48,10 +48,13 @@
         <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="9" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
         <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" />
         <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,51,0,22" Grid.Row="9" IsChecked="True" Height="15" Width="107"/>
-        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="7" Click="Btn_Import_Auto_Click" Grid.ColumnSpan="2"/>
+        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click" Margin="0,1,0,0"/>
         <Label Content="Remembered Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,63,0,0" Width="113"/>
-        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="8" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="54"/>
-        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="8" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,63,0,0" Width="54"/>
+        <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113"/>
+        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="39" Margin="121,0,0,0"/>
+        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="121,31,0,0" Width="39"/>
+        <ComboBox Grid.Column="7" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Top" Width="160">
+            <ListBoxItem Content="123213213"/>
+        </ComboBox>
     </Grid>
 </Window>
