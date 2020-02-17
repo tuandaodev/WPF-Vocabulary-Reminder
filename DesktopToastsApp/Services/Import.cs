@@ -11,7 +11,7 @@ namespace VocabularyReminder.Services
 {
     public class Import
     {
-        public async void ImportDemo3000Words()
+        public async Task ImportDemo3000Words()
         {
             try
             {

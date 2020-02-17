@@ -418,10 +418,13 @@ namespace VocabularyReminder
             }
         }
 
-        private void Btn_Import_Auto_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Import_Auto_Click(object sender, RoutedEventArgs e)
         {
+            Status_UpdateMessage("Downloading 3000 common words....");
             var ImportService = new Import();
-            ImportService.ImportDemo3000Words();
+            await ImportService.ImportDemo3000Words();
+            Reload_Stats();
+            Status_UpdateMessage("Downloaded 3000 common words success.");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
