@@ -23,12 +23,22 @@ namespace VocabularyReminder
         public LearnedWordsWindow()
         {
             InitializeComponent();
+            Reload();
+        }
 
+        private void Reload()
+        {
             var VocabularyList = DataAccess.GetListLearnded();
+            this.View_ListLearnedWords.Items.Clear();
             foreach (var _item in VocabularyList)
             {
                 this.View_ListLearnedWords.Items.Add(_item);
             }
+        }
+
+        private void Frm_LearnedWords_Activated(object sender, EventArgs e)
+        {
+            Reload();
         }
     }
 }

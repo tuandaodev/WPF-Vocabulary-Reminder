@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
-        Title="Learned Words" Height="528.879" Width="877.586">
+        Title="Learned Words" Height="528.879" Width="877.586" Activated="Frm_LearnedWords_Activated">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
