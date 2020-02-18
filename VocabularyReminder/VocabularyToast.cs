@@ -82,11 +82,11 @@ namespace VocabularyReminder
             {
 
                 Duration = ToastDuration.Long,
-                Launch = new QueryString() {
-                                { "action", "view" },
-                                { "WordId", _item.Id.ToString() },
-                                { "url", viewDicOnlineUrl + _item.Word }
-                            }.ToString(),
+                //Launch = new QueryString() {
+                //                { "action", "view" },
+                //                { "WordId", _item.Id.ToString() },
+                //                { "url", viewDicOnlineUrl + _item.Word }
+                //            }.ToString(),
                 Audio = new ToastAudio() { Silent = true },
                 Visual = new ToastVisual()
                 {
@@ -289,11 +289,11 @@ namespace VocabularyReminder
             {
 
                 Duration = ToastDuration.Long,
-                Launch = new QueryString() {
-                                { "action", "view" },
-                                { "WordId", _item.Id.ToString() },
-                                { "url", viewDicOnlineUrl + _item.Word }
-                            }.ToString(),
+                //Launch = new QueryString() {
+                //                { "action", "view" },
+                //                { "WordId", _item.Id.ToString() },
+                //                { "url", viewDicOnlineUrl + _item.Word }
+                //            }.ToString(),
                 Audio = new ToastAudio() { Silent = true },
                 Visual = new ToastVisual()
                 {

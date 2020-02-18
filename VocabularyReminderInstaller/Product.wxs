@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Vocabulary Reminder " Language="1033" Version="1.0.0.0" Manufacturer="Freelancer HCM Team" UpgradeCode="720004b2-f7a7-4862-a90a-24c249d44a7d">
+	<Product Id="*" Name="Vocabulary Reminder " Language="1033" Version="1.2.1.0" Manufacturer="Freelancer HCM Team" UpgradeCode="720004b2-f7a7-4862-a90a-24c249d44a7d">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
