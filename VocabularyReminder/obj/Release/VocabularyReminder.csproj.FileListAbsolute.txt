@@ -57,15 +57,16 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\System.Buff
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\System.Memory.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\System.Numerics.Vectors.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
-E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.csprojAssemblyReference.cache
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.exe.config
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\Interop.WMPLib.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.csproj.ResolveComReference.cache
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\LearnedWordsWindow.g.cs
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\MainWindow.g.cs
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\App.g.cs
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder_Content.g.cs
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder_MarkupCompile.cache
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder_MarkupCompile.lref
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\LearnedWordsWindow.baml
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\MainWindow.baml
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.g.resources
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.Properties.Resources.resources
