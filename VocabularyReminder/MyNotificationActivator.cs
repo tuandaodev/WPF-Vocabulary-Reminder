@@ -50,6 +50,7 @@ namespace VocabularyReminder
                 args.TryGetValue("action", out main_action);
                 // See what action is being requested 
                 App.LastReaction = DateTime.Now;
+                Vocabulary _item;
                 switch (main_action)
                 {
                     //case "reload":
@@ -70,7 +71,7 @@ namespace VocabularyReminder
                             }
                             else
                             {
-                                var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
                                 VocabularyToast.showToastByVocabularyItem(_item);
                                 if (playId == 2)
                                 {
@@ -85,46 +86,59 @@ namespace VocabularyReminder
                             if (!String.IsNullOrEmpty(_mp3Url))
                             {
                                 Task.Run(() => Mp3.PlayFile(_mp3Url));
-                                
-                                //if (mediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
-                                //{
-                                //    listPlayMp3.Enqueue(_mp3Url);
-                                //}
-                                //else
-                                //{
-                                //    checkMediaPlayer();
-                                //    Mp3.play(_mp3Url);
-                                //}
                             }
                         }
                         break;
+
                     case "next":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        
-                        Vocabulary _item2;
                         if (App.isRandomWords)
                         {
-                            _item2 = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                            _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
                         } else {
-                            _item2 = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                            _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
                         }
                         
-                        if (_item2.Id == 0)
+                        if (_item.Id == 0)
                         {
-                            _item2 = DataAccess.GetFirstVocabulary();
+                            _item = DataAccess.GetFirstVocabulary();
                         }
-                        App.GlobalWordId = _item2.Id;
-                        VocabularyToast.showToastByVocabularyItem(_item2);
+                        App.GlobalWordId = _item.Id;
+                        VocabularyToast.showToastByVocabularyItem(_item);
+                        _item = null;
                         break;
 
                     case "view":
+                        App.GlobalWordId = int.Parse(args["WordId"]);
                         string url = args["url"];
                         System.Diagnostics.Process.Start(url);
                         break;
 
-                    case "skip":
-                        int _removeId = int.Parse(args["WordId"]);
-                        DataAccess.UpdateStatus(_removeId, 0);  // skip this word
+                    case "delete":
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        DataAccess.UpdateStatus(App.GlobalWordId, 0);  // skip this word
+                        break;
+
+                    case "nextdelete":
+                        App.GlobalWordId = int.Parse(args["WordId"]);
+                        DataAccess.UpdateStatus(App.GlobalWordId, 0);  // skip this word
+
+                        if (App.isRandomWords)
+                        {
+                            _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                        }
+                        else
+                        {
+                            _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                        }
+
+                        if (_item.Id == 0)
+                        {
+                            _item = DataAccess.GetFirstVocabulary();
+                        }
+                        App.GlobalWordId = _item.Id;
+                        VocabularyToast.showToastByVocabularyItem(_item);
+                        _item = null;
                         break;
                 }
             });

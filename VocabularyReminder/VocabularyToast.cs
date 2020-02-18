@@ -82,7 +82,11 @@ namespace VocabularyReminder
             {
 
                 Duration = ToastDuration.Long,
-                Launch = "vocabulary-reminder",
+                Launch = new QueryString() {
+                                { "action", "view" },
+                                { "WordId", _item.Id.ToString() },
+                                { "url", viewDicOnlineUrl + _item.Word }
+                            }.ToString(),
                 Audio = new ToastAudio() { Silent = true },
                 Visual = new ToastVisual()
                 {
@@ -139,7 +143,6 @@ namespace VocabularyReminder
                         },
                         HeroImage = new ToastGenericHeroImage()
                         {
-                            //Source = "https://picsum.photos/364/180?image=1043",
                             Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
                         },
                     }
@@ -192,16 +195,27 @@ namespace VocabularyReminder
                                     AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
                                 }
                             },
-                            new ToastButton("View", new QueryString()
+                            //new ToastButton("View", new QueryString()
+                            //{
+                            //    { "action", "view" },
+                            //    { "url", viewDicOnlineUrl + _item.Word }
+                            //}.ToString()),
+                            new ToastButton("Delete", new QueryString()
                             {
-                                { "action", "view" },
-                                { "url", viewDicOnlineUrl + _item.Word }
-                            }.ToString()),
-                            new ToastButton("Skip", new QueryString()
-                            {
-                                { "action", "skip" },
+                                { "action", "delete" },
                                 { "WordId", _item.Id.ToString() },
                             }.ToString()),
+                            new ToastButton("N&Del", new QueryString()
+                            {
+                                { "action", "nextdelete" },
+                                { "WordId", _item.Id.ToString() },
+                            }.ToString()){
+                                ActivationType = ToastActivationType.Background,
+                                ActivationOptions = new ToastActivationOptions()
+                                {
+                                    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
+                                }
+                            },
                         }
                 },
 
@@ -275,7 +289,11 @@ namespace VocabularyReminder
             {
 
                 Duration = ToastDuration.Long,
-                Launch = "vocabulary-reminder",
+                Launch = new QueryString() {
+                                { "action", "view" },
+                                { "WordId", _item.Id.ToString() },
+                                { "url", viewDicOnlineUrl + _item.Word }
+                            }.ToString(),
                 Audio = new ToastAudio() { Silent = true },
                 Visual = new ToastVisual()
                 {
@@ -336,8 +354,13 @@ namespace VocabularyReminder
                         },
                     }
                 },
+                //Scenario = ToastScenario.Reminder,
                 Actions = new ToastActionsCustom()
                 {
+                    //ContextMenuItems =
+                    //{
+                    //    new ToastContextMenuItem("Reload", "action=reload&WordId=" + _item.Id.ToString())
+                    //},
                     Buttons =
                         {
                             new ToastButton("Next", new QueryString()
@@ -352,16 +375,27 @@ namespace VocabularyReminder
                                     AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
                                 }
                             },
-                            new ToastButton("View", new QueryString()
+                            //new ToastButton("View", new QueryString()
+                            //{
+                            //    { "action", "view" },
+                            //    { "url", viewDicOnlineUrl + _item.Word }
+                            //}.ToString()),
+                            new ToastButton("Delete", new QueryString()
                             {
-                                { "action", "view" },
-                                { "url", viewDicOnlineUrl + _item.Word }
-                            }.ToString()),
-                            new ToastButton("Skip", new QueryString()
-                            {
-                                { "action", "skip" },
+                                { "action", "delete" },
                                 { "WordId", _item.Id.ToString() },
                             }.ToString()),
+                            new ToastButton("N&Del", new QueryString()
+                            {
+                                { "action", "nextdelete" },
+                                { "WordId", _item.Id.ToString() },
+                            }.ToString()){
+                                ActivationType = ToastActivationType.Background,
+                                ActivationOptions = new ToastActivationOptions()
+                                {
+                                    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
+                                }
+                            },
                         }
                 },
 
