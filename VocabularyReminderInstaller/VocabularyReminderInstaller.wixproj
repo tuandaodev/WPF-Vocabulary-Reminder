@@ -19,14 +19,14 @@
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <DefineConstants>HarvestPath=..\DesktopToastsApp\bin\Release</DefineConstants>
+    <DefineConstants>HarvestPath=..\VocabularyReminder\bin\Release</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Product.wxs" />
     <Compile Include="Folder.wxs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DesktopToastsApp\VocabularyReminder.csproj">
+    <ProjectReference Include="..\VocabularyReminder\VocabularyReminder.csproj">
       <Name>VocabularyReminder</Name>
       <Project>{85b9b3a4-f6c9-4d16-a6a6-d096fe784bfc}</Project>
       <Private>True</Private>
@@ -52,7 +52,7 @@
 	</Target>
 	-->
   <Target Name="BeforeBuild">
-    <HeatDirectory Directory="..\DesktopToastsApp\bin\Release" PreprocessorVariable="var.HarvestPath" OutputFile="Folder.wxs" ComponentGroupName="HeatGenerated" DirectoryRefId="INSTALLFOLDER" AutogenerateGuids="true" ToolPath="$(WixToolPath)" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" />
+    <HeatDirectory Directory="..\VocabularyReminder\bin\Release" PreprocessorVariable="var.HarvestPath" OutputFile="Folder.wxs" ComponentGroupName="HeatGenerated" DirectoryRefId="INSTALLFOLDER" AutogenerateGuids="true" ToolPath="$(WixToolPath)" SuppressFragments="true" SuppressRegistry="true" SuppressRootDirectory="true" />
   </Target>
   <PropertyGroup>
     <PreBuildEvent />
