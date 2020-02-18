@@ -1,11 +1,11 @@
-﻿using DataAccessLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder.Services
 {
@@ -17,7 +17,7 @@ namespace VocabularyReminder.Services
             {
                 string demoUrl = "https://github.com/tuandaodev/VocabularyReminder/raw/master/Data/3000CommonWords.db";
                 string filename = System.IO.Path.GetFileName(demoUrl);
-                string dbPath = DataAccess.GetDatabasePath();
+                string dbPath = ApplicationIO.GetDatabasePath();
 
                 if (File.Exists(dbPath))
                 {
@@ -33,7 +33,7 @@ namespace VocabularyReminder.Services
                     }
                 }
             }
-            catch (Exception ex) {
+            catch {
             }
         }
     }

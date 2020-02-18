@@ -3,51 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace DataAccessLibrary
+namespace VocabularyReminder.DataAccessLibrary
 {
     public class DataAccess
     {
-        static private string LocalFolder = "VocabularyReminder";
-
-        public static string GetApplicationFolderPath()
-        {
-            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder);
-        }
-
-        public static string GetMp3Folder()
-        {
-            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, "Mp3");
-        }
-
-        public static string GetImageFolder()
-        {
-            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, "Images");
-        }
-
-        public static string GetChildFolder(string folderName)
-        {
-            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, folderName);
-        }
-
-        public static string GetFilePath(string fileName)
-        {
-            return Path.Combine(Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), LocalFolder, fileName);
-        }
-
-        public static string GetDatabasePath()
-        {
-            return Path.Combine(GetApplicationFolderPath(), "vocabulary.db");
-        }
 
         public static void InitializeDatabase()
         {
-            string appFolder = GetApplicationFolderPath();
+            string appFolder = ApplicationIO.GetApplicationFolderPath();
             if (!Directory.Exists(appFolder))
             {
                 Directory.CreateDirectory(appFolder);
             }
 
-            string dbFilePath = GetDatabasePath();
+            string dbFilePath = ApplicationIO.GetDatabasePath();
             if (!File.Exists(dbFilePath))
             {
                 var file = File.Create(dbFilePath);
@@ -80,7 +49,7 @@ namespace DataAccessLibrary
                     PlayURL NVARCHAR(2048) NULL, 
                     PlayURL2 NVARCHAR(2048) NULL, 
                     Related NVARCHAR(2048) NULL, 
-                    Status INTEGER NULL DEFAULT 1)";
+                    Status INTEGER NULL DEFAULT 1 )";
                 createTable = new SqliteCommand(tableCommand, db);
                 createTable.ExecuteReader();
 
@@ -90,36 +59,36 @@ namespace DataAccessLibrary
             }
         }
 
-        public static void ResetDatabase()
-        {
-            string dbpath = GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-                String tableCommand = "DELETE FROM Dictionary;";
-                SqliteCommand truncTable = new SqliteCommand(tableCommand, db);
-                truncTable.ExecuteNonQuery();
-                truncTable.Dispose();
+        //public static void ResetDatabase()
+        //{
+        //    string dbpath = ApplicationIO.GetDatabasePath();
+        //    using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+        //    {
+        //        db.Open();
+        //        String tableCommand = "DELETE FROM Dictionary;";
+        //        SqliteCommand truncTable = new SqliteCommand(tableCommand, db);
+        //        truncTable.ExecuteNonQuery();
+        //        truncTable.Dispose();
 
-                tableCommand = "DELETE FROM Vocabulary;";
-                truncTable = new SqliteCommand(tableCommand, db);
-                truncTable.ExecuteNonQuery();
-                truncTable.Dispose();
+        //        tableCommand = "DELETE FROM Vocabulary;";
+        //        truncTable = new SqliteCommand(tableCommand, db);
+        //        truncTable.ExecuteNonQuery();
+        //        truncTable.Dispose();
 
-                tableCommand = "delete from sqlite_sequence where name = 'Dictionary'; delete from sqlite_sequence where name = 'Vocabulary';";
-                truncTable = new SqliteCommand(tableCommand, db);
-                truncTable.ExecuteNonQuery();
+        //        tableCommand = "delete from sqlite_sequence where name = 'Dictionary'; delete from sqlite_sequence where name = 'Vocabulary';";
+        //        truncTable = new SqliteCommand(tableCommand, db);
+        //        truncTable.ExecuteNonQuery();
 
-                truncTable.Dispose();
-                db.Close();
-                db.Dispose();
-            }
-        }
+        //        truncTable.Dispose();
+        //        db.Close();
+        //        db.Dispose();
+        //    }
+        //}
 
         public static int AddVocabulary(string inputText)
         {
             if (String.IsNullOrEmpty(inputText)) return 0;
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             int inserted = 0;
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
@@ -146,9 +115,7 @@ namespace DataAccessLibrary
 
         public static void UpdateVocabulary(Vocabulary item)
         {
-            //try
-            //{
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -169,18 +136,12 @@ namespace DataAccessLibrary
                 db.Close();
                 db.Dispose();
             }
-            //} catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
         }
 
 
         public static void UpdatePlayURL(Vocabulary item)
         {
-            //try
-            //{
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -207,15 +168,11 @@ namespace DataAccessLibrary
                 db.Close();
                 db.Dispose();
             }
-            //} catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
         }
 
         public static void UpdateStatus(int _Id, int _Status = 0)
         {
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -236,7 +193,7 @@ namespace DataAccessLibrary
 
         public static void RemoveVocabulary(int _Id)
         {
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -256,9 +213,7 @@ namespace DataAccessLibrary
 
         public static void UpdateRelated(Vocabulary item)
         {
-            //try
-            //{
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -276,10 +231,6 @@ namespace DataAccessLibrary
                 db.Close();
                 db.Dispose();
             }
-            //} catch (Exception ex)
-            //{
-            //    Debug.WriteLine(ex.Message);
-            //}
         }
 
 
@@ -287,7 +238,7 @@ namespace DataAccessLibrary
         {
             Vocabulary _item = new Vocabulary();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db =
                new SqliteConnection($"Filename={dbpath}"))
             {
@@ -316,7 +267,7 @@ namespace DataAccessLibrary
         {
             Vocabulary _item = new Vocabulary();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -344,7 +295,7 @@ namespace DataAccessLibrary
         {
             Vocabulary _item = new Vocabulary();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -372,7 +323,7 @@ namespace DataAccessLibrary
         {
             Vocabulary _item = new Vocabulary();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -399,7 +350,7 @@ namespace DataAccessLibrary
         public static int GetFirstWordId()
         {
             int _WordId = 1;
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db =
                new SqliteConnection($"Filename={dbpath}"))
             {
@@ -425,7 +376,7 @@ namespace DataAccessLibrary
 
         public static Stats GetStats()
         {
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             Stats _Stats = new Stats();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
@@ -456,41 +407,13 @@ namespace DataAccessLibrary
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
 
                 SqliteCommand selectCommand = new SqliteCommand
                     ("SELECT * from Vocabulary WHERE PlayURL IS NOT NULL", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    entries.Add(GetItemFromRead(query));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
-            }
-
-            return entries;
-        }
-
-        public static List<Vocabulary> GetListVocabularyToGetTranslate()
-        {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Translate IS NULL", db);
 
                 SqliteDataReader query = selectCommand.ExecuteReader();
 
@@ -534,7 +457,7 @@ namespace DataAccessLibrary
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -563,7 +486,7 @@ namespace DataAccessLibrary
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -591,7 +514,7 @@ namespace DataAccessLibrary
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 
-            string dbpath = GetDatabasePath();
+            string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
                 db.Open();
@@ -617,35 +540,4 @@ namespace DataAccessLibrary
     }
 
 
-
-    public class Dictionary
-    {
-        public int DictionaryId { get; set; }
-        public string Name { get; set; }
-
-        public List<Vocabulary> Words { get; } = new List<Vocabulary>();
-    }
-
-    public class Stats
-    {
-        public int Total { get; set; }
-        public int Remembered { get; set; }
-    }
-
-    public class Vocabulary
-    {
-        public int Id { get; set; }
-        public string Word { get; set; }
-        public string Type { get; set; }
-        public string Ipa { get; set; }
-        public string Ipa2 { get; set; }
-        public string Translate { get; set; }
-        public string Define { get; set; }
-        public string Example { get; set; }
-        public string Example2 { get; set; }
-        public string PlayURL { get; set; }
-        public string PlayURL2 { get; set; }
-        public string Related { get; set; }
-        public int Status { get; set; }
-    }
 }

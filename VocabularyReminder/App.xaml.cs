@@ -10,7 +10,6 @@
 // THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
 // ******************************************************************
 
-using DataAccessLibrary;
 using DesktopNotifications;
 using System;
 using System.Collections.Generic;
@@ -19,6 +18,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder
 {

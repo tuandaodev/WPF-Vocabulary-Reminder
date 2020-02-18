@@ -1,5 +1,4 @@
-﻿using DataAccessLibrary;
-using VocabularyReminder;
+﻿using VocabularyReminder;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
+using VocabularyReminder.DataAccessLibrary;
 
 namespace DesktopNotifications.Services
 {
@@ -33,7 +33,7 @@ namespace DesktopNotifications.Services
         {
             try
             {
-                var directory = Directory.CreateDirectory(DataAccess.GetMp3Folder());
+                var directory = Directory.CreateDirectory(ApplicationIO.GetMp3Folder());
 
                 string filename = System.IO.Path.GetFileName(Mp3Url);
                 string mp3Path = Path.Combine(directory.FullName, filename);

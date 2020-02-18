@@ -10,7 +10,6 @@
 // THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
 // ******************************************************************
 
-using DataAccessLibrary;
 using DesktopNotifications;
 using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
@@ -33,6 +32,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -179,7 +179,7 @@ namespace VocabularyReminder
             {
                 Status_UpdateMessage("Start Deleting...");
 
-                var directoryMp3 = Directory.CreateDirectory(DataAccess.GetApplicationFolderPath());
+                var directoryMp3 = Directory.CreateDirectory(ApplicationIO.GetApplicationFolderPath());
                 foreach (var d in directoryMp3.EnumerateDirectories())
                 {
                     d.Delete(true);
@@ -187,14 +187,14 @@ namespace VocabularyReminder
 
                 Status_UpdateMessage("Deleted Mp3 and Images Folder");
 
-                if (File.Exists(DataAccess.GetDatabasePath()))
+                if (File.Exists(ApplicationIO.GetDatabasePath()))
                 {
-                    File.Delete(DataAccess.GetDatabasePath());
+                    File.Delete(ApplicationIO.GetDatabasePath());
                 }
 
-                if (!File.Exists(DataAccess.GetDatabasePath()))
+                if (!File.Exists(ApplicationIO.GetDatabasePath()))
                 {
-                    var file = File.Create(DataAccess.GetDatabasePath());
+                    var file = File.Create(ApplicationIO.GetDatabasePath());
                     file.Close();
                 }
                 DataAccess.InitializeDatabase();

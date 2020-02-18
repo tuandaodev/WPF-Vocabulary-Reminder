@@ -10,7 +10,6 @@
 // THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
 // ******************************************************************
 
-using DataAccessLibrary;
 using DesktopNotifications;
 using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
@@ -22,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using VocabularyReminder.DataAccessLibrary;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 

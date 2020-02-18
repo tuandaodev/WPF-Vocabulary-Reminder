@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\obj\Debug\
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\
 VocabularyReminder
 none
 false
 DEBUG;TRACE
-E:\Downloads\desktop-toasts-master\CS\DesktopToastsApp\App.xaml
-11151548125
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\App.xaml
+2424675528
 31674033609
-15-1105457371
+18-1761896971
 2221262786290
-MainWindow.xaml;
+DeletedWords.xaml;MainWindow.xaml;
 
-True
+False
 

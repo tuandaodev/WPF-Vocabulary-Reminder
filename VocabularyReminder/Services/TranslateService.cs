@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using VocabularyReminder;
-using DataAccessLibrary;
+using VocabularyReminder.DataAccessLibrary;
 
 namespace DesktopNotifications.Services
 {

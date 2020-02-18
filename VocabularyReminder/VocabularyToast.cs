@@ -1,5 +1,4 @@
-﻿using DataAccessLibrary;
-using DesktopNotifications;
+﻿using DesktopNotifications;
 using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -10,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using VocabularyReminder.DataAccessLibrary;
 using Windows.Data.Xml.Dom;
 //using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -239,7 +239,7 @@ namespace VocabularyReminder
                     return httpImage;
                 }
 
-                var directory = Directory.CreateDirectory(DataAccess.GetImageFolder());
+                var directory = Directory.CreateDirectory(ApplicationIO.GetImageFolder());
 
                 if (!_hasPerformedCleanup)
                 {
