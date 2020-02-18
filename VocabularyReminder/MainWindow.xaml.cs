@@ -437,5 +437,12 @@ namespace VocabularyReminder
         {
             Reload_Stats();
         }
+
+
+        private void Btn_ShowLearnedList_Click(object sender, RoutedEventArgs e)
+        {
+            var frm = new LearnedWordsWindow();
+            frm.Show();
+        }
     }
 }

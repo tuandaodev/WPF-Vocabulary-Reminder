@@ -70,8 +70,8 @@
     <Compile Include="DataAccessLibrary\DataAccess.cs" />
     <Compile Include="DataAccessLibrary\ApplicationIO.cs" />
     <Compile Include="DataAccessLibrary\Models.cs" />
-    <Compile Include="DeletedWords.xaml.cs">
-      <DependentUpon>DeletedWords.xaml</DependentUpon>
+    <Compile Include="LearnedWordsWindow.xaml.cs">
+      <DependentUpon>LearnedWordsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Import.cs" />
@@ -79,7 +79,7 @@
     <Compile Include="Services\PlaybackService.cs" />
     <Compile Include="Services\TranslateService.cs" />
     <Compile Include="VocabularyToast.cs" />
-    <Page Include="DeletedWords.xaml">
+    <Page Include="LearnedWordsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

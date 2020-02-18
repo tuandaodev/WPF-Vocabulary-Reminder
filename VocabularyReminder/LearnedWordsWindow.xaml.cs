@@ -11,17 +11,24 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder
 {
     /// <summary>
     /// Interaction logic for DeletedWords.xaml
     /// </summary>
-    public partial class DeletedWords : Window
+    public partial class LearnedWordsWindow : Window
     {
-        public DeletedWords()
+        public LearnedWordsWindow()
         {
             InitializeComponent();
+
+            var VocabularyList = DataAccess.GetListLearnded();
+            foreach (var _item in VocabularyList)
+            {
+                this.View_ListLearnedWords.Items.Add(_item);
+            }
         }
     }
 }

@@ -20,15 +20,15 @@
             <RowDefinition Height="0.6*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="56*"></ColumnDefinition>
-            <ColumnDefinition Width="113*"></ColumnDefinition>
-            <ColumnDefinition Width="56*"></ColumnDefinition>
-            <ColumnDefinition Width="226*"></ColumnDefinition>
-            <ColumnDefinition Width="56*"></ColumnDefinition>
-            <ColumnDefinition Width="226*"></ColumnDefinition>
-            <ColumnDefinition Width="57*"></ColumnDefinition>
-            <ColumnDefinition Width="169*"/>
-            <ColumnDefinition Width="57*"/>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Grid.ColumnSpan="3" />
@@ -50,5 +50,6 @@
         <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113"/>
         <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="78" Margin="121,0,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="121,31,0,0" Width="78" Grid.ColumnSpan="2"/>
+        <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" />
     </Grid>
 </Window>

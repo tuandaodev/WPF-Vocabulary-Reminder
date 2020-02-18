@@ -537,6 +537,34 @@ namespace VocabularyReminder.DataAccessLibrary
 
             return entries;
         }
+
+        public static List<Vocabulary> GetListLearnded()
+        {
+            List<Vocabulary> entries = new List<Vocabulary>();
+
+            string dbpath = ApplicationIO.GetDatabasePath();
+            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+
+                SqliteCommand selectCommand = new SqliteCommand
+                    ("SELECT * from Vocabulary WHERE Status = 0", db);
+
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                {
+                    entries.Add(GetItemFromRead(query));
+                }
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return entries;
+        }
     }
 
 
