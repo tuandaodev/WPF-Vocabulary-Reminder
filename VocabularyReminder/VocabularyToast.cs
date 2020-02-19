@@ -141,10 +141,10 @@ namespace VocabularyReminder
                                 }
                             }
                         },
-                        HeroImage = new ToastGenericHeroImage()
-                        {
-                            Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
-                        },
+                        //HeroImage = new ToastGenericHeroImage()
+                        //{
+                        //    Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
+                        //},
                     }
                 },
                 //Scenario = ToastScenario.Reminder,
@@ -348,10 +348,10 @@ namespace VocabularyReminder
                                 }
                             }
                         },
-                        HeroImage = new ToastGenericHeroImage()
-                        {
-                            Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
-                        },
+                        //HeroImage = new ToastGenericHeroImage()
+                        //{
+                        //    Source = await DownloadImageToDisk("https://picsum.photos/364/180?image=1043"),
+                        //},
                     }
                 },
                 //Scenario = ToastScenario.Reminder,
