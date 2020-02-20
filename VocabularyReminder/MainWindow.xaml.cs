@@ -1,16 +1,4 @@
-﻿// ******************************************************************
-// Copyright (c) Microsoft. All rights reserved.
-// This code is licensed under the MIT License (MIT).
-// THE CODE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-// INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-// IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-// TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
-// THE CODE OR THE USE OR OTHER DEALINGS IN THE CODE.
-// ******************************************************************
-
-using DesktopNotifications;
+﻿using DesktopNotifications;
 using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
@@ -56,15 +44,14 @@ namespace VocabularyReminder
 
         private const int HOTKEY_ID = 9000;
 
-        //Modifiers:
-        private const uint MOD_NONE = 0x0000; //(none)
-        private const uint MOD_ALT = 0x0001; //ALT
-        private const uint MOD_CONTROL = 0x0002; //CTRL
-        private const uint MOD_SHIFT = 0x0004; //SHIFT
-        private const uint MOD_WIN = 0x0008; //WINDOWS
-        //CAPS LOCK:
-        private const uint VK_CAPITAL = 0x14;
-
+        enum KeyModifier
+        {
+            None = 0,
+            Alt = 1,
+            Control = 2,
+            Shift = 4,
+            WinKey = 8
+        }
 
         private IntPtr _windowHandle;
         private HwndSource _source;
@@ -76,7 +63,7 @@ namespace VocabularyReminder
             _source = HwndSource.FromHwnd(_windowHandle);
             _source.AddHook(HwndHook);
 
-            RegisterHotKey(_windowHandle, HOTKEY_ID, MOD_CONTROL, VK_CAPITAL); //CTRL + CAPS_LOCK
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode()); //CTRL + CAPS_LOCK
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -89,9 +76,10 @@ namespace VocabularyReminder
                     {
                         case HOTKEY_ID:
                             int vkey = (((int)lParam >> 16) & 0xFFFF);
-                            if (vkey == VK_CAPITAL)
+                            if (vkey == System.Windows.Forms.Keys.F7.GetHashCode())
                             {
-                                Console.WriteLine("CapsLock was pressed");
+                                BackgroundService.ActionPlay();
+                                Console.WriteLine("Hotkey Play Mp3");
                             }
                             handled = true;
                             break;
@@ -105,16 +93,13 @@ namespace VocabularyReminder
 
 
 
-
-
-
         CancellationTokenSource _TokenSource;
         CancellationToken _CancelToken;
 
         private bool IsStarted = false;
         
 
-        private static int Core = 3;
+        const int CoreMultipleThread = 3;
 
         const string placeHolder = "Enter your vocabulary list here.... \nThen click \"Import\" to auto get content.";
 
@@ -173,14 +158,14 @@ namespace VocabularyReminder
 
                 Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = false);
 
-                Task.Factory.StartNew(async () =>
+                Task.Factory.StartNew(() =>
                 {
                     Status_UpdateMessage("Start Importing...");
                     int Count = 0;
                     int CountSuccess = 0;
 
                     ParallelOptions parallelOptions = new ParallelOptions();
-                    parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
+                    parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                     Parallel.ForEach(ListWord, parallelOptions, _item =>
                     {
                         if (DataAccess.AddVocabulary(_item) > 0)
@@ -285,7 +270,7 @@ namespace VocabularyReminder
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetVocabularyTranslate(_item).Wait();
@@ -308,7 +293,7 @@ namespace VocabularyReminder
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetWordDefineInformation(_item).Wait();
@@ -332,7 +317,7 @@ namespace VocabularyReminder
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * Core;
+                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     TranslateService.GetRelatedWord(_item).Wait();
@@ -470,7 +455,7 @@ namespace VocabularyReminder
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * Core;    // TODO
+                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * CoreMultipleThread;    // TODO
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     Mp3.preloadMp3MultipleAsync(_item).Wait();
