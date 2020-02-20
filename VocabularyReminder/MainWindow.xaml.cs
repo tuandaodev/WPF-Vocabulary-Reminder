@@ -52,7 +52,7 @@ namespace VocabularyReminder
 
         private static int Core = 3;
 
-        const string placeHolder = "Enter your vocabulary list here....";
+        const string placeHolder = "Enter your vocabulary list here.... \nThen click \"Import\" to auto get content.";
 
         public MainWindow()
         {
