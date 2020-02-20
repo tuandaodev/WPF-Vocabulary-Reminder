@@ -62,7 +62,6 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\System.Buffer
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\System.Memory.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\System.Numerics.Vectors.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
-E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.csprojAssemblyReference.cache
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.exe.config
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\Interop.WMPLib.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.csproj.ResolveComReference.cache
