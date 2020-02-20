@@ -29,7 +29,7 @@ namespace VocabularyReminder
         {
             if (_item.Id == 0)
             {
-                Helper.ShowToast("Chưa có dữ liệu từ điển. Vui lòng import.");
+                Helper.ShowToast("There is no vocabury to learn right now. Please import and Start Learning again.");
                 return;
             }
             ToastContent content;

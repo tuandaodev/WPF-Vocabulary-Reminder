@@ -97,6 +97,12 @@ namespace VocabularyReminder
             try
             {
                 string tempInp = this.Inp_ListWord.Text;
+                if (tempInp == placeHolder)
+                {
+                    MessageBox.Show("You need to enter vocabulary words before Import...");
+                    return;
+                }
+
                 var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
                 ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
                 int TotalWords = ListWord.Count;
