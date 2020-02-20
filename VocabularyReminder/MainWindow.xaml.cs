@@ -191,6 +191,7 @@ namespace VocabularyReminder
                     file.Close();
                 }
                 DataAccess.InitializeDatabase();
+                App.GlobalWordId = 0;
                 Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
                 MessageBox.Show("Delete Data Completed.");
                 Reload_Stats();
