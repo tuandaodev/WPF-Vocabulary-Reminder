@@ -130,6 +130,7 @@ namespace VocabularyReminder
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                     Reload_Stats();
                     Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
+                    MessageBox.Show("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                 });
             }
             catch (Exception ex)
@@ -137,6 +138,7 @@ namespace VocabularyReminder
                 Status_UpdateMessage("Import Failed: " + ex.Message);
                 Reload_Stats();
                 Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
+                MessageBox.Show("Import Failed");
             }
 
         }
@@ -169,8 +171,8 @@ namespace VocabularyReminder
             });   // wait to process all
 
             Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
-
             Dispatcher.Invoke(() => this.Btn_ProcessCrawl.IsEnabled = true);
+            MessageBox.Show("All of Crawling Finished. Enjoy the Learning Journey Now!.");
         }
 
         private void Btn_ProcessDeleteData_Click(object sender, RoutedEventArgs e)
@@ -199,12 +201,14 @@ namespace VocabularyReminder
                 }
                 DataAccess.InitializeDatabase();
                 Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
+                MessageBox.Show("Delete Data Completed.");
                 Reload_Stats();
             }
             catch (Exception ex)
             {
-                Status_UpdateMessage("Delete Data Fail: " + ex.Message);
+                Status_UpdateMessage("Delete Data Failed: " + ex.Message);
                 Reload_Stats();
+                MessageBox.Show("Delete Data Failed.");
             }
         }
 
@@ -425,6 +429,7 @@ namespace VocabularyReminder
             await ImportService.ImportDemo3000Words();
             Reload_Stats();
             Status_UpdateMessage("Downloaded 3000 common words success.");
+            MessageBox.Show("Downloaded 3000 common words success.");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
