@@ -8,6 +8,18 @@
             <Component Id="cmp667CB89A1E43303706D5205D8E0E018B" Guid="*">
                 <File Id="fil06CC2F39CCEE24EF8EEA281FA58DF9BF" KeyPath="yes" Source="$(var.HarvestPath)\HtmlAgilityPack.pdb" />
             </Component>
+            <Component Id="cmpF79A41B26948F126556619AD15586E53" Guid="*">
+                <File Id="filD65CB2C411B671E247C0C842FF9ED3FA" KeyPath="yes" Source="$(var.HarvestPath)\MaterialDesignColors.dll" />
+            </Component>
+            <Component Id="cmpBA69CF71075E6968218400B9F29844B5" Guid="*">
+                <File Id="fil5172DC83FB1D00BEBE5AC6D108D92FC9" KeyPath="yes" Source="$(var.HarvestPath)\MaterialDesignColors.pdb" />
+            </Component>
+            <Component Id="cmp6D59DB1C8695088F09FD7F0B07ECD487" Guid="*">
+                <File Id="fil13620EBEA6F6420A02C733F8682CD641" KeyPath="yes" Source="$(var.HarvestPath)\MaterialDesignThemes.Wpf.dll" />
+            </Component>
+            <Component Id="cmpFA79922E3C67570896B863651A61DA4C" Guid="*">
+                <File Id="filB20099EC5073B1438BB86D3B5C19B317" KeyPath="yes" Source="$(var.HarvestPath)\MaterialDesignThemes.Wpf.pdb" />
+            </Component>
             <Component Id="cmpB14CC8B154928EA6225F174BDE107F6B" Guid="*">
                 <File Id="filB459F36ECC4A67FE3864BCBC2F0D640D" KeyPath="yes" Source="$(var.HarvestPath)\Microsoft.Data.Sqlite.dll" />
             </Component>
@@ -88,6 +100,10 @@
         <ComponentGroup Id="HeatGenerated">
             <ComponentRef Id="cmp3464F8730E573D338954EC7195CFB4A4" />
             <ComponentRef Id="cmp667CB89A1E43303706D5205D8E0E018B" />
+            <ComponentRef Id="cmpF79A41B26948F126556619AD15586E53" />
+            <ComponentRef Id="cmpBA69CF71075E6968218400B9F29844B5" />
+            <ComponentRef Id="cmp6D59DB1C8695088F09FD7F0B07ECD487" />
+            <ComponentRef Id="cmpFA79922E3C67570896B863651A61DA4C" />
             <ComponentRef Id="cmpB14CC8B154928EA6225F174BDE107F6B" />
             <ComponentRef Id="cmpDF2A173873CB2DF4B359397F026B691C" />
             <ComponentRef Id="cmpF4E298CFF730F398D2990C582E79A49E" />
