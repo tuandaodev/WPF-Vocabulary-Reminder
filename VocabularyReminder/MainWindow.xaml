@@ -5,7 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
-        Title="Vocabulary Reminder" Height="674.25" Width="899" Closing="Window_Closing" Activated="Frm_MainWindow_Activated">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Vocabulary Reminder" Height="746.25" Width="995" Closing="Window_Closing" Activated="Frm_MainWindow_Activated">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -31,25 +39,24 @@
             <ColumnDefinition Width="0.5*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="Inp_ListWord" Text="" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Grid.ColumnSpan="3" />
-        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Grid.Row="1"/>
-        <Button x:Name="Btn_ProcessCrawl" Content="Crawl Content" Grid.Column="1" Grid.Row="3" Click="Btn_ProcessCrawl_Click" />
-        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="7" Grid.Row="5" Click="Btn_ProcessDeleteData_Click" />
-        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" />
+        <TextBox x:Name="Inp_ListWord" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Grid.ColumnSpan="3" LostFocus="Inp_ListWord_LostFocus" GotFocus="Inp_ListWord_GotFocus" />
+        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Grid.Row="1" Height="Auto"/>
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="7" Grid.Row="5" Click="Btn_ProcessDeleteData_Click" Height="Auto" />
+        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" Height="Auto" />
 
         <StatusBar Grid.Row="9" Grid.ColumnSpan="10">
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
-        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="2" HorizontalAlignment="Left" Height="22" Margin="0,8,0,0" Grid.Row="7" TextWrapping="Wrap" Text="120" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="120" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
         <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
-        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" />
+        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" />
         <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,55,0,26" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2"/>
-        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click"/>
+        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click" Height="Auto"/>
         <Label Content="Remembered Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top"/>
         <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113"/>
-        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="78" Margin="121,0,0,0" Grid.ColumnSpan="2"/>
-        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="121,31,0,0" Width="78" Grid.ColumnSpan="2"/>
-        <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" />
+        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="49" Margin="150,0,0,0" Grid.ColumnSpan="2"/>
+        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="150,31,0,0" Width="49" Grid.ColumnSpan="2"/>
+        <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" Height="Auto" />
     </Grid>
 </Window>

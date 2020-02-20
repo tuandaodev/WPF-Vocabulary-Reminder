@@ -8,5 +8,6 @@
     <Import Project="$(NuGetPackageRoot)system.runtime.windowsruntime.ui.xaml\4.6.0-preview4.19212.13\build\net461\System.Runtime.WindowsRuntime.UI.Xaml.targets" Condition="Exists('$(NuGetPackageRoot)system.runtime.windowsruntime.ui.xaml\4.6.0-preview4.19212.13\build\net461\System.Runtime.WindowsRuntime.UI.Xaml.targets')" />
     <Import Project="$(NuGetPackageRoot)sqlitepclraw.lib.e_sqlite3\2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('$(NuGetPackageRoot)sqlitepclraw.lib.e_sqlite3\2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.windows.sdk.contracts\10.0.18362.2002-preview\build\Microsoft.Windows.SDK.Contracts.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.windows.sdk.contracts\10.0.18362.2002-preview\build\Microsoft.Windows.SDK.Contracts.targets')" />
+    <Import Project="$(NuGetPackageRoot)materialdesignthemes\3.0.1\build\MaterialDesignThemes.targets" Condition="Exists('$(NuGetPackageRoot)materialdesignthemes\3.0.1\build\MaterialDesignThemes.targets')" />
   </ImportGroup>
 </Project>

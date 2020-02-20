@@ -52,9 +52,13 @@ namespace VocabularyReminder
 
         private static int Core = 3;
 
+        const string placeHolder = "Enter your vocabulary list here....";
+
         public MainWindow()
         {
             InitializeComponent();
+            this.Inp_ListWord.Text = placeHolder;
+
             App.isRandomWords = (Inp_RandomOption.IsChecked == true);
 
             Status_Reset();
@@ -99,7 +103,7 @@ namespace VocabularyReminder
 
                 Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = false);
 
-                Task.Factory.StartNew(() =>
+                Task.Factory.StartNew(async () =>
                 {
                     Status_UpdateMessage("Start Importing...");
                     int Count = 0;
@@ -116,16 +120,7 @@ namespace VocabularyReminder
                         Status_UpdateProgressBar(++Count, TotalWords);
                     });
 
-
-                    //foreach (var item in ListWord)
-                    //{
-                    //    Count++;
-                    //    if (DataAccess.AddVocabulary(item) > 0)
-                    //    {
-                    //        CountSuccess++;
-                    //    }
-                    //    Status_UpdateProgressBar(Count, TotalWords);
-                    //}
+                    BackgroundCrawl().Wait();
 
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                     Reload_Stats();
@@ -143,10 +138,8 @@ namespace VocabularyReminder
 
         }
 
-        private async void Btn_ProcessCrawl_Click(object sender, RoutedEventArgs e)
+        private async Task BackgroundCrawl()
         {
-            Dispatcher.Invoke(() => this.Btn_ProcessCrawl.IsEnabled = false );
-
             Status_UpdateMessage("Start Crawling...");
 
             await Task.Run(() =>
@@ -171,8 +164,6 @@ namespace VocabularyReminder
             });   // wait to process all
 
             Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
-            Dispatcher.Invoke(() => this.Btn_ProcessCrawl.IsEnabled = true);
-            MessageBox.Show("All of Crawling Finished. Enjoy the Learning Journey Now!.");
         }
 
         private void Btn_ProcessDeleteData_Click(object sender, RoutedEventArgs e)
@@ -211,6 +202,7 @@ namespace VocabularyReminder
                 MessageBox.Show("Delete Data Failed.");
             }
         }
+
 
         public void ProcessBackgroundTranslate()
         {
@@ -415,6 +407,7 @@ namespace VocabularyReminder
                 });
 
                 Status_UpdateMessage("Downloading MP3 Files Finished.");
+                MessageBox.Show("Downloading MP3 Files Finished");
             }
             catch (Exception ex)
             {
@@ -448,6 +441,22 @@ namespace VocabularyReminder
         {
             var frm = new LearnedWordsWindow();
             frm.Show();
+        }
+
+        private void Inp_ListWord_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (String.IsNullOrEmpty(this.Inp_ListWord.Text))
+            {
+                this.Inp_ListWord.Text = placeHolder;
+            }
+        }
+
+        private void Inp_ListWord_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (this.Inp_ListWord.Text == placeHolder)
+            {
+                this.Inp_ListWord.Text = "";
+            }
         }
     }
 }
