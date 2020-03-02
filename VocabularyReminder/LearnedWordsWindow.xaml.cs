@@ -40,5 +40,13 @@ namespace VocabularyReminder
         {
             Reload();
         }
+
+        //private void Frm_LearnedWords_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.Control && e.Shift && e.KeyCode == Keys.O)
+        //    {
+        //        // Your code when shortcut Ctrl+Shft+O is pressed
+        //    }
+        //}
     }
 }

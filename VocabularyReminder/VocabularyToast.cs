@@ -183,6 +183,16 @@ namespace VocabularyReminder
                                     AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
                                 }
                             },
+                            //new ToastButton("View", new QueryString()
+                            //{
+                            //    { "action", "view" },
+                            //    { "url", viewDicOnlineUrl + _item.Word }
+                            //}.ToString()),
+                            new ToastButton("Delete", new QueryString()
+                            {
+                                { "action", "delete" },
+                                { "WordId", _item.Id.ToString() },
+                            }.ToString()),
                             new ToastButton("Next", new QueryString()
                             {
                                 { "action", "next" },
@@ -195,16 +205,6 @@ namespace VocabularyReminder
                                     AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
                                 }
                             },
-                            //new ToastButton("View", new QueryString()
-                            //{
-                            //    { "action", "view" },
-                            //    { "url", viewDicOnlineUrl + _item.Word }
-                            //}.ToString()),
-                            new ToastButton("Delete", new QueryString()
-                            {
-                                { "action", "delete" },
-                                { "WordId", _item.Id.ToString() },
-                            }.ToString()),
                             new ToastButton("N&Del", new QueryString()
                             {
                                 { "action", "nextdelete" },

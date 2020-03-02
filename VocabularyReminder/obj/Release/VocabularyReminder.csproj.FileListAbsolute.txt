@@ -79,3 +79,4 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\MaterialDes
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\MaterialDesignThemes.Wpf.dll
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\MaterialDesignThemes.Wpf.pdb
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\App.baml
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.csprojAssemblyReference.cache

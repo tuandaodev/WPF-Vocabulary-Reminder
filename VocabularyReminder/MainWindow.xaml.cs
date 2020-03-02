@@ -63,7 +63,13 @@ namespace VocabularyReminder
             _source = HwndSource.FromHwnd(_windowHandle);
             _source.AddHook(HwndHook);
 
-            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode()); //CTRL + CAPS_LOCK
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Home.GetHashCode());  // Show Current Toast
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Escape.GetHashCode());  // Hide Toast
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode());      // Play Sound 1
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
+            RegisterHotKey(_windowHandle, HOTKEY_ID, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -76,10 +82,41 @@ namespace VocabularyReminder
                     {
                         case HOTKEY_ID:
                             int vkey = (((int)lParam >> 16) & 0xFFFF);
-                            if (vkey == System.Windows.Forms.Keys.F7.GetHashCode())
+                            
+                            // Detect keys and modifier
+                            //System.Windows.Forms.Keys key = ((System.Windows.Forms.Keys)(((int)lParam) >> 0x10)) & System.Windows.Forms.Keys.KeyCode;
+                            //ModifierKeys modifier = ((ModifierKeys)((int)lParam)) & ((ModifierKeys)0xffff);
+
+                            if (vkey == System.Windows.Forms.Keys.F7.GetHashCode()) // Play Sound 1
                             {
-                                BackgroundService.ActionPlay();
-                                Console.WriteLine("Hotkey Play Mp3");
+                                //Console.WriteLine("play 1");
+                                BackgroundService.ActionPlay(1);
+                            } else if (vkey == System.Windows.Forms.Keys.F8.GetHashCode())  // Play Sound 2
+                            {
+                                //Console.WriteLine("play 2");
+                                BackgroundService.ActionPlay(2);
+                            } else if (vkey == System.Windows.Forms.Keys.Escape.GetHashCode())  // Close Toast
+                            {
+                                //Console.WriteLine("ESC Close toast");
+                                BackgroundService.HideToast();
+                            } else if (vkey == System.Windows.Forms.Keys.PrintScreen.GetHashCode()) // Delete
+                            {
+                                //Console.WriteLine("delete current toast");
+                                BackgroundService.DeleteVocabulary();
+                            } else if (vkey == System.Windows.Forms.Keys.Scroll.GetHashCode())  // Next
+                            {
+                                //Console.WriteLine("next");
+                                BackgroundService.NextVocabulary();
+                            }
+                            else if (vkey == System.Windows.Forms.Keys.Pause.GetHashCode())  // Next and Delete
+                            {
+                                //Console.WriteLine("next and delete");
+                                BackgroundService.NextAndDeleteVocabulary();
+                            }
+                            else if (vkey == System.Windows.Forms.Keys.Home.GetHashCode())  // Show Current
+                            {
+                                //Console.WriteLine("show current toast");
+                                BackgroundService.showCurrentToast();
                             }
                             handled = true;
                             break;
@@ -386,6 +423,8 @@ namespace VocabularyReminder
                         Thread.Sleep(TimeRepeat);
                     }
                 }, _CancelToken);
+
+                this.WindowState = System.Windows.WindowState.Minimized;
             } else
             {
                 IsStarted = false;

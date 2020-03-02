@@ -11,10 +11,9 @@ namespace VocabularyReminder.Services
 {
     class BackgroundService
     {
-        public static void ActionPlay()
+        public static void ActionPlay(int playId = 1)
         {
             Vocabulary _item;
-            int playId = 1;
             if (App.GlobalWordId > 0)
             {
                 string _mp3Url;
@@ -34,6 +33,68 @@ namespace VocabularyReminder.Services
                     Task.Run(() => Mp3.PlayFile(_mp3Url));
                 }
             }
+        }
+
+        public static void HideToast()
+        {
+            VocabularyToast.ClearApplicationToast();
+        }
+
+        public static void NextVocabulary()
+        {
+            Vocabulary _item;
+            if (App.isRandomWords)
+            {
+                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+            }
+            else
+            {
+                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+            }
+
+            if (_item.Id == 0)
+            {
+                _item = DataAccess.GetFirstVocabulary();
+            }
+            App.GlobalWordId = _item.Id;
+            VocabularyToast.showToastByVocabularyItem(_item);
+            _item = null;
+        }
+
+        public static void DeleteVocabulary()
+        {
+            DataAccess.UpdateStatus(App.GlobalWordId, 0);
+            VocabularyToast.ClearApplicationToast();
+        }
+
+        public static void NextAndDeleteVocabulary()
+        {
+            DataAccess.UpdateStatus(App.GlobalWordId, 0);  // skip this word
+
+            Vocabulary _item;
+            if (App.isRandomWords)
+            {
+                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+            }
+            else
+            {
+                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+            }
+
+            if (_item.Id == 0)
+            {
+                _item = DataAccess.GetFirstVocabulary();
+            }
+            App.GlobalWordId = _item.Id;
+            VocabularyToast.showToastByVocabularyItem(_item);
+            _item = null;
+        }
+
+        public static void showCurrentToast()
+        {
+            var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+            VocabularyToast.showToastByVocabularyItem(_item);
+            _item = null;
         }
     }
 }
