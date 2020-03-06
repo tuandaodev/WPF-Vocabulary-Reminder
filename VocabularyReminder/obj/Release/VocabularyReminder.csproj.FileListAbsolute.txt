@@ -80,3 +80,8 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\MaterialDes
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\MaterialDesignThemes.Wpf.pdb
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\App.baml
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.csprojAssemblyReference.cache
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\VocabularyReminder.exe.manifest
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Release\VocabularyReminder.application
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.TrustInfo.xml
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.exe.manifest
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Release\VocabularyReminder.application

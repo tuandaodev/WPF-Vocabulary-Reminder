@@ -62,15 +62,26 @@
             <Component Id="cmpAFCF21A15F6EDA45A32D147050609285" Guid="*">
                 <File Id="filAE286E96EA00902BC284AEBF3030D6E4" KeyPath="yes" Source="$(var.HarvestPath)\System.Runtime.CompilerServices.Unsafe.dll" />
             </Component>
+            <Component Id="cmp8F8A98CA0F7362B864DE62659ED65DBF" Guid="*">
+                <File Id="fil8EFCE7EB23975DE141DB1E46AC93F3A9" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.application" />
+            </Component>
             <Component Id="cmpBE7B72292500D61F2B2C1DF047CB8238" Guid="*">
                 <File Id="fil8286DE272CC522F02D1E5A7F3FA87F75" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.exe" />
             </Component>
             <Component Id="cmp882DED714B342BCEBC0724190EB3C170" Guid="*">
                 <File Id="filBD2A4BB419F332B2A06141A8F07394C8" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.exe.config" />
             </Component>
+            <Component Id="cmpE11F7E41962322113B1CB49FBB086D48" Guid="*">
+                <File Id="fil82BBA267F1BD16D313786706634B0EBD" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.exe.manifest" />
+            </Component>
             <Component Id="cmp82B1860F91D5E337E5C9180C0156A210" Guid="*">
                 <File Id="fil664DF2CDE9DB8864FF34BF5DBB126124" KeyPath="yes" Source="$(var.HarvestPath)\VocabularyReminder.pdb" />
             </Component>
+            <Directory Id="dir00122602D311392A9D483BE33FE17DEF" Name="app.publish">
+                <Component Id="cmpD10B36589ABD2320C066D46115BB753A" Guid="*">
+                    <File Id="filF9891104BF35B4C7AF09FD4192433151" KeyPath="yes" Source="$(var.HarvestPath)\app.publish\VocabularyReminder.exe" />
+                </Component>
+            </Directory>
             <Directory Id="dir58E8247E2885C01898CAD009F9EFD8BA" Name="runtimes">
                 <Directory Id="dir9FF0F9C1A7463CA0B24689AA89D869B5" Name="win-arm">
                     <Directory Id="dir46754318AAFE7C2D3BBAC065B627290B" Name="native">
@@ -118,9 +129,12 @@
             <ComponentRef Id="cmp642ED5B0D0BD1F16347D1310992C55A0" />
             <ComponentRef Id="cmp89AE5ECEB789ECF60BE6CC568D60B2F9" />
             <ComponentRef Id="cmpAFCF21A15F6EDA45A32D147050609285" />
+            <ComponentRef Id="cmp8F8A98CA0F7362B864DE62659ED65DBF" />
             <ComponentRef Id="cmpBE7B72292500D61F2B2C1DF047CB8238" />
             <ComponentRef Id="cmp882DED714B342BCEBC0724190EB3C170" />
+            <ComponentRef Id="cmpE11F7E41962322113B1CB49FBB086D48" />
             <ComponentRef Id="cmp82B1860F91D5E337E5C9180C0156A210" />
+            <ComponentRef Id="cmpD10B36589ABD2320C066D46115BB753A" />
             <ComponentRef Id="cmpDF76CDFA0F073AE6CAE38BE68141B800" />
             <ComponentRef Id="cmpA9FE95CFE68BB3A9037D1155AED6FAD7" />
             <ComponentRef Id="cmp33D08136382ADFFC5979284E4701D9C6" />
