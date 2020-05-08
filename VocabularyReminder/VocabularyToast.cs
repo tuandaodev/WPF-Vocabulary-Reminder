@@ -22,6 +22,7 @@ namespace VocabularyReminder
         
         public static void ClearApplicationToast()
         {
+            App.isShowPopup = false;
             DesktopNotificationManagerCompat.History.Clear();
         }
 
@@ -54,6 +55,7 @@ namespace VocabularyReminder
                 Group = "Reminder",
             };
 
+            App.isShowPopup = true;
             DesktopNotificationManagerCompat.CreateToastNotifier().Show(_toastItem);
         }
 
@@ -64,6 +66,7 @@ namespace VocabularyReminder
             var _history = DesktopNotificationManagerCompat.History.GetHistory();
             if (_history.Count() > 0)
             {
+                App.isShowPopup = true;
                 DesktopNotificationManagerCompat.CreateToastNotifier().Show(_history.Last());
                 return true;
             }

@@ -80,4 +80,8 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyRem
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.csproj.CopyComplete
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.exe
 E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.pdb
-E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.csprojAssemblyReference.cache
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\VocabularyReminder.exe.manifest
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\bin\Debug\VocabularyReminder.application
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.TrustInfo.xml
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.exe.manifest
+E:\Downloads\desktop-toasts-master\CS\VocabularyReminder\obj\Debug\VocabularyReminder.application

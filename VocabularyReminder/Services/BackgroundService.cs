@@ -37,6 +37,7 @@ namespace VocabularyReminder.Services
 
         public static void HideToast()
         {
+            App.isShowPopup = false;
             VocabularyToast.ClearApplicationToast();
         }
 
