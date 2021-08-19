@@ -71,12 +71,12 @@ namespace VocabularyReminder
 
             RegisterHotKey(_windowHandle, HOTKEY_ID + 4, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
 
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 5, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
+            RegisterHotKey(_windowHandle, HOTKEY_ID + 5, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
 
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
+            RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
             RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Next
 
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
+            RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
         }
 
 

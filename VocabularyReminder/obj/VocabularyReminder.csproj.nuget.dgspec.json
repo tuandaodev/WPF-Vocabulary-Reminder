@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Downloads\\desktop-toasts-master\\CS\\VocabularyReminder\\VocabularyReminder.csproj": {}
+    "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj": {}
   },
   "projects": {
-    "E:\\Downloads\\desktop-toasts-master\\CS\\VocabularyReminder\\VocabularyReminder.csproj": {
+    "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Downloads\\desktop-toasts-master\\CS\\VocabularyReminder\\VocabularyReminder.csproj",
+        "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
         "projectName": "VocabularyReminder",
-        "projectPath": "E:\\Downloads\\desktop-toasts-master\\CS\\VocabularyReminder\\VocabularyReminder.csproj",
-        "packagesPath": "C:\\Users\\KIM\\.nuget\\packages\\",
-        "outputPath": "E:\\Downloads\\desktop-toasts-master\\CS\\VocabularyReminder\\obj\\",
+        "projectPath": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
+        "packagesPath": "C:\\Users\\Tuan Dao\\.nuget\\packages\\",
+        "outputPath": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
-          "C:\\Users\\KIM\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tuan Dao\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

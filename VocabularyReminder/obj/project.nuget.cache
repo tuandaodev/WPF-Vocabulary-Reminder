@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "dgSpecHash": "RVCy7oLTzsmaV8WZaZf2Imp36SouXMkY/4Nn51GG3Ty9iSUtfX53BuoYm14CVVQVsxFkcrh5vyD2h+ScPy9w1Q==",
+  "success": true,
+  "projectFilePath": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\htmlagilitypack\\1.11.18\\htmlagilitypack.1.11.18.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\materialdesigncolors\\1.2.2\\materialdesigncolors.1.2.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\materialdesignthemes\\3.0.1\\materialdesignthemes.3.0.1.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\microsoft.data.sqlite\\3.1.1\\microsoft.data.sqlite.3.1.1.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\microsoft.data.sqlite.core\\3.1.1\\microsoft.data.sqlite.core.3.1.1.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\microsoft.toolkit.uwp.notifications\\2.0.0\\microsoft.toolkit.uwp.notifications.2.0.0.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\microsoft.windows.sdk.contracts\\10.0.18362.2002-preview\\microsoft.windows.sdk.contracts.10.0.18362.2002-preview.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\querystring.net\\1.0.0\\querystring.net.1.0.0.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.0.2\\sqlitepclraw.bundle_e_sqlite3.2.0.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\sqlitepclraw.core\\2.0.2\\sqlitepclraw.core.2.0.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.0.2\\sqlitepclraw.lib.e_sqlite3.2.0.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\sqlitepclraw.provider.dynamic_cdecl\\2.0.2\\sqlitepclraw.provider.dynamic_cdecl.2.0.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\4.5.2\\system.runtime.compilerservices.unsafe.4.5.2.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.runtime.windowsruntime\\4.6.0-preview4.19212.13\\system.runtime.windowsruntime.4.6.0-preview4.19212.13.nupkg.sha512",
+    "C:\\Users\\Tuan Dao\\.nuget\\packages\\system.runtime.windowsruntime.ui.xaml\\4.6.0-preview4.19212.13\\system.runtime.windowsruntime.ui.xaml.4.6.0-preview4.19212.13.nupkg.sha512"
+  ],
+  "logs": []
+}

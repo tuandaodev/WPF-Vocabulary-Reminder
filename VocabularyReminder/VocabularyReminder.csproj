@@ -64,10 +64,10 @@
     <ApplicationIcon>voca-reminder.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>0D1DDE88C6C0AD2DC2E92D0A83D4496B5229FC40</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3C4F1047BC3579A67282EAF3683FA6F2B1D4E939</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>VocabularyReminder_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>VocabularyReminder_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -161,6 +161,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="VocabularyReminder_1_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

@@ -6,3 +6,6 @@ E:\Downloads\desktop-toasts-master\CS\VocabularyReminderInstaller\bin\Release\Vo
 obj\Release\VocabularyReminderInstaller.wixproj.BindContentsFileListnull.txt
 obj\Release\VocabularyReminderInstaller.wixproj.BindOutputsFileListnull.txt
 obj\Release\VocabularyReminderInstaller.wixproj.BindBuiltOutputsFileListnull.txt
+D:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Release\cab1.cab
+D:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Release\Vocabulary Reminder.msi
+D:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Release\Vocabulary Reminder.wixpdb
