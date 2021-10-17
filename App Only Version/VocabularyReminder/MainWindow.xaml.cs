@@ -1,31 +1,17 @@
-﻿using DesktopNotifications;
-using DesktopNotifications.Services;
-using Microsoft.QueryStringDotNET;
-using Microsoft.Toolkit.Uwp.Notifications;
+﻿using DesktopNotifications.Services;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
 
 namespace VocabularyReminder
 {
@@ -58,27 +44,38 @@ namespace VocabularyReminder
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
-
+            
             _windowHandle = new WindowInteropHelper(this).Handle;
             _source = HwndSource.FromHwnd(_windowHandle);
-            _source.AddHook(HwndHook);
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 1, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Show Current Toast
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 2, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.Escape.GetHashCode());  // Hide Toast
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 3, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode());      // Play Sound 1
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 4, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 5, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Next
-
-            RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
         }
 
+        private void RegisterHotKeys()
+        {
+            _source.AddHook(HwndHook);
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 1, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Show Current Toast
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 2, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Toggle Start
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 3, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode());      // Play Sound 1
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 4, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 5, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
+
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
+        }
+
+        private void UnRegisterHotKeys()
+        {
+            _source.RemoveHook(HwndHook);
+            for (int i = HOTKEY_ID; i <= HOTKEY_ID + 7; i++)
+            {
+                UnregisterHotKey(_windowHandle, i);
+            }
+        }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
@@ -89,16 +86,26 @@ namespace VocabularyReminder
                     switch (wParam.ToInt32())
                     {
                         case HOTKEY_ID + 1:
-                            BackgroundService.showCurrentToast();
-                            handled = true;
-                            break;
-                        case HOTKEY_ID + 2:
                             if (App.isShowPopup)
                             {
                                 App.isShowPopup = false;
                                 BackgroundService.HideToast();
-                                handled = true;
                             }
+                            else
+                            {
+                                BackgroundService.showCurrentToast();
+                            }
+                            handled = true;
+                            break;
+                        case HOTKEY_ID + 2:
+                            //if (App.isShowPopup)
+                            //{
+                            //    App.isShowPopup = false;
+                            //    BackgroundService.HideToast();
+                            //    handled = true;
+                            //}
+                            ToggleLearning();
+                            handled = true;
                             break;
                         case HOTKEY_ID + 3:
                             BackgroundService.ActionPlay(1);
@@ -124,6 +131,7 @@ namespace VocabularyReminder
                     }
                     break;
             }
+
             return IntPtr.Zero;
         }
 
@@ -201,7 +209,7 @@ namespace VocabularyReminder
             InitializeComponent();
             this.Inp_ListWord.Text = placeHolder;
 
-            App.isRandomWords = (Inp_RandomOption.IsChecked == true);
+            App.isRandomWords = Inp_RandomOption.IsChecked == true;
 
             Status_Reset();
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
@@ -212,7 +220,7 @@ namespace VocabularyReminder
         {
             Dispatcher.Invoke(() =>
             {
-                this.Status_Message.Text = String.Empty;
+                Status_Message.Text = String.Empty;
                 Status_UpdateProgressBar();
             });
         }
@@ -221,7 +229,7 @@ namespace VocabularyReminder
         {
             Dispatcher.Invoke(() =>
             {
-                this.Status_Message.Text = _message;
+                Status_Message.Text = _message;
             });
         }
 
@@ -229,8 +237,8 @@ namespace VocabularyReminder
         {
             Dispatcher.Invoke(() =>
             {
-                this.Status_ProgessBar.Value = value;
-                this.Status_ProgessBar.Maximum = max;
+                Status_ProgessBar.Value = value;
+                Status_ProgessBar.Maximum = max;
             });
         }
 
@@ -427,7 +435,7 @@ namespace VocabularyReminder
         {
             Dispatcher.Invoke(() =>
             {
-                if (this.IsActive)
+                if (IsActive)
                 {
                     Stats _Stats = DataAccess.GetStats();
                     this.Label_Stats_ImportedWords.Content = _Stats.Total.ToString();
@@ -439,64 +447,69 @@ namespace VocabularyReminder
 
         private void Btn_StartLearning_Click(object sender, RoutedEventArgs e)
         {
+            ToggleLearning();
+        }
+
+        private void ToggleLearning()
+        {
             if (!IsStarted)
             {
+                RegisterHotKeys();
+
                 IsStarted = true;
-                App.isRandomWords = (Inp_RandomOption.IsChecked == true);
-                this.Btn_StartLearning.Content = "Stop Learning";
+                App.isRandomWords = Inp_RandomOption.IsChecked == true;
+                Btn_StartLearning.Content = "Stop Learning";
                 // Init value
                 _TokenSource = new CancellationTokenSource();
                 _CancelToken = _TokenSource.Token;
 
-                int TimeRepeat;
-                int.TryParse(this.Inp_TimeRepeat.Text, out TimeRepeat);
+                _ = int.TryParse(Inp_TimeRepeat.Text, out int TimeRepeat);
 
                 if (TimeRepeat < 0) { TimeRepeat = 1; };
-                TimeRepeat = TimeRepeat * 1000;
+                TimeRepeat *= 1000;
 
                 App.LastReaction = new DateTime();
 
-                Task.Factory.StartNew(() =>
-                {
-                    while (true)
-                    {
-                        int _waitMore = 0;
-                        while ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
-                        {
-                            _waitMore = (int)(TimeRepeat - (DateTime.Now - App.LastReaction).TotalMilliseconds);
-                            Console.WriteLine(String.Format("Last Reation {0} -> wait more {1} ms", App.LastReaction.ToShortTimeString(), _waitMore));
-                            Thread.Sleep(_waitMore);
-                        }
+                _ = Task.Factory.StartNew(() =>
+                  {
+                      while (true)
+                      {
+                          int _waitMore = 0;
+                          while ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
+                          {
+                              _waitMore = (int)(TimeRepeat - (DateTime.Now - App.LastReaction).TotalMilliseconds);
+                              Console.WriteLine(String.Format("Last Reation {0} -> wait more {1} ms", App.LastReaction.ToShortTimeString(), _waitMore));
+                              Thread.Sleep(_waitMore);
+                          }
 
-                        LoadVocabulary();
+                          LoadVocabulary();
 
-                        if (_CancelToken.IsCancellationRequested)
-                        {
-                            Console.WriteLine("task canceled");
-                            VocabularyToast.ClearApplicationToast();
-                            break;
-                        }
-                        Thread.Sleep(TimeRepeat);
-                    }
-                }, _CancelToken);
+                          if (_CancelToken.IsCancellationRequested)
+                          {
+                              Console.WriteLine("task canceled");
+                              VocabularyToast.ClearApplicationToast();
+                              break;
+                          }
+                          Thread.Sleep(TimeRepeat);
+                      }
+                  }, _CancelToken);
 
-                this.WindowState = System.Windows.WindowState.Minimized;
+                WindowState = WindowState.Minimized;
             }
             else
             {
-                IsStarted = false;
-                this.Btn_StartLearning.Content = "Start Learning";
-
-                _TokenSource.Cancel();
-                Console.WriteLine("Stop and active Cancel Token");
+                StopLearning();
             }
         }
 
-        public void StopLearning()
+        private void StopLearning()
         {
             IsStarted = false;
-            this.Btn_StartLearning.Content = "Start Learning";
+            Btn_StartLearning.Content = "Start Learning";
+
             _TokenSource.Cancel();
+            UnRegisterHotKeys();
+            Console.WriteLine("Stop and active Cancel Token");
         }
 
         public void LoadVocabulary()
@@ -583,11 +596,7 @@ namespace VocabularyReminder
         {
             if (_TokenSource != null) _TokenSource.Cancel();
             VocabularyToast.ClearApplicationToast();
-            _source.RemoveHook(HwndHook);
-            for (int i = HOTKEY_ID; i <= HOTKEY_ID + 7; i++)
-            {
-                UnregisterHotKey(_windowHandle, i);
-            }
+            UnRegisterHotKeys();
             base.OnClosed(e);
         }
 

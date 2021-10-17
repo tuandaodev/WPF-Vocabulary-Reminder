@@ -21,7 +21,7 @@ namespace VocabularyReminder
             DesktopNotificationManagerCompat.History.Clear();
         }
 
-        public static async void ShowToastByVocabularyItem(Vocabulary _item)
+        public static void ShowToastByVocabularyItem(Vocabulary _item)
         {
             if (_item.Id == 0)
             {
@@ -29,7 +29,7 @@ namespace VocabularyReminder
                 return;
             }
             ToastContent content;
-            if (String.IsNullOrEmpty(_item.PlayURL))
+            if (string.IsNullOrEmpty(_item.PlayURL))
             {
                 content = GetToastContentWithoutPlay(_item);
             }
@@ -42,9 +42,9 @@ namespace VocabularyReminder
             Mp3.preloadMp3FileSingle(_item);
             //content = await getToastContent(_item);
 
-            var xmlDoc = new XmlDocument();
+            XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(content.GetContent());
-            var _toastItem = new ToastNotification(xmlDoc)
+            ToastNotification _toastItem = new ToastNotification(xmlDoc)
             {
                 Tag = "Vocabulary",
                 Group = "Reminder",

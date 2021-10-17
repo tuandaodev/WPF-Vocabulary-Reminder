@@ -15,10 +15,7 @@ using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
@@ -45,9 +42,8 @@ namespace VocabularyReminder
 
                 // Parse the query string (using NuGet package QueryString.NET)
                 QueryString args = QueryString.Parse(arguments);
-                
-                string main_action;
-                args.TryGetValue("action", out main_action);
+
+                _ = args.TryGetValue("action", out string main_action);
                 // See what action is being requested 
                 App.LastReaction = DateTime.Now;
                 Vocabulary _item;
@@ -83,9 +79,9 @@ namespace VocabularyReminder
                                 }
                             }
 
-                            if (!String.IsNullOrEmpty(_mp3Url))
+                            if (!string.IsNullOrEmpty(_mp3Url))
                             {
-                                Task.Run(() => Mp3.PlayFile(_mp3Url));
+                                _ = Task.Run(() => Mp3.PlayFile(_mp3Url));
                             }
                         }
                         break;
