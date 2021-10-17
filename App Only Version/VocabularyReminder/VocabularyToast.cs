@@ -3,30 +3,25 @@ using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
 using Windows.Data.Xml.Dom;
-//using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
 namespace VocabularyReminder
 {
     public class VocabularyToast
     {
-        const string viewDicOnlineUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
-        
         public static void ClearApplicationToast()
         {
             App.isShowPopup = false;
             DesktopNotificationManagerCompat.History.Clear();
         }
 
-        public static async void showToastByVocabularyItem(Vocabulary _item)
+        public static async void ShowToastByVocabularyItem(Vocabulary _item)
         {
             if (_item.Id == 0)
             {
@@ -36,12 +31,12 @@ namespace VocabularyReminder
             ToastContent content;
             if (String.IsNullOrEmpty(_item.PlayURL))
             {
-                content = await getToastContentWithoutPlayAsync(_item);
+                content = GetToastContentWithoutPlay(_item);
             }
             else
             {
                 Mp3.preloadMp3FileSingle(_item);
-                content = await getToastContent(_item);
+                content = GetToastContent(_item);
             }
 
             Mp3.preloadMp3FileSingle(_item);
@@ -60,7 +55,7 @@ namespace VocabularyReminder
         }
 
 
-        public static bool reloadLastToast()
+        public static bool ReloadLastToast()
         {
             //var _history = ToastNotificationManager.History.GetHistory();
             var _history = DesktopNotificationManagerCompat.History.GetHistory();
@@ -73,7 +68,7 @@ namespace VocabularyReminder
             return false;
         }
 
-        private static async Task<ToastContent> getToastContent(Vocabulary _item)
+        private static ToastContent GetToastContent(Vocabulary _item)
         {
             string _Ipa = _item.Ipa;
             if (_item.Ipa != _item.Ipa2)
@@ -280,7 +275,7 @@ namespace VocabularyReminder
             catch { return ""; }
         }
 
-        private static async Task<ToastContent> getToastContentWithoutPlayAsync(Vocabulary _item)
+        private static ToastContent GetToastContentWithoutPlay(Vocabulary _item)
         {
             string _Ipa = _item.Ipa;
             if (_item.Ipa != _item.Ipa2)

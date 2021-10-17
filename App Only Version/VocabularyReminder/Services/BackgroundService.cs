@@ -58,7 +58,7 @@ namespace VocabularyReminder.Services
                 _item = DataAccess.GetFirstVocabulary();
             }
             App.GlobalWordId = _item.Id;
-            VocabularyToast.showToastByVocabularyItem(_item);
+            VocabularyToast.ShowToastByVocabularyItem(_item);
             _item = null;
         }
 
@@ -87,14 +87,14 @@ namespace VocabularyReminder.Services
                 _item = DataAccess.GetFirstVocabulary();
             }
             App.GlobalWordId = _item.Id;
-            VocabularyToast.showToastByVocabularyItem(_item);
+            VocabularyToast.ShowToastByVocabularyItem(_item);
             _item = null;
         }
 
         public static void showCurrentToast()
         {
             var _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-            VocabularyToast.showToastByVocabularyItem(_item);
+            VocabularyToast.ShowToastByVocabularyItem(_item);
             _item = null;
         }
     }

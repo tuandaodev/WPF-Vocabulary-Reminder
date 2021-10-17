@@ -2002,20 +2002,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Tuan Dao\\.nuget\\packages\\": {}
+    "C:\\Users\\Tartarus\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
+      "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
       "projectName": "VocabularyReminder",
-      "projectPath": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
-      "packagesPath": "C:\\Users\\Tuan Dao\\.nuget\\packages\\",
-      "outputPath": "D:\\WPF-Vocabulary-Reminder\\VocabularyReminder\\obj\\",
+      "projectPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+      "packagesPath": "C:\\Users\\Tartarus\\.nuget\\packages\\",
+      "outputPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Tuan Dao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Tartarus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

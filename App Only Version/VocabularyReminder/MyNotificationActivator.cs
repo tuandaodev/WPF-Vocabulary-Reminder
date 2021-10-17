@@ -65,14 +65,14 @@ namespace VocabularyReminder
                         if (App.GlobalWordId > 0)
                         {
                             string _mp3Url;
-                            if (VocabularyToast.reloadLastToast())
+                            if (VocabularyToast.ReloadLastToast())
                             {
                                 _mp3Url = args["PlayUrl"];
                             }
                             else
                             {
                                 _item = DataAccess.GetVocabularyById(App.GlobalWordId);
-                                VocabularyToast.showToastByVocabularyItem(_item);
+                                VocabularyToast.ShowToastByVocabularyItem(_item);
                                 if (playId == 2)
                                 {
                                     _mp3Url = _item.PlayURL2;
@@ -104,7 +104,7 @@ namespace VocabularyReminder
                             _item = DataAccess.GetFirstVocabulary();
                         }
                         App.GlobalWordId = _item.Id;
-                        VocabularyToast.showToastByVocabularyItem(_item);
+                        VocabularyToast.ShowToastByVocabularyItem(_item);
                         _item = null;
                         break;
 
@@ -137,7 +137,7 @@ namespace VocabularyReminder
                             _item = DataAccess.GetFirstVocabulary();
                         }
                         App.GlobalWordId = _item.Id;
-                        VocabularyToast.showToastByVocabularyItem(_item);
+                        VocabularyToast.ShowToastByVocabularyItem(_item);
                         _item = null;
                         break;
                 }

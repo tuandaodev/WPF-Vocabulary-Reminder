@@ -515,7 +515,7 @@ namespace VocabularyReminder
             {
                 _item = DataAccess.GetFirstVocabulary();
             }
-            VocabularyToast.showToastByVocabularyItem(_item);
+            VocabularyToast.ShowToastByVocabularyItem(_item);
             App.GlobalWordId = _item.Id;
         }
 
