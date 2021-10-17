@@ -1,0 +1,65 @@
+﻿<Window x:Name="Frm_MainWindow" x:Class="VocabularyReminder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VocabularyReminder"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Vocabulary Reminder" Height="746.25" Width="995" Closing="Window_Closing" Activated="Frm_MainWindow_Activated" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.6*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="0.5*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBox x:Name="Inp_ListWord" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Grid.ColumnSpan="3" LostFocus="Inp_ListWord_LostFocus" GotFocus="Inp_ListWord_GotFocus" ToolTip="Nhập danh sách từ vào ô này sau đó ấn &quot;Import&quot; để nhập vào phần mềm" />
+        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Grid.Row="1" Height="Auto" ToolTip="Nhập danh sách từ vựng vào bên khung bên cạnh, sau đó ấn &quot;Import&quot; để đưa vào phần mềm"/>
+        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="7" Grid.Row="5" Click="Btn_ProcessDeleteData_Click" Height="Auto" ToolTip="Xóa toàn bộ dữ liệu từ vựng để học danh sách từ mới" />
+        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" Height="Auto" ToolTip="Bắt đầu học từ vựng, khung từ vựng sẽ hiển thị ở góc phải, bên dưới màn hình" />
+
+        <StatusBar Grid.Row="9" Grid.ColumnSpan="10">
+            <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
+            <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
+        </StatusBar>
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="120" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" ToolTip="Thời gian giữa các lần nhắc từ vựng" />
+        <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1" ToolTip="Thời gian giữa các lần nhắc từ vựng"/>
+        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" ToolTip="Tải file âm thanh về máy trong trường hợp học offline" />
+        <CheckBox x:Name="Inp_RandomOption" Content="Random words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,55,0,26" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2" ToolTip="Hiển thị từ vựng ngẫu nhiên"/>
+        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click" Height="Auto" ToolTip="Nhập vào danh sách 3000 từ vựng phổ biến"/>
+        <Label Content="Remembered Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" ToolTip="Số từ đã học thuộc (đã ấn Delete và N&amp;Del)"/>
+        <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113" ToolTip="Số từ đã nhập vào phần mềm thành công"/>
+        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="49" Margin="150,0,0,0" Grid.ColumnSpan="2" ToolTip="Số từ đã học thuộc (đã ấn Delete và N&amp;Del)"/>
+        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="150,31,0,0" Width="49" Grid.ColumnSpan="2" ToolTip="Số từ đã nhập vào phần mềm thành công"/>
+        <Button x:Name="Btn_ShowLearnedList" Content="Show Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" Height="Auto" ToolTip="Hiển thị danh sách từ" />
+        <CheckBox x:Name="Inp_AdvancedMode" Content="Advanced mode" Grid.Column="1" HorizontalAlignment="Left" Margin="0,90,0,0" Grid.Row="7" Height="15" Width="148" ToolTip="Hiển thị từ điển nâng cao khi click vào từ vựng"/>
+        <Label x:Name="labelHiAccount" Content="Hi, " Grid.Column="7" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Số từ đã học thuộc (đã ấn Delete và N&amp;Del)" Margin="0,19,0,0"/>
+        <Button x:Name="btnLogout" Content="Logout" Grid.Column="7" HorizontalAlignment="Left" Margin="93,16,0,0" VerticalAlignment="Top" Width="71" FontSize="10" Height="30" Click="btnLogout_Click"/>
+    </Grid>
+</Window>

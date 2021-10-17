@@ -1,0 +1,41 @@
+﻿<Window x:Name="Frm_LearnedWords" x:Class="VocabularyReminder.LearnedWordsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VocabularyReminder"
+        mc:Ignorable="d"
+        Title="List Words" Height="528.879" Width="877.586" Activated="Frm_LearnedWords_Activated" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="0.5*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="10*"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="View_ListLearnedWords" Grid.Column="1" Grid.Row="3">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn Header="Word" DisplayMemberBinding="{Binding Word}"/>
+                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Header="Ipa" DisplayMemberBinding="{Binding Ipa}"/>
+                    <GridViewColumn Header="Ipa" DisplayMemberBinding="{Binding Ipa2}"/>
+                    <GridViewColumn Header="Translate" DisplayMemberBinding="{Binding Translate}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ComboBox x:Name="comboTypeList" Grid.Column="1" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="207" Height="38" ToolTip="Chọn danh sách từ để hiển thị" SelectionChanged="comboTypeList_SelectionChanged">
+            <ComboBoxItem Content="Show All" HorizontalAlignment="Left" Width="205" IsSelected="True" ToolTip="Hiển thị tất cả"/>
+            <ComboBoxItem Content="New Words" HorizontalAlignment="Left" Width="205" ToolTip="Hiển thị các từ chưa học"/>
+            <ComboBoxItem Content="Learned Words" HorizontalAlignment="Left" Width="205" ToolTip="Hiển thị các từ đã học  (đã ấn Delete và N&amp;Del)"/>
+        </ComboBox>
+
+    </Grid>
+</Window>
