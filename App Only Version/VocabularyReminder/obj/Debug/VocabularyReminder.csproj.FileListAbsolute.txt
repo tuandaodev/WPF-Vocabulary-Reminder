@@ -183,6 +183,5 @@ D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\Vocabul
 D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.TrustInfo.xml
 D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.exe.manifest
 D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.application
-D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.csproj.CopyComplete
 D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.exe
 D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.pdb

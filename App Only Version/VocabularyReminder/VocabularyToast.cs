@@ -50,8 +50,30 @@ namespace VocabularyReminder
                 Group = "Reminder",
             };
 
+            _toastItem.Dismissed += ToastDismissed;
+
             App.isShowPopup = true;
             DesktopNotificationManagerCompat.CreateToastNotifier().Show(_toastItem);
+        }
+
+        private static void ToastDismissed(ToastNotification sender, ToastDismissedEventArgs e)
+        {
+            String outputText = "";
+            switch (e.Reason)
+            {
+                case ToastDismissalReason.ApplicationHidden:
+                    outputText = "The app hid the toast using ToastNotifier.Hide";
+                    break;
+                case ToastDismissalReason.UserCanceled:
+                    outputText = "The user dismissed the toast";
+                    break;
+                case ToastDismissalReason.TimedOut:
+                    outputText = "The toast has timed out";
+                    break;
+            }
+            Console.WriteLine(outputText);
+
+            App.isShowPopup = false;
         }
 
 
@@ -76,6 +98,7 @@ namespace VocabularyReminder
                 _Ipa = _item.Ipa + " " + _item.Ipa2;
             }
 
+            
             ToastContent content = new ToastContent()
             {
 
