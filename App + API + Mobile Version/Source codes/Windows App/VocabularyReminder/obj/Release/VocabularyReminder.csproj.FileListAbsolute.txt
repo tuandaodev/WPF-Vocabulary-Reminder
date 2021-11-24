@@ -139,3 +139,26 @@ E:\WPF-Vocabulary-Reminder\VocabularyReminder\obj\Release\VocabularyReminder.exe
 E:\WPF-Vocabulary-Reminder\VocabularyReminder\obj\Release\VocabularyReminder.pdb
 E:\WPF-Vocabulary-Reminder\VocabularyReminder\bin\Release\EntityFramework.SqlServer.dll
 E:\WPF-Vocabulary-Reminder\VocabularyReminder\bin\Release\EntityFramework.dll
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.exe.config
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\Interop.WMPLib.dll
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.csproj.ResolveComReference.cache
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\LearnedWordsWindow.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\Login.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\MainWindow.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\RegisterForm.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\App.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder_Content.g.cs
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder_MarkupCompile.cache
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder_MarkupCompile.lref
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\App.baml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\LearnedWordsWindow.baml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\Login.baml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\MainWindow.baml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\RegisterForm.baml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.g.resources
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.Properties.Resources.resources
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.csproj.GenerateResource.cache
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.csproj.CoreCompileInputs.cache
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.TrustInfo.xml
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.exe
+D:\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\Windows App\VocabularyReminder\obj\Release\VocabularyReminder.pdb

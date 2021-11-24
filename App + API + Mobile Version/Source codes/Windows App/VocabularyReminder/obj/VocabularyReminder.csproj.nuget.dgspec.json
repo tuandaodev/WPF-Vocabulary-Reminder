@@ -1,21 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "D:\\VocabularyReminder\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj": {}
+    "D:\\WPF-Vocabulary-Reminder\\App + API + Mobile Version\\Source codes\\Windows App\\VocabularyReminder\\VocabularyReminder.csproj": {}
   },
   "projects": {
-    "D:\\VocabularyReminder\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj": {
+    "D:\\WPF-Vocabulary-Reminder\\App + API + Mobile Version\\Source codes\\Windows App\\VocabularyReminder\\VocabularyReminder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\VocabularyReminder\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
+        "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\App + API + Mobile Version\\Source codes\\Windows App\\VocabularyReminder\\VocabularyReminder.csproj",
         "projectName": "VocabularyReminder",
-        "projectPath": "D:\\VocabularyReminder\\WPF-Vocabulary-Reminder\\VocabularyReminder\\VocabularyReminder.csproj",
-        "packagesPath": "C:\\Users\\Tuan Dao\\.nuget\\packages\\",
-        "outputPath": "D:\\VocabularyReminder\\WPF-Vocabulary-Reminder\\VocabularyReminder\\obj\\",
+        "projectPath": "D:\\WPF-Vocabulary-Reminder\\App + API + Mobile Version\\Source codes\\Windows App\\VocabularyReminder\\VocabularyReminder.csproj",
+        "packagesPath": "C:\\Users\\Tartarus\\.nuget\\packages\\",
+        "outputPath": "D:\\WPF-Vocabulary-Reminder\\App + API + Mobile Version\\Source codes\\Windows App\\VocabularyReminder\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Tuan Dao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Tartarus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
