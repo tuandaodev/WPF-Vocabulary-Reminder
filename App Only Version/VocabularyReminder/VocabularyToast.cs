@@ -32,6 +32,8 @@ namespace VocabularyReminder
             if (string.IsNullOrEmpty(_item.PlayURL))
             {
                 content = GetToastContentWithoutPlay(_item);
+                //TODO: toast size error in windows 11
+                return;
             }
             else
             {
@@ -209,12 +211,12 @@ namespace VocabularyReminder
                             //    { "action", "view" },
                             //    { "url", viewDicOnlineUrl + _item.Word }
                             //}.ToString()),
-                            new ToastButton("Delete", new QueryString()
+                            new ToastButton("D", new QueryString()
                             {
                                 { "action", "delete" },
                                 { "WordId", _item.Id.ToString() },
                             }.ToString()),
-                            new ToastButton("Next", new QueryString()
+                            new ToastButton("N", new QueryString()
                             {
                                 { "action", "next" },
                                 { "WordId", _item.Id.ToString() },
@@ -223,10 +225,10 @@ namespace VocabularyReminder
                                 ActivationType = ToastActivationType.Background,
                                 ActivationOptions = new ToastActivationOptions()
                                 {
-                                    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
+                                    AfterActivationBehavior = ToastAfterActivationBehavior.Default
                                 }
                             },
-                            new ToastButton("N&Del", new QueryString()
+                            new ToastButton("N&D", new QueryString()
                             {
                                 { "action", "nextdelete" },
                                 { "WordId", _item.Id.ToString() },
@@ -234,7 +236,7 @@ namespace VocabularyReminder
                                 ActivationType = ToastActivationType.Background,
                                 ActivationOptions = new ToastActivationOptions()
                                 {
-                                    AfterActivationBehavior = ToastAfterActivationBehavior.PendingUpdate
+                                    AfterActivationBehavior = ToastAfterActivationBehavior.Default
                                 }
                             },
                         }
@@ -384,7 +386,7 @@ namespace VocabularyReminder
                     //},
                     Buttons =
                         {
-                            new ToastButton("Next", new QueryString()
+                            new ToastButton("N", new QueryString()
                             {
                                 { "action", "next" },
                                 { "WordId", _item.Id.ToString() },
@@ -401,12 +403,12 @@ namespace VocabularyReminder
                             //    { "action", "view" },
                             //    { "url", viewDicOnlineUrl + _item.Word }
                             //}.ToString()),
-                            new ToastButton("Delete", new QueryString()
+                            new ToastButton("D", new QueryString()
                             {
                                 { "action", "delete" },
                                 { "WordId", _item.Id.ToString() },
                             }.ToString()),
-                            new ToastButton("N&Del", new QueryString()
+                            new ToastButton("N&D", new QueryString()
                             {
                                 { "action", "nextdelete" },
                                 { "WordId", _item.Id.ToString() },

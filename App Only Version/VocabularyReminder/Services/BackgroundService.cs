@@ -43,6 +43,7 @@ namespace VocabularyReminder.Services
 
         public static void NextVocabulary()
         {
+            BackgroundService.HideToast();
             Vocabulary _item;
             if (App.isRandomWords)
             {
