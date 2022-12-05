@@ -48,7 +48,7 @@
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
-        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="120" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="70" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
         <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
         <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" />
         <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,55,0,26" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2"/>
@@ -58,5 +58,6 @@
         <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="49" Margin="150,0,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="150,31,0,0" Width="49" Grid.ColumnSpan="2"/>
         <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" Height="Auto" />
+        <Button x:Name="Btn_Start_Custom" Content="Start" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Start_Custom_Click"/>
     </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
@@ -21,6 +22,20 @@ namespace VocabularyReminder
             DesktopNotificationManagerCompat.History.Clear();
         }
 
+        public static void ShowPopup(Vocabulary _item)
+        {
+            //VocaPopup popup = new VocaPopup();
+
+            //popup.WindowStartupLocation = WindowStartupLocation.Manual;
+            //var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
+            //popup.Left = desktopWorkingArea.Right - popup.Width;
+            //popup.Top = desktopWorkingArea.Bottom - popup.Height;
+            //popup.WindowStyle = WindowStyle.None;
+            //popup.AllowsTransparency = true;
+            //popup.Topmost = true;
+            //popup.Show();
+        }
+
         public static void ShowToastByVocabularyItem(Vocabulary _item)
         {
             if (_item.Id == 0)
@@ -28,6 +43,9 @@ namespace VocabularyReminder
                 Helper.ShowToast("There is no vocabury to learn right now. Please import and Start Learning again.");
                 return;
             }
+
+            ShowPopup(_item);
+
             ToastContent content;
             if (string.IsNullOrEmpty(_item.PlayURL))
             {

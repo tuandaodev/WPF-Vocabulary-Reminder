@@ -32,7 +32,7 @@ namespace VocabularyReminder
     {
         public override void OnActivated(string arguments, NotificationUserInput userInput, string appUserModelId)
         {
-            Application.Current.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(async delegate
             {
                 if (arguments.Length == 0)
                 {
@@ -87,6 +87,7 @@ namespace VocabularyReminder
                         break;
 
                     case "next":
+                        DesktopNotificationManagerCompat.History.Clear();
                         App.GlobalWordId = int.Parse(args["WordId"]);
                         if (App.isRandomWords)
                         {
@@ -100,8 +101,14 @@ namespace VocabularyReminder
                             _item = DataAccess.GetFirstVocabulary();
                         }
                         App.GlobalWordId = _item.Id;
-                        VocabularyToast.ShowToastByVocabularyItem(_item);
-                        _item = null;
+
+                        _ = Task.Run(async () =>
+                          {
+                              await Task.Delay(1000);
+                              VocabularyToast.ShowToastByVocabularyItem(_item);
+                              _item = null;
+                          });
+                        
                         break;
 
                     case "view":

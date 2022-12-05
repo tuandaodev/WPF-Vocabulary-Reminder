@@ -64,10 +64,10 @@
     <ApplicationIcon>voca-reminder.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>3C4F1047BC3579A67282EAF3683FA6F2B1D4E939</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>5E6A1F8EAF776F7D7CF7BBD9321165DF1443388A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>VocabularyReminder_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>VocabularyReminder_2_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -119,6 +119,9 @@
     <Compile Include="Services\PlaybackService.cs" />
     <Compile Include="Services\TranslateService.cs" />
     <Compile Include="VocabularyToast.cs" />
+    <Compile Include="VocaPopup.xaml.cs">
+      <DependentUpon>VocaPopup.xaml</DependentUpon>
+    </Compile>
     <Page Include="LearnedWordsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -136,6 +139,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="VocaPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MyNotificationActivator.cs" />
@@ -162,6 +169,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="VocabularyReminder_1_TemporaryKey.pfx" />
+    <None Include="VocabularyReminder_2_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

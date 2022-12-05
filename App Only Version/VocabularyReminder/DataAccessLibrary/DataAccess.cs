@@ -538,24 +538,24 @@ namespace VocabularyReminder.DataAccessLibrary
             return entries;
         }
 
-        public static List<Vocabulary> GetListLearnded()
+        public static List<Vocabulary> GetListLearnded(bool? isRead, string searchContent)
         {
             List<Vocabulary> entries = new List<Vocabulary>();
 
             string dbpath = ApplicationIO.GetDatabasePath();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
+                string queryStr = $"SELECT * from Vocabulary WHERE 1 = 1";
+                if (isRead.HasValue)
+                    queryStr += $" AND Status = {(isRead.Value ? 1 : 0)}";
+                if (!string.IsNullOrEmpty(searchContent))
+                    queryStr += $" AND Word LIKE '%{searchContent}%'";
+
                 db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Status = 0", db);
-
+                SqliteCommand selectCommand = new SqliteCommand(queryStr, db);
                 SqliteDataReader query = selectCommand.ExecuteReader();
-
                 while (query.Read())
-                {
                     entries.Add(GetItemFromRead(query));
-                }
 
                 selectCommand.Dispose();
                 query.Close();
@@ -565,7 +565,29 @@ namespace VocabularyReminder.DataAccessLibrary
 
             return entries;
         }
+
+        public static Vocabulary GetVocabularyByWord(string word)
+        {
+            Vocabulary _item = new Vocabulary();
+
+            string dbpath = ApplicationIO.GetDatabasePath();
+            using (SqliteConnection db =
+               new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+                SqliteCommand selectCommand = new SqliteCommand("SELECT * from Vocabulary WHERE Word = '" + word.Trim() + "' LIMIT 1;", db);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                    _item = GetItemFromRead(query);
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return _item;
+        }
     }
-
-
 }

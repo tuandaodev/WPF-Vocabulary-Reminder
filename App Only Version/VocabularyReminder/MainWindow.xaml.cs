@@ -1,5 +1,6 @@
 ﻿using DesktopNotifications.Services;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -49,17 +50,23 @@ namespace VocabularyReminder
             _source = HwndSource.FromHwnd(_windowHandle);
         }
 
+        private bool _isHotKeyRegister = false;
+        private List<Vocabulary> _vocabularies = new List<Vocabulary>();
+
         private void RegisterHotKeys()
         {
+            if (_isHotKeyRegister) return;
+            
+            _isHotKeyRegister = true;
             _source.AddHook(HwndHook);
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 1, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Show Current Toast
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 2, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Toggle Start
 
-            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 3, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F7.GetHashCode());      // Play Sound 1
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 3, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 1
 
-            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 4, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 4, (int)KeyModifier.Shift, (uint)System.Windows.Forms.Keys.F8.GetHashCode());      // Play Sound 2
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 5, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.PrintScreen.GetHashCode());  // Delete
 
@@ -70,6 +77,9 @@ namespace VocabularyReminder
 
         private void UnRegisterHotKeys()
         {
+            if (!_isHotKeyRegister) return;
+
+            _isHotKeyRegister = false;
             _source.RemoveHook(HwndHook);
             for (int i = HOTKEY_ID; i <= HOTKEY_ID + 7; i++)
             {
@@ -242,23 +252,48 @@ namespace VocabularyReminder
             });
         }
 
+        private List<string> GetListWords() {
+
+            string tempInp = Inp_ListWord.Text;
+            if (tempInp == placeHolder)
+            {
+                MessageBox.Show("You need to enter vocabulary words before Import...");
+                return default;
+            }
+
+            var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
+            ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
+
+            return ListWord;
+        }
+
         private void Btn_Import_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                string tempInp = this.Inp_ListWord.Text;
-                if (tempInp == placeHolder)
+                var inputWords = GetListWords();
+                if (inputWords == default) return;
+
+                List<Vocabulary> existWords = new List<Vocabulary>();
+                List<string> newWords = new List<string>();
+                foreach (var word in inputWords)
                 {
-                    MessageBox.Show("You need to enter vocabulary words before Import...");
+                    var _item = DataAccess.GetVocabularyByWord(word);
+                    if (_item != null)
+                        existWords.Add(_item);
+                    else
+                        newWords.Add(word);
+                }
+
+                if (!newWords.Any())
+                {
+                    MessageBox.Show("All vocabulary already in database, please Start to show in this list only");
                     return;
                 }
 
-                var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
-                ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
-                int TotalWords = ListWord.Count;
+                var TotalWords = newWords.Count;
 
-                Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = false);
-
+                Dispatcher.Invoke(() => Btn_Import.IsEnabled = false);
                 Task.Factory.StartNew(() =>
                 {
                     Status_UpdateMessage("Start Importing...");
@@ -267,7 +302,7 @@ namespace VocabularyReminder
 
                     ParallelOptions parallelOptions = new ParallelOptions();
                     parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                    Parallel.ForEach(ListWord, parallelOptions, _item =>
+                    Parallel.ForEach(newWords, parallelOptions, _item =>
                     {
                         if (DataAccess.AddVocabulary(_item) > 0)
                         {
@@ -280,7 +315,7 @@ namespace VocabularyReminder
 
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                     Reload_Stats();
-                    Dispatcher.Invoke(() => this.Btn_Import.IsEnabled = true);
+                    Dispatcher.Invoke(() => Btn_Import.IsEnabled = true);
                     MessageBox.Show("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                 });
             }
@@ -447,6 +482,15 @@ namespace VocabularyReminder
 
         private void Btn_StartLearning_Click(object sender, RoutedEventArgs e)
         {
+            //Popup codePopup = new Popup();
+            //TextBlock popupText = new TextBlock();
+            //popupText.Text = "Popup Text";
+            //popupText.Background = Brushes.LightBlue;
+            //popupText.Foreground = Brushes.Blue;
+            //codePopup.Child = popupText;
+
+            //codePopup.IsOpen = true;
+            _vocabularies.Clear();
             ToggleLearning();
         }
 
@@ -514,22 +558,57 @@ namespace VocabularyReminder
 
         public void LoadVocabulary()
         {
-            Vocabulary _item;
+            Vocabulary _item = null;
+            var vocabulary = GetVocabulary(_item);
+            VocabularyToast.ShowToastByVocabularyItem(vocabulary);
+            App.GlobalWordId = vocabulary.Id;
+        }
+
+        private Vocabulary GetVocabulary(Vocabulary _item = null)
+        {
+            if (_vocabularies.Any())
+                return GetVocabularyFromExistList(_item);
+            else
+                return GetVocabularyFromDatabase(_item);
+        }
+
+        private Vocabulary GetVocabularyFromDatabase(Vocabulary _item = null)
+        {
+            if (_item != null) return _item;
+            if (App.isRandomWords)
+                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+            else
+                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+
+            if (_item == null || _item.Id == 0)
+                _item = DataAccess.GetFirstVocabulary();
+
+            return _item;
+        }
+
+        private Vocabulary GetVocabularyFromExistList(Vocabulary _item = null)
+        {
+            if (_item != null) return _item;
             if (App.isRandomWords)
             {
-                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                var random = new Random();
+                var index = random.Next(_vocabularies.Count);
+                _item = _vocabularies.ElementAt(index);
             }
             else
             {
-                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                var index = _vocabularies.IndexOf(_item);
+                index += 1;
+                if (index >= _vocabularies.Count) index = 0;
+                _item = _vocabularies.ElementAt(index);
             }
 
-            if (_item.Id == 0)
+            if (_item == null || _item.Id == 0)
             {
-                _item = DataAccess.GetFirstVocabulary();
+                _item = _vocabularies.FirstOrDefault();
             }
-            VocabularyToast.ShowToastByVocabularyItem(_item);
-            App.GlobalWordId = _item.Id;
+
+            return _item;
         }
 
         private void Inp_TimeRepeat_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -626,6 +705,23 @@ namespace VocabularyReminder
             {
                 this.Inp_ListWord.Text = "";
             }
+        }
+
+        private void Btn_Start_Custom_Click(object sender, RoutedEventArgs e)
+        {
+            var words = GetListWords();
+            if (words == default)
+                return;
+
+            _vocabularies = new List<Vocabulary>();
+            foreach (var word in words)
+            {
+                var _item = DataAccess.GetVocabularyByWord(word);
+                if (_item != null)
+                    _vocabularies.Add(_item);
+            }
+
+            ToggleLearning();
         }
     }
 }

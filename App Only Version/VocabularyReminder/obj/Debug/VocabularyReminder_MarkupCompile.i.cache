@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\
+E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\
 VocabularyReminder
 none
 false
 DEBUG;TRACE
-D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\App.xaml
-21422910287
-3122474746
-191722162112
-224-1259493207
-LearnedWordsWindow.xaml;MainWindow.xaml;
+E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\App.xaml
+31894313150
+3818150941
+20-731251683
+224-1133028427
+LearnedWordsWindow.xaml;MainWindow.xaml;VocaPopup.xaml;
 
 True
 
