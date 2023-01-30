@@ -589,5 +589,29 @@ namespace VocabularyReminder.DataAccessLibrary
 
             return _item;
         }
+
+        public static Vocabulary CleanUnableToGet()
+        {
+            Vocabulary _item = new Vocabulary();
+
+            string dbpath = ApplicationIO.GetDatabasePath();
+            using (SqliteConnection db =
+               new SqliteConnection($"Filename={dbpath}"))
+            {
+                db.Open();
+                SqliteCommand selectCommand = new SqliteCommand("DELETE FROM Vocabulary WHERE Type = '' AND Ipa IS NULL AND Translate = '';", db);
+                SqliteDataReader query = selectCommand.ExecuteReader();
+
+                while (query.Read())
+                    _item = GetItemFromRead(query);
+
+                selectCommand.Dispose();
+                query.Close();
+                db.Close();
+                db.Dispose();
+            }
+
+            return _item;
+        }
     }
 }

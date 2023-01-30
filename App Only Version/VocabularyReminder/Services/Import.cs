@@ -33,10 +33,12 @@ namespace VocabularyReminder.Services
             }
         }
 
-        public void Backup()
+        public string Backup()
         {
             string dbPath = ApplicationIO.GetDatabasePath();
-            File.Copy(dbPath, dbPath + $".bak_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}", true);
+            string backupName = $".bak_{DateTime.Now:yyyy-MM-dd_HH-mm-ss}";
+            File.Copy(dbPath, dbPath + backupName, true);
+            return ApplicationIO.DatabaseFileName + backupName;
         }
     }
 }

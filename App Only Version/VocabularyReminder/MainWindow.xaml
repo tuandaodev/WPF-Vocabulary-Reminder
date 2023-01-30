@@ -58,6 +58,9 @@
         <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="49" Margin="150,0,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="150,31,0,0" Width="49" Grid.ColumnSpan="2"/>
         <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" Height="Auto" />
-        <Button x:Name="Btn_Start_Custom" Content="Start" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Start_Custom_Click"/>
+        <Button x:Name="Btn_Start_Custom" Content="Start" Grid.Row="3" Height="Auto" Margin="41,0,82,75" Grid.ColumnSpan="3" Click="Btn_Start_Custom_Click"/>
+        <Button x:Name="Btn_Backup" Content="Backup" Grid.Column="7" Grid.Row="4" Height="Auto" Margin="0,1,41,21" Grid.ColumnSpan="2" Click="Btn_Backup_Click"/>
+        <Button x:Name="Btn_Sync" Content="Sync" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Sync_Click"/>
+        <Button x:Name="Btn_Cleanup" Content="Cleanup" Grid.Row="3" Height="Auto" Margin="41,74,0,1" Grid.ColumnSpan="2" Click="Btn_Cleanup_Click"/>
     </Grid>
 </Window>

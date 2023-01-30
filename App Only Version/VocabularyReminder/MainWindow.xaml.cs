@@ -279,7 +279,7 @@ namespace VocabularyReminder
                 foreach (var word in inputWords)
                 {
                     var _item = DataAccess.GetVocabularyByWord(word);
-                    if (_item != null)
+                    if (_item != null && _item.Id > 0)
                         existWords.Add(_item);
                     else
                         newWords.Add(word);
@@ -722,6 +722,24 @@ namespace VocabularyReminder
             }
 
             ToggleLearning();
+        }
+
+        private void Btn_Backup_Click(object sender, RoutedEventArgs e)
+        {
+            var ImportService = new Import();
+            var backupName = ImportService.Backup();
+
+            MessageBox.Show($"Backup completed: {backupName}.");
+        }
+
+        private async void Btn_Sync_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundCrawl();
+        }
+
+        private void Btn_Cleanup_Click(object sender, RoutedEventArgs e)
+        {
+            DataAccess.CleanUnableToGet();
         }
     }
 }

@@ -32,7 +32,7 @@ namespace VocabularyReminder
     {
         public override void OnActivated(string arguments, NotificationUserInput userInput, string appUserModelId)
         {
-            Application.Current.Dispatcher.Invoke(async delegate
+            Application.Current.Dispatcher.Invoke(delegate
             {
                 if (arguments.Length == 0)
                 {
@@ -92,10 +92,12 @@ namespace VocabularyReminder
                         if (App.isRandomWords)
                         {
                             _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
-                        } else {
+                        }
+                        else
+                        {
                             _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
                         }
-                        
+
                         if (_item.Id == 0)
                         {
                             _item = DataAccess.GetFirstVocabulary();
@@ -108,7 +110,7 @@ namespace VocabularyReminder
                               VocabularyToast.ShowToastByVocabularyItem(_item);
                               _item = null;
                           });
-                        
+
                         break;
 
                     case "view":

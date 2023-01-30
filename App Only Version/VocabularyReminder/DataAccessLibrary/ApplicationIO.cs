@@ -10,7 +10,7 @@ namespace VocabularyReminder.DataAccessLibrary
     class ApplicationIO
     {
         private const string LocalFolder = "VocabularyReminder";
-        private const string DatabaseFileName = "vocabulary.db";
+        public const string DatabaseFileName = "vocabulary.db";
 
         private const string Mp3Folder = "Mp3";
         private const string ImagesFolder = "Images";
