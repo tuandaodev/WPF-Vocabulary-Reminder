@@ -21,11 +21,11 @@ namespace VocabularyReminder.Services
                 //VocabularyToast.showToastByVocabularyItem(_item);
                 if (playId == 2)
                 {
-                    _mp3Url = _item.PlayURL2;
+                    _mp3Url = _item.PlayURL;
                 }
                 else
                 {
-                    _mp3Url = _item.PlayURL;
+                    _mp3Url = _item.PlayURL2;
                 }
 
                 if (!String.IsNullOrEmpty(_mp3Url))
