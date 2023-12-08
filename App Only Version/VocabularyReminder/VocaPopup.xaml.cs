@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder
@@ -21,18 +10,29 @@ namespace VocabularyReminder
     public partial class VocaPopup : Window
     {
         private Vocabulary _vocabulary { get; set; }
+        private System.Windows.Forms.Timer tmr;
 
-        public VocaPopup(Vocabulary _item)
+        public VocaPopup()
         {
             InitializeComponent();
 
+            tmr = new System.Windows.Forms.Timer();
+            tmr.Tick += delegate {
+                this.Close();
+            };
+            tmr.Interval = (int)TimeSpan.FromSeconds(3).TotalMilliseconds;
+            tmr.Start();
+        }
+
+        public void SetVocabulary(Vocabulary _item)
+        {
             _vocabulary = _item;
             MappingDisplay();
         }
 
         private void MappingDisplay()
         {
-            this.Label_Translate.Content = "XXX";
+            this.Label_Translate.Content = this._vocabulary.Word;
         }
     }
 }

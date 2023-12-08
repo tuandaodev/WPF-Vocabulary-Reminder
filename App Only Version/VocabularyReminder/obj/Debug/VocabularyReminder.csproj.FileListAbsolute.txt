@@ -239,3 +239,17 @@ E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\Vocabul
 E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.csproj.CopyComplete
 E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.exe
 E:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.pdb
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\VocabularyReminder.exe
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\MaterialDesignColors.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\MaterialDesignThemes.Wpf.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Microsoft.Data.Sqlite.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Microsoft.Toolkit.Uwp.Notifications.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\QueryString.NETCore.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\SQLitePCLRaw.batteries_v2.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\SQLitePCLRaw.nativelibrary.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\SQLitePCLRaw.core.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\SQLitePCLRaw.provider.dynamic_cdecl.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Memory.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\tuan.dao\Documents\pet-projects\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll

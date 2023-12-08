@@ -12,9 +12,10 @@
             <ColumnDefinition Width="181*"/>
             <ColumnDefinition Width="225*"/>
             <ColumnDefinition Width="113*"/>
-            <ColumnDefinition Width="232*"/>
+            <ColumnDefinition Width="39*"/>
+            <ColumnDefinition Width="193*"/>
         </Grid.ColumnDefinitions>
-        <Label x:Name="Label_Translate" Content="Translate" Margin="24,34,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="5" HorizontalAlignment="Left" Width="776"/>
+        <Label x:Name="Label_Translate" Content="Translate" Margin="24,34,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="6" HorizontalAlignment="Left" Width="776"/>
 
     </Grid>
 </Window>
