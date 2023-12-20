@@ -27,13 +27,11 @@ namespace VocabularyReminder
             var popup = new VocaPopup();
             popup.SetVocabulary(_item);
 
-            popup.WindowStartupLocation = WindowStartupLocation.Manual;
-            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-            popup.Left = desktopWorkingArea.Right - popup.Width;
-            popup.Top = desktopWorkingArea.Bottom - popup.Height;
-            popup.WindowStyle = WindowStyle.None;
-            popup.AllowsTransparency = true;
-            popup.Topmost = true;
+            
+            //popup.WindowStyle = WindowStyle.None;
+            //popup.AllowsTransparency = true;
+            //popup.Opacity = 1;
+            //popup.Topmost = true;
             popup.Show();
         }
 

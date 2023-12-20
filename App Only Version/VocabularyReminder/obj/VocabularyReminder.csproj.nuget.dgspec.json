@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tuan.dao\\Documents\\pet-projects\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {}
+    "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tuan.dao\\Documents\\pet-projects\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {
+    "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tuan.dao\\Documents\\pet-projects\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+        "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
         "projectName": "VocabularyReminder",
-        "projectPath": "C:\\Users\\tuan.dao\\Documents\\pet-projects\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
-        "packagesPath": "C:\\Users\\tuan.dao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tuan.dao\\Documents\\pet-projects\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
+        "projectPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+        "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+        "outputPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
-          "C:\\Users\\tuan.dao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -72,6 +72,9 @@
       },
       "runtimes": {
         "win": {
+          "#import": []
+        },
+        "win-arm64": {
           "#import": []
         },
         "win-x64": {
