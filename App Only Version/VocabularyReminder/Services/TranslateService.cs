@@ -1,14 +1,9 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using VocabularyReminder;
 using VocabularyReminder.DataAccessLibrary;
 
 namespace DesktopNotifications.Services
@@ -78,7 +73,7 @@ namespace DesktopNotifications.Services
                     item.Type = String.Empty;
                 }
 
-                DataAccess.UpdateVocabulary(item);
+                await DataAccess.UpdateVocabularyAsync(item);
                 //Console.WriteLine(String.Format("Translate Completed: {0}", item.Word));
             }
         }
@@ -155,7 +150,7 @@ namespace DesktopNotifications.Services
 
                 if (!String.IsNullOrEmpty(item.PlayURL))
                 {
-                    DataAccess.UpdatePlayURL(item);
+                    await DataAccess.UpdateVocabularyAsync(item);
                 }
             }
         }
@@ -183,7 +178,7 @@ namespace DesktopNotifications.Services
                 }
 
                 item.Related = (RelatedList.Count > 0) ? String.Join(", ", RelatedList) : String.Empty;
-                DataAccess.UpdateRelated(item);
+                await DataAccess.UpdateVocabularyAsync(item);
             }
         }
     }

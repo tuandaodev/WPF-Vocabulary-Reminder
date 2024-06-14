@@ -103,7 +103,7 @@ namespace VocabularyReminder
                             }
                             else
                             {
-                                BackgroundService.showCurrentToast();
+                                _ = BackgroundService.ShowCurrentToast();
                             }
                             handled = true;
                             break;
@@ -118,26 +118,25 @@ namespace VocabularyReminder
                             handled = true;
                             break;
                         case HOTKEY_ID + 3:
-                            BackgroundService.ActionPlay(1);
+                            _ = BackgroundService.ActionPlay(1);
                             handled = true;
                             break;
                         case HOTKEY_ID + 4:
-                            BackgroundService.ActionPlay(2);
+                            _ = BackgroundService.ActionPlay(2);
                             handled = true;
                             break;
                         case HOTKEY_ID + 5:
-                            BackgroundService.DeleteVocabulary();
+                            _ = BackgroundService.DeleteVocabularyAsync();
                             handled = true;
                             break;
                         case HOTKEY_ID + 6:
-                            BackgroundService.NextVocabulary();
+                            _ = BackgroundService.NextVocabulary();
                             handled = true;
                             break;
                         case HOTKEY_ID + 7:
-                            BackgroundService.NextAndDeleteVocabulary();
+                            _ = BackgroundService.NextAndDeleteVocabulary();
                             handled = true;
                             break;
-
                     }
                     break;
             }
@@ -267,7 +266,7 @@ namespace VocabularyReminder
             return ListWord;
         }
 
-        private void Btn_Import_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Import_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -278,7 +277,7 @@ namespace VocabularyReminder
                 List<string> newWords = new List<string>();
                 foreach (var word in inputWords)
                 {
-                    var _item = DataAccess.GetVocabularyByWord(word);
+                    var _item = await DataAccess.GetVocabularyByWordAsync(word);
                     if (_item != null && _item.Id > 0)
                         existWords.Add(_item);
                     else
@@ -294,17 +293,19 @@ namespace VocabularyReminder
                 var TotalWords = newWords.Count;
 
                 Dispatcher.Invoke(() => Btn_Import.IsEnabled = false);
-                Task.Factory.StartNew(() =>
+                _ = Task.Factory.StartNew(() =>
                 {
                     Status_UpdateMessage("Start Importing...");
                     int Count = 0;
                     int CountSuccess = 0;
 
-                    ParallelOptions parallelOptions = new ParallelOptions();
-                    parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                    Parallel.ForEach(newWords, parallelOptions, _item =>
+                    ParallelOptions parallelOptions = new ParallelOptions
                     {
-                        if (DataAccess.AddVocabulary(_item) > 0)
+                        MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread
+                    };
+                    Parallel.ForEach(newWords, parallelOptions, async _item =>
+                    {
+                        if (await DataAccess.AddVocabularyAsync(_item) > 0)
                         {
                             CountSuccess++;
                         }
@@ -396,11 +397,11 @@ namespace VocabularyReminder
         }
 
 
-        public void ProcessBackgroundTranslate()
+        public async void ProcessBackgroundTranslate()
         {
             try
             {
-                var ListVocabulary = DataAccess.GetListVocabularyToTranslate();
+                var ListVocabulary = await DataAccess.GetListVocabularyToTranslateAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -419,11 +420,11 @@ namespace VocabularyReminder
             }
         }
 
-        public void ProcessBackgroundGetWordDefineInformation()
+        public async void ProcessBackgroundGetWordDefineInformation()
         {
             try
             {
-                var ListVocabulary = DataAccess.GetListVocabularyToGetDefineExampleMp3URL();
+                var ListVocabulary = await DataAccess.GetListVocabularyToGetDefineExampleMp3URLAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -443,11 +444,11 @@ namespace VocabularyReminder
 
         }
 
-        public void ProcessBackgroundGetRelatedWords()
+        public async void ProcessBackgroundGetRelatedWords()
         {
             try
             {
-                var ListVocabulary = DataAccess.GetListVocabularyToGetRelatedWords();
+                var ListVocabulary = await DataAccess.GetListVocabularyToGetRelatedWordsAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -514,7 +515,7 @@ namespace VocabularyReminder
 
                 App.LastReaction = new DateTime();
 
-                _ = Task.Factory.StartNew(() =>
+                _ = Task.Factory.StartNew(async () =>
                   {
                       while (true)
                       {
@@ -526,7 +527,7 @@ namespace VocabularyReminder
                               Thread.Sleep(_waitMore);
                           }
 
-                          LoadVocabulary();
+                          await LoadVocabulary();
 
                           if (_CancelToken.IsCancellationRequested)
                           {
@@ -556,32 +557,32 @@ namespace VocabularyReminder
             Console.WriteLine("Stop and active Cancel Token");
         }
 
-        public void LoadVocabulary()
+        public async Task LoadVocabulary()
         {
             Vocabulary _item = null;
-            var vocabulary = GetVocabulary(_item);
+            var vocabulary = await GetVocabulary(_item);
             VocabularyToast.ShowToastByVocabularyItem(vocabulary);
             App.GlobalWordId = vocabulary.Id;
         }
 
-        private Vocabulary GetVocabulary(Vocabulary _item = null)
+        private async Task<Vocabulary> GetVocabulary(Vocabulary _item = null)
         {
             if (_vocabularies.Any())
                 return GetVocabularyFromExistList(_item);
             else
-                return GetVocabularyFromDatabase(_item);
+                return await GetVocabularyFromDatabase(_item);
         }
 
-        private Vocabulary GetVocabularyFromDatabase(Vocabulary _item = null)
+        private async Task<Vocabulary> GetVocabularyFromDatabase(Vocabulary _item = null)
         {
             if (_item != null) return _item;
             if (App.isRandomWords)
-                _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
             else
-                _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
 
             if (_item == null || _item.Id == 0)
-                _item = DataAccess.GetFirstVocabulary();
+                _item = await DataAccess.GetFirstVocabularyAsync();
 
             return _item;
         }
@@ -635,11 +636,11 @@ namespace VocabularyReminder
             });
         }
 
-        private void ProcessBackgroundDownloadMp3()
+        private async void ProcessBackgroundDownloadMp3()
         {
             try
             {
-                var ListVocabulary = DataAccess.GetListVocabularyToPreloadMp3();
+                var ListVocabulary = await DataAccess.GetListVocabularyToPreloadMp3Async();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -707,7 +708,7 @@ namespace VocabularyReminder
             }
         }
 
-        private void Btn_Start_Custom_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Start_Custom_Click(object sender, RoutedEventArgs e)
         {
             var words = GetListWords();
             if (words == default)
@@ -716,7 +717,7 @@ namespace VocabularyReminder
             _vocabularies = new List<Vocabulary>();
             foreach (var word in words)
             {
-                var _item = DataAccess.GetVocabularyByWord(word);
+                var _item = await DataAccess.GetVocabularyByWordAsync(word);
                 if (_item != null)
                     _vocabularies.Add(_item);
             }
@@ -737,9 +738,9 @@ namespace VocabularyReminder
             await BackgroundCrawl();
         }
 
-        private void Btn_Cleanup_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Cleanup_Click(object sender, RoutedEventArgs e)
         {
-            DataAccess.CleanUnableToGet();
+            await DataAccess.CleanUnableToGetAsync();
         }
     }
 }

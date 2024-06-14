@@ -32,7 +32,7 @@ namespace VocabularyReminder
     {
         public override void OnActivated(string arguments, NotificationUserInput userInput, string appUserModelId)
         {
-            Application.Current.Dispatcher.Invoke(delegate
+            Application.Current.Dispatcher.Invoke(async delegate
             {
                 if (arguments.Length == 0)
                 {
@@ -67,7 +67,7 @@ namespace VocabularyReminder
                             }
                             else
                             {
-                                _item = DataAccess.GetVocabularyById(App.GlobalWordId);
+                                _item = await DataAccess.GetVocabularyByIdAsync(App.GlobalWordId);
                                 VocabularyToast.ShowToastByVocabularyItem(_item);
                                 if (playId == 2)
                                 {
@@ -91,16 +91,16 @@ namespace VocabularyReminder
                         App.GlobalWordId = int.Parse(args["WordId"]);
                         if (App.isRandomWords)
                         {
-                            _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
                         }
                         else
                         {
-                            _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
                         }
 
                         if (_item.Id == 0)
                         {
-                            _item = DataAccess.GetFirstVocabulary();
+                            _item = await DataAccess.GetFirstVocabularyAsync();
                         }
                         App.GlobalWordId = _item.Id;
 
@@ -121,25 +121,25 @@ namespace VocabularyReminder
 
                     case "delete":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        DataAccess.UpdateStatus(App.GlobalWordId, 0);  // skip this word
+                        await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
                         break;
 
                     case "nextdelete":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        DataAccess.UpdateStatus(App.GlobalWordId, 0);  // skip this word
+                        await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
 
                         if (App.isRandomWords)
                         {
-                            _item = DataAccess.GetRandomVocabulary(App.GlobalWordId);
+                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
                         }
                         else
                         {
-                            _item = DataAccess.GetNextVocabulary(App.GlobalWordId);
+                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
                         }
 
                         if (_item.Id == 0)
                         {
-                            _item = DataAccess.GetFirstVocabulary();
+                            _item = await DataAccess.GetFirstVocabularyAsync();
                         }
                         App.GlobalWordId = _item.Id;
                         VocabularyToast.ShowToastByVocabularyItem(_item);

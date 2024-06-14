@@ -24,15 +24,13 @@ namespace VocabularyReminder
 
         public static void ShowPopup(Vocabulary _item)
         {
-            var popup = new VocaPopup();
-            popup.SetVocabulary(_item);
-
-            
-            //popup.WindowStyle = WindowStyle.None;
-            //popup.AllowsTransparency = true;
-            //popup.Opacity = 1;
-            //popup.Topmost = true;
-            popup.Show();
+            //var popup = new VocaPopup();
+            //popup.SetVocabulary(_item);
+            ////popup.WindowStyle = WindowStyle.None;
+            ////popup.AllowsTransparency = true;
+            ////popup.Opacity = 1;
+            ////popup.Topmost = true;
+            //popup.Show();
         }
 
         public static void ShowToastByVocabularyItem(Vocabulary _item)
@@ -43,10 +41,11 @@ namespace VocabularyReminder
                 return;
             }
 
-            Application.Current.Dispatcher.Invoke((Action)delegate {
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
                 ShowPopup(_item);
             });
-            
+
 
             ToastContent content;
             if (string.IsNullOrEmpty(_item.PlayURL))

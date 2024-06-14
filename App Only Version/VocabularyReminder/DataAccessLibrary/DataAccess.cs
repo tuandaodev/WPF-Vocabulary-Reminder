@@ -1,13 +1,17 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using FAI.Core.Utilities.Linq;
+using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace VocabularyReminder.DataAccessLibrary
 {
     public class DataAccess
     {
-
         public static void InitializeDatabase()
         {
             string appFolder = ApplicationIO.GetApplicationFolderPath();
@@ -59,319 +63,72 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
-        //public static void ResetDatabase()
-        //{
-        //    string dbpath = ApplicationIO.GetDatabasePath();
-        //    using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-        //    {
-        //        db.Open();
-        //        String tableCommand = "DELETE FROM Dictionary;";
-        //        SqliteCommand truncTable = new SqliteCommand(tableCommand, db);
-        //        truncTable.ExecuteNonQuery();
-        //        truncTable.Dispose();
-
-        //        tableCommand = "DELETE FROM Vocabulary;";
-        //        truncTable = new SqliteCommand(tableCommand, db);
-        //        truncTable.ExecuteNonQuery();
-        //        truncTable.Dispose();
-
-        //        tableCommand = "delete from sqlite_sequence where name = 'Dictionary'; delete from sqlite_sequence where name = 'Vocabulary';";
-        //        truncTable = new SqliteCommand(tableCommand, db);
-        //        truncTable.ExecuteNonQuery();
-
-        //        truncTable.Dispose();
-        //        db.Close();
-        //        db.Dispose();
-        //    }
-        //}
-
-        public static int AddVocabulary(string inputText)
+        public static async Task<int> AddVocabularyAsync(string inputText)
         {
             if (String.IsNullOrEmpty(inputText)) return 0;
-            string dbpath = ApplicationIO.GetDatabasePath();
-            int inserted = 0;
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand insertCommand = new SqliteCommand();
-                insertCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                insertCommand.CommandText = "INSERT OR IGNORE INTO Vocabulary (Word) VALUES (@Entry); SELECT last_insert_rowid();";
-                insertCommand.Parameters.AddWithValue("@Entry", inputText);
-                var result = insertCommand.ExecuteScalar();
-                db.Close();
-                db.Dispose();
-                insertCommand.Dispose();
-
-                if (result != null)
+                var voca = new Vocabulary()
                 {
-                    int.TryParse(result.ToString(), out inserted);
-                }
-            }
-
-            return inserted;
-        }
-
-        public static void UpdateVocabulary(Vocabulary item)
-        {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-                SqliteCommand updateCommand = new SqliteCommand();
-                updateCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                updateCommand.CommandText = "UPDATE Vocabulary SET Type = @Type, Translate = @Translate WHERE Id = @Id";
-
-                updateCommand.Parameters.Add("@Id", SqliteType.Text).Value = item.Id;
-                updateCommand.Parameters.Add("@Type", SqliteType.Text).Value = item.Type;
-                //updateCommand.Parameters.Add("@Ipa", SqliteType.Text).Value = item.Ipa;
-                updateCommand.Parameters.Add("@Translate", SqliteType.Text).Value = item.Translate;
-
-                updateCommand.ExecuteNonQuery();
-
-                updateCommand.Dispose();
-                db.Close();
-                db.Dispose();
+                    Word = inputText.Trim()
+                };
+                context.Vocabularies.Add(voca);
+                await context.SaveChangesAsync();
+                return voca.Id;
             }
         }
 
-
-        public static void UpdatePlayURL(Vocabulary item)
+        public static async Task UpdateVocabularyAsync(Vocabulary item)
         {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand updateCommand = new SqliteCommand();
-                updateCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                updateCommand.CommandText = "UPDATE Vocabulary SET Ipa = @Ipa, Define = @Define, Ipa2 = @Ipa2, PlayURL = @PlayURL, PlayURL2 = @PlayURL2, Example = @Example, Example2 = @Example2 WHERE Id = @Id";
-                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = item.Id;
-
-                updateCommand.Parameters.Add("@Define", SqliteType.Text).Value = item.Define;
-
-                updateCommand.Parameters.Add("@Ipa", SqliteType.Text).Value = item.Ipa;
-                updateCommand.Parameters.Add("@Ipa2", SqliteType.Text).Value = item.Ipa2;
-
-                updateCommand.Parameters.Add("@Example", SqliteType.Text).Value = item.Example;
-                updateCommand.Parameters.Add("@Example2", SqliteType.Text).Value = item.Example2;
-
-                updateCommand.Parameters.Add("@PlayURL", SqliteType.Text).Value = item.PlayURL;
-                updateCommand.Parameters.Add("@PlayURL2", SqliteType.Text).Value = item.PlayURL2;
-                updateCommand.ExecuteNonQuery();
-
-                updateCommand.Dispose();
-                db.Close();
-                db.Dispose();
+                await context.SingleUpdateAsync(item);
             }
         }
 
-        public static void UpdateStatus(int _Id, int _Status = 0)
+        public static async Task UpdateStatusAsync(int _Id, int _Status = 0)
         {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand updateCommand = new SqliteCommand();
-                updateCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                updateCommand.CommandText = "UPDATE Vocabulary SET Status = @Status WHERE Id = @Id";
-                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = _Id;
-                updateCommand.Parameters.Add("@Status", SqliteType.Integer).Value = _Status;
-                updateCommand.ExecuteNonQuery();
-
-                updateCommand.Dispose();
-                db.Close();
-                db.Dispose();
+                await context.Vocabularies
+                    .Where(e => e.Id == _Id)
+                    .UpdateFromQueryAsync(x => new Vocabulary()
+                    {
+                        Status = _Status
+                    });
             }
         }
 
-        public static void RemoveVocabulary(int _Id)
+        public static async Task<Vocabulary> GetVocabularyByIdAsync(int Id)
         {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand updateCommand = new SqliteCommand();
-                updateCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                updateCommand.CommandText = "DELETE FROM Vocabulary WHERE Id = @Id";
-                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = _Id;
-                updateCommand.ExecuteNonQuery();
-
-                updateCommand.Dispose();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.FindAsync(Id);
             }
         }
 
-        public static void UpdateRelated(Vocabulary item)
+        public static async Task<Vocabulary> GetNextVocabularyAsync(int Id)
         {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand updateCommand = new SqliteCommand();
-                updateCommand.Connection = db;
-
-                // Use parameterized query to prevent SQL injection attacks
-                updateCommand.CommandText = "UPDATE Vocabulary SET Related = @Related WHERE Id = @Id";
-                updateCommand.Parameters.Add("@Id", SqliteType.Integer).Value = item.Id;
-
-                updateCommand.Parameters.Add("@Related", SqliteType.Text).Value = item.Related;
-                updateCommand.ExecuteNonQuery();
-
-                updateCommand.Dispose();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).FirstOrDefaultAsync();
             }
         }
 
-
-        public static Vocabulary GetVocabularyById(int Id)
+        public static async Task<Vocabulary> GetRandomVocabularyAsync(int Id)
         {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Id = " + Id + " LIMIT 1;", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    _item = GetItemFromRead(query);
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
             }
-
-            return _item;
         }
 
-        public static Vocabulary GetNextVocabulary(int Id)
+        public static async Task<Vocabulary> GetFirstVocabularyAsync()
         {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Id > " + Id + " AND Status = 1 LIMIT 1;", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    _item = GetItemFromRead(query);
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => e.Status == 1).OrderBy(e => e.Id).FirstOrDefaultAsync();
             }
-
-            return _item;
-        }
-
-        public static Vocabulary GetRandomVocabulary(int Id)
-        {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Id <> " + Id + " AND Status = 1 ORDER BY RANDOM() LIMIT 1;", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    _item = GetItemFromRead(query);
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
-            }
-
-            return _item;
-        }
-
-        public static Vocabulary GetFirstVocabulary()
-        {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Status = 1 LIMIT 1;", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    _item = GetItemFromRead(query);
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
-            }
-
-            return _item;
-        }
-
-        public static int GetFirstWordId()
-        {
-            int _WordId = 1;
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
-            {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT Id from Vocabulary WHERE Status = 1 LIMIT 1;", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    _WordId = int.Parse(query.GetString(0));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
-            }
-            return _WordId;
         }
 
         public static Stats GetStats()
@@ -403,215 +160,67 @@ namespace VocabularyReminder.DataAccessLibrary
             return _Stats;
         }
 
-        public static List<Vocabulary> GetListVocabularyToPreloadMp3()
+        public static async Task<List<Vocabulary>> GetListVocabularyToPreloadMp3Async()
         {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE PlayURL IS NOT NULL", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    entries.Add(GetItemFromRead(query));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => !string.IsNullOrEmpty(e.PlayURL)).ToListAsync();
             }
-
-            return entries;
         }
 
-        private static Vocabulary GetItemFromRead(SqliteDataReader query)
+        public static async Task<List<Vocabulary>> GetListVocabularyToTranslateAsync()
         {
-            Vocabulary _item = new Vocabulary();
-
-            _item.Id = int.Parse(query.GetString(0));
-            _item.Word = query.IsDBNull(1) ? "" : query.GetString(1);
-            _item.Type = query.IsDBNull(2) ? "" : query.GetString(2);
-            _item.Ipa = query.IsDBNull(3) ? "" : query.GetString(3);
-            _item.Ipa2 = query.IsDBNull(4) ? "" : query.GetString(4);
-            _item.Translate = query.IsDBNull(5) ? "" : query.GetString(5);
-            _item.Define = query.IsDBNull(6) ? "" : query.GetString(6);
-            _item.Example = query.IsDBNull(7) ? "" : query.GetString(7);
-            _item.Example2 = query.IsDBNull(8) ? "" : query.GetString(8);
-            _item.PlayURL = query.IsDBNull(9) ? "" : query.GetString(9);
-            _item.PlayURL2 = query.IsDBNull(10) ? "" : query.GetString(10);
-            _item.Related = query.IsDBNull(11) ? "" : query.GetString(11);
-            _item.Status = query.IsDBNull(12) ? 0 : query.GetInt32(12);
-
-            return _item;
-        }
-
-
-        public static List<Vocabulary> GetListVocabularyToTranslate()
-        {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Translate IS NULL OR Translate = ''", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    entries.Add(GetItemFromRead(query));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => string.IsNullOrEmpty(e.Translate)).ToListAsync();
             }
-
-            return entries;
         }
 
 
-        public static List<Vocabulary> GetListVocabularyToGetDefineExampleMp3URL()
+        public static async Task<List<Vocabulary>> GetListVocabularyToGetDefineExampleMp3URLAsync()
         {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE PlayURL IS NULL OR Translate = ''", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    entries.Add(GetItemFromRead(query));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => e.PlayURL == null || e.Translate == string.Empty).ToListAsync();
             }
-
-            return entries;
         }
 
-        public static List<Vocabulary> GetListVocabularyToGetRelatedWords()
+        public static async Task<List<Vocabulary>> GetListVocabularyToGetRelatedWordsAsync()
         {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-
-                SqliteCommand selectCommand = new SqliteCommand
-                    ("SELECT * from Vocabulary WHERE Related IS NULL OR Related = ''", db);
-
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                {
-                    entries.Add(GetItemFromRead(query));
-                }
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => string.IsNullOrEmpty(e.Related)).ToListAsync();
             }
-
-            return entries;
         }
 
-        public static List<Vocabulary> GetListLearnded(bool? isRead, string searchContent)
+        public static async Task<List<Vocabulary>> GetListLearndedAsync(bool? isRead, string searchContent)
         {
-            List<Vocabulary> entries = new List<Vocabulary>();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                string queryStr = $"SELECT * from Vocabulary WHERE 1 = 1";
+                Expression<Func<Vocabulary, bool>> exp = x => true;
                 if (isRead.HasValue)
-                    queryStr += $" AND Status = {(isRead.Value ? 1 : 0)}";
+                    exp = exp.And(e => e.Status == (isRead.Value ? 0 : 1));
                 if (!string.IsNullOrEmpty(searchContent))
-                    queryStr += $" AND Word LIKE '%{searchContent}%'";
+                    exp = exp.And(e => e.Word.Contains(searchContent.Trim()));
 
-                db.Open();
-                SqliteCommand selectCommand = new SqliteCommand(queryStr, db);
-                SqliteDataReader query = selectCommand.ExecuteReader();
-                while (query.Read())
-                    entries.Add(GetItemFromRead(query));
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(exp).ToListAsync();
             }
-
-            return entries;
         }
 
-        public static Vocabulary GetVocabularyByWord(string word)
+        public static async Task<Vocabulary> GetVocabularyByWordAsync(string word)
         {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand selectCommand = new SqliteCommand("SELECT * from Vocabulary WHERE Word = '" + word.Trim() + "' LIMIT 1;", db);
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                    _item = GetItemFromRead(query);
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                return await context.Vocabularies.Where(e => e.Word == word.Trim()).FirstOrDefaultAsync();
             }
-
-            return _item;
         }
 
-        public static Vocabulary CleanUnableToGet()
+        public static async Task CleanUnableToGetAsync()
         {
-            Vocabulary _item = new Vocabulary();
-
-            string dbpath = ApplicationIO.GetDatabasePath();
-            using (SqliteConnection db =
-               new SqliteConnection($"Filename={dbpath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                SqliteCommand selectCommand = new SqliteCommand("DELETE FROM Vocabulary WHERE Type = '' AND Ipa IS NULL AND Translate = '';", db);
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                while (query.Read())
-                    _item = GetItemFromRead(query);
-
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                await context.Vocabularies.Where(e => e.Type == string.Empty && e.Ipa == null && e.Translate == string.Empty).DeleteFromQueryAsync();
             }
-
-            return _item;
         }
     }
 }

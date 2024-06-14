@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using VocabularyReminder.DataAccessLibrary;
@@ -13,42 +14,44 @@ namespace VocabularyReminder
         public LearnedWordsWindow()
         {
             InitializeComponent();
-            Reload();
+            //Reload();
         }
 
-        private void Reload()
+        private async Task ReloadAsync()
         {
+            if (Filter == null || FilterContent == null) return;
+
             bool? isRead = null;
             if (!string.IsNullOrEmpty(Filter.Text))
                 isRead = Filter.Text.Equals("Read");
             var searchContent = FilterContent.Text?.Trim();
 
-            var VocabularyList = DataAccess.GetListLearnded(isRead, searchContent);
+            var VocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent);
             View_ListLearnedWords.Items.Clear();
 
             foreach (var _item in VocabularyList)
                 View_ListLearnedWords.Items.Add(_item);
         }
 
-        private void Frm_LearnedWords_Activated(object sender, EventArgs e)
+        private async void Frm_LearnedWords_Activated(object sender, EventArgs e)
         {
-            Reload();
+            await ReloadAsync();
         }
 
-        private void Filter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Filter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Reload();
+            await ReloadAsync();
         }
 
-        private void Btn_OnFilter_Click(object sender, RoutedEventArgs e)
+        private async void Btn_OnFilter_Click(object sender, RoutedEventArgs e)
         {
-            Reload();
+            await ReloadAsync();
         }
 
-        private void FilterContent_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void FilterContent_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
-                Reload();
+                await ReloadAsync();
         }
     }
 }

@@ -223,14 +223,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="VocabularyReminder.exe" size="294384">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="VocabularyReminder.exe" size="304112">
       <assemblyIdentity name="VocabularyReminder" version="1.0.1.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jdBXz4O9f8htFyK/fPVVP64Z4OPWtwP/CFhGVOkJL9w=</dsig:DigestValue>
+        <dsig:DigestValue>+vi/qglLcL7ra4ppZOsv5rdKVNpGYmi2dPUBc0Ss3ms=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
