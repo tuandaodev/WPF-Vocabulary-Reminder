@@ -15,10 +15,11 @@ namespace VocabularyReminder.DataAccessLibrary
             {
                 DataSource = ApplicationIO.GetDatabasePath(),
                 ForeignKeys = true
-            }.ConnectionString
+            }.ConnectionString,
         }, true)
         {
             Database.SetInitializer<VocaDbContext>(null);
+            Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
         //public DbSet<CategoryModel> Categories { get; set; }

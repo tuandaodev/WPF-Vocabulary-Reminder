@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "dCTxqrZpVHYR1vWvrpCl7FlBs6xB2SlFr76d/zbZP3h+/YU2AmMkb5EgCbg+tl0wa2UvNgxsdMUyXF3CpGJTIA==",
+  "dgSpecHash": "g1BBbOfhq1okAxdWQrkwFfaDKa3nhJj95nQAdSxEzd0biCPkoqOCHav+igr6sbaFAiYs+mu9tf5+rd90A2cjpQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+  "projectFilePath": "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\tuan.dao\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\tuan.dao\\.nuget\\packages\\htmlagilitypack\\1.11.18\\htmlagilitypack.1.11.18.nupkg.sha512",
