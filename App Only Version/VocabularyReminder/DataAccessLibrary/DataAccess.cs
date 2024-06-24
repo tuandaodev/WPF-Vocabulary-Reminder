@@ -134,7 +134,7 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id != Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
             }
         }
 
