@@ -48,7 +48,7 @@
             <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
             <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
         </StatusBar>
-        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="70" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
+        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
         <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
         <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" />
         <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,55,0,26" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2"/>

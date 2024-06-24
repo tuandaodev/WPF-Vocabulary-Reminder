@@ -12,6 +12,8 @@ namespace VocabularyReminder.DataAccessLibrary
 {
     public class DataAccess
     {
+        public static Vocabulary CurrentVocabulary { get; set; }
+
         public static void InitializeDatabase()
         {
             string appFolder = ApplicationIO.GetApplicationFolderPath();
@@ -88,22 +90,35 @@ namespace VocabularyReminder.DataAccessLibrary
 
         public static async Task UpdateStatusAsync(int _Id, int _Status = 0)
         {
+            if (CurrentVocabulary != null
+                && CurrentVocabulary.Id == _Id
+                && CurrentVocabulary.Status == _Status)
+                return;
+
             using (var context = new VocaDbContext())
             {
-                await context.Vocabularies
+                var result = await context.Vocabularies
                     .Where(e => e.Id == _Id)
                     .UpdateFromQueryAsync(x => new Vocabulary()
                     {
                         Status = _Status
                     });
+                if (result > 0 && CurrentVocabulary != null && CurrentVocabulary.Id == _Id)
+                {
+                    CurrentVocabulary.Status = _Status;
+                }
             }
         }
 
         public static async Task<Vocabulary> GetVocabularyByIdAsync(int Id)
         {
+            if (CurrentVocabulary != null && CurrentVocabulary.Id == Id)
+                return CurrentVocabulary;
+
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.FindAsync(Id);
+                CurrentVocabulary = await context.Vocabularies.FindAsync(Id);
+                return CurrentVocabulary;
             }
         }
 
@@ -111,7 +126,7 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).FirstOrDefaultAsync();
             }
         }
 
@@ -119,7 +134,7 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
             }
         }
 
@@ -127,7 +142,7 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => e.Status == 1).OrderBy(e => e.Id).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Status == 1).OrderBy(e => e.Id).FirstOrDefaultAsync();
             }
         }
 
