@@ -98,11 +98,11 @@ namespace VocabularyReminder
                             _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
                         }
 
-                        if (_item.Id == 0)
+                        if (_item == null || _item.Id == 0)
                         {
                             _item = await DataAccess.GetFirstVocabularyAsync();
                         }
-                        App.GlobalWordId = _item.Id;
+                        App.GlobalWordId = _item != null ? _item.Id : 0;
 
                         _ = Task.Run(async () =>
                           {
@@ -137,11 +137,11 @@ namespace VocabularyReminder
                             _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
                         }
 
-                        if (_item.Id == 0)
+                        if (_item == null || _item.Id == 0)
                         {
                             _item = await DataAccess.GetFirstVocabularyAsync();
                         }
-                        App.GlobalWordId = _item.Id;
+                        App.GlobalWordId = _item != null ? _item.Id : 0;
                         VocabularyToast.ShowToastByVocabularyItem(_item);
                         _item = null;
                         break;
