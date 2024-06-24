@@ -29,6 +29,7 @@ namespace DesktopNotifications.Services
             Player.MediaError += new WMPLib._WMPOCXEvents_MediaErrorEventHandler(Player_MediaError);
             //Player.URL = url;
             Player.URL = await DownloadMp3ToDisk(url);
+            Player.settings.volume = 80;
             Player.controls.play();
         }
 
