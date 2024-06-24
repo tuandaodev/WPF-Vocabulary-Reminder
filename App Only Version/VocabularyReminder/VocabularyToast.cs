@@ -35,7 +35,7 @@ namespace VocabularyReminder
 
         public static void ShowToastByVocabularyItem(Vocabulary _item)
         {
-            if (_item.Id == 0)
+            if (_item == null || _item.Id == 0)
             {
                 Helper.ShowToast("There is no vocabury to learn right now. Please import and Start Learning again.");
                 return;

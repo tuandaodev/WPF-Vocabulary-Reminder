@@ -54,7 +54,7 @@ namespace VocabularyReminder.Services
             {
                 _item = await DataAccess.GetFirstVocabularyAsync();
             }
-            App.GlobalWordId = _item.Id;
+            App.GlobalWordId = _item != null ? _item.Id : 0;
             VocabularyToast.ShowToastByVocabularyItem(_item);
             _item = null;
         }
