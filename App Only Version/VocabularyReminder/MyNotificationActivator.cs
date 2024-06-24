@@ -108,6 +108,10 @@ namespace VocabularyReminder
                           {
                               await Task.Delay(1000);
                               VocabularyToast.ShowToastByVocabularyItem(_item);
+                              if (App.isAutoPlaySounds)
+                              {
+                                  await Mp3.PlayFile(_item);
+                              }
                               _item = null;
                           });
 
@@ -143,6 +147,10 @@ namespace VocabularyReminder
                         }
                         App.GlobalWordId = _item != null ? _item.Id : 0;
                         VocabularyToast.ShowToastByVocabularyItem(_item);
+                        if (App.isAutoPlaySounds)
+                        {
+                            _ = Task.Run(() => Mp3.PlayFile(_item));
+                        }
                         _item = null;
                         break;
                 }

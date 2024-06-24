@@ -51,7 +51,7 @@
         <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
         <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
         <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" />
-        <CheckBox x:Name="Inp_RandomOption" Content="Random Words" Grid.Column="1" HorizontalAlignment="Left" Margin="0,55,0,26" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2"/>
+        <CheckBox x:Name="Inp_RandomOption" Content="Random Words" HorizontalAlignment="Left" Margin="41,44,0,0" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
         <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click" Height="Auto"/>
         <Label Content="Remembered Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top"/>
         <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113"/>
@@ -62,5 +62,6 @@
         <Button x:Name="Btn_Backup" Content="Backup" Grid.Column="7" Grid.Row="4" Height="Auto" Margin="0,1,41,21" Grid.ColumnSpan="2" Click="Btn_Backup_Click"/>
         <Button x:Name="Btn_Sync" Content="Sync" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Sync_Click"/>
         <Button x:Name="Btn_Cleanup" Content="Cleanup" Grid.Row="3" Height="Auto" Margin="41,74,0,1" Grid.ColumnSpan="2" Click="Btn_Cleanup_Click"/>
+        <CheckBox x:Name="Inp_AutoPlayOption" Content="Auto Play Sounds" Margin="41,74,0,0" Grid.Row="7" IsChecked="True" Grid.ColumnSpan="2" Height="15" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148"/>
     </Grid>
 </Window>

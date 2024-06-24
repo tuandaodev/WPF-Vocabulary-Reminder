@@ -96,6 +96,7 @@ namespace VocabularyReminder
                     switch (wParam.ToInt32())
                     {
                         case HOTKEY_ID + 1:
+                            App.LastReaction = DateTime.Now;
                             if (App.isShowPopup)
                             {
                                 App.isShowPopup = false;
@@ -108,6 +109,7 @@ namespace VocabularyReminder
                             handled = true;
                             break;
                         case HOTKEY_ID + 2:
+                            App.LastReaction = DateTime.Now;
                             //if (App.isShowPopup)
                             //{
                             //    App.isShowPopup = false;
@@ -118,22 +120,27 @@ namespace VocabularyReminder
                             handled = true;
                             break;
                         case HOTKEY_ID + 3:
+                            App.LastReaction = DateTime.Now;
                             _ = BackgroundService.ActionPlay(1);
                             handled = true;
                             break;
                         case HOTKEY_ID + 4:
+                            App.LastReaction = DateTime.Now;
                             _ = BackgroundService.ActionPlay(2);
                             handled = true;
                             break;
                         case HOTKEY_ID + 5:
+                            App.LastReaction = DateTime.Now;
                             _ = BackgroundService.DeleteVocabularyAsync();
                             handled = true;
                             break;
                         case HOTKEY_ID + 6:
+                            App.LastReaction = DateTime.Now;
                             _ = BackgroundService.NextVocabulary();
                             handled = true;
                             break;
                         case HOTKEY_ID + 7:
+                            App.LastReaction = DateTime.Now;
                             _ = BackgroundService.NextAndDeleteVocabulary();
                             handled = true;
                             break;
@@ -218,7 +225,8 @@ namespace VocabularyReminder
             InitializeComponent();
             this.Inp_ListWord.Text = placeHolder;
 
-            App.isRandomWords = Inp_RandomOption.IsChecked == true;
+            App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
+            App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
 
             Status_Reset();
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
@@ -502,7 +510,8 @@ namespace VocabularyReminder
                 RegisterHotKeys();
 
                 IsStarted = true;
-                App.isRandomWords = Inp_RandomOption.IsChecked == true;
+                App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
+                App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
                 Btn_StartLearning.Content = "Stop Learning";
                 // Init value
                 _TokenSource = new CancellationTokenSource();
@@ -562,6 +571,11 @@ namespace VocabularyReminder
             Vocabulary _item = null;
             var vocabulary = await GetVocabulary(_item);
             VocabularyToast.ShowToastByVocabularyItem(vocabulary);
+            if (App.isAutoPlaySounds)
+            {
+                _ = Task.Run(() => Mp3.PlayFile(vocabulary));
+            }
+
             App.GlobalWordId = vocabulary.Id;
         }
 

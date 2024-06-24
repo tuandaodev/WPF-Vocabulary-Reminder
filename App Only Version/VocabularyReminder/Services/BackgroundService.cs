@@ -56,6 +56,10 @@ namespace VocabularyReminder.Services
             }
             App.GlobalWordId = _item != null ? _item.Id : 0;
             VocabularyToast.ShowToastByVocabularyItem(_item);
+            if (App.isAutoPlaySounds)
+            {
+                await Mp3.PlayFile(_item);
+            }
             _item = null;
         }
 
@@ -67,6 +71,7 @@ namespace VocabularyReminder.Services
 
         public static async Task NextAndDeleteVocabulary()
         {
+            BackgroundService.HideToast();
             await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
 
             Vocabulary _item;
@@ -85,6 +90,11 @@ namespace VocabularyReminder.Services
             }
             App.GlobalWordId = _item != null ? _item.Id : 0;
             VocabularyToast.ShowToastByVocabularyItem(_item);
+            if (App.isAutoPlaySounds)
+            {
+                await Mp3.PlayFile(_item);
+            }
+                              
             _item = null;
         }
 

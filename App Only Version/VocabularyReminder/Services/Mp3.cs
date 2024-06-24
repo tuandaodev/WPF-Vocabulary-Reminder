@@ -1,12 +1,7 @@
-﻿using VocabularyReminder;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Media.Playback;
 using VocabularyReminder.DataAccessLibrary;
 
 namespace DesktopNotifications.Services
@@ -15,7 +10,15 @@ namespace DesktopNotifications.Services
     {
         public static WMPLib.WindowsMediaPlayer Player;
 
-        public static async void PlayFile(String url)
+        public static async Task PlayFile(Vocabulary item)
+        {
+            if (item == null || item.Id == 0)
+                return;
+
+            await PlayFile(item.PlayURL2);
+        }
+
+        public static async Task PlayFile(String url)
         {
             if (Player == null)
             {
