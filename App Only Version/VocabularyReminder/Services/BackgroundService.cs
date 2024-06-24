@@ -50,7 +50,7 @@ namespace VocabularyReminder.Services
                 _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
             }
 
-            if (_item.Id == 0)
+            if (_item == null || _item.Id == 0)
             {
                 _item = await DataAccess.GetFirstVocabularyAsync();
             }
