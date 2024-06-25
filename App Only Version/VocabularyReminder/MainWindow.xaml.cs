@@ -536,6 +536,7 @@ namespace VocabularyReminder
                               Thread.Sleep(_waitMore);
                           }
 
+                          VocabularyToast.ClearApplicationToast();
                           await LoadVocabulary();
 
                           if (_CancelToken.IsCancellationRequested)

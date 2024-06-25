@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {}
+    "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {
+    "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+        "projectUniqueName": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
         "projectName": "VocabularyReminder",
-        "projectPath": "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+        "projectPath": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
         "packagesPath": "C:\\Users\\tuan.dao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tuan.dao\\SOFT\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
+        "outputPath": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [

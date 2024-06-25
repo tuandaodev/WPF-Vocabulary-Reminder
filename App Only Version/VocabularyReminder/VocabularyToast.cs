@@ -116,7 +116,7 @@ namespace VocabularyReminder
             string _Ipa = _item.Ipa;
             if (_item.Ipa != _item.Ipa2)
             {
-                _Ipa = _item.Ipa + " " + _item.Ipa2;
+                _Ipa = _item.Ipa2 + " " + _item.Ipa;
             }
 
             
