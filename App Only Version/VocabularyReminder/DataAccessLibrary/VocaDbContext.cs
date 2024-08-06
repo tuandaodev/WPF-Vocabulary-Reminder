@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Data.Entity.Core.Common;
@@ -22,8 +23,26 @@ namespace VocabularyReminder.DataAccessLibrary
             Database.Log = s => System.Diagnostics.Debug.WriteLine(s);
         }
 
-        //public DbSet<CategoryModel> Categories { get; set; }
         public DbSet<Vocabulary> Vocabularies { get; set; }
+        public DbSet<Dictionary> Dictionaries { get; set; }
+        public DbSet<VocabularyMapping> VocabularyMappings { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<VocabularyMapping>()
+                .HasKey(vm => new { vm.DictionaryId, vm.VocabularyId });
+
+            modelBuilder.Entity<Vocabulary>()
+                .HasMany(e => e.Dictionaries)
+                .WithMany(e => e.Vocabularies)
+                .Map(cs =>
+                {
+                    cs.MapLeftKey("VocabularyId");
+                    cs.MapRightKey("DictionaryId");
+                });
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 
     public class SQLiteConfiguration : DbConfiguration
@@ -78,29 +97,40 @@ namespace VocabularyReminder.DataAccessLibrary
         public string Related { get; set; }
 
         public int? Status { get; set; } = 1;  // default value
+
+        public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }
 
-    //public class VocabularyModel
-    //{
-    //    public int Id { get; set; }
-    //    public string Word { get; set; }
-    //    public string Type { get; set; }
-    //    public string Ipa { get; set; }
-    //    public string Ipa2 { get; set; }
-    //    public string Translate { get; set; }
-    //    public string Define { get; set; }
-    //    public string Example { get; set; }
-    //    public string Example2 { get; set; }
-    //    public string PlayURL { get; set; }
-    //    public string PlayURL2 { get; set; }
-    //    public string Related { get; set; }
-    //    public int Status { get; set; }
-    //}
+    [Table("Dictionary")]
+    public class Dictionary
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        [MaxLength(2048)]
+        public string Name { get; set; }
+        [MaxLength(2048)]
+        public string Description { get; set; }
+        public int? Status { get; set; }
 
-    //public class CategoryModel
-    //{
-    //    public int CategoryId { get; set; }
-    //    public string CategoryName { get; set; }
-    //    public DateTime CreatedDate { get; set; }
-    //}
+        public virtual ICollection<Vocabulary> Vocabularies { get; set; }
+    }
+
+    [Table("VocabularyMappings")]
+    public class VocabularyMapping
+    {
+        [Key, Column(Order = 0)]
+        public int DictionaryId { get; set; }
+
+        [Key, Column(Order = 1)]
+        public int VocabularyId { get; set; }
+
+
+        [ForeignKey("DictionaryId")]
+        public virtual Dictionary Dictionary { get; set; }
+
+        [ForeignKey("VocabularyId")]
+        public virtual Vocabulary Vocabulary { get; set; }
+    }
+
 }

@@ -41,8 +41,7 @@ namespace VocabularyReminder.DataAccessLibrary
                 createTable.ExecuteReader();
                 createTable.Dispose();
 
-                tableCommand = @"CREATE TABLE IF NOT 
-                    EXISTS Vocabulary (
+                tableCommand = @"CREATE TABLE IF NOT EXISTS Vocabulary (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     Word NVARCHAR(2048) NOT NULL UNIQUE, 
                     Type NVARCHAR(100) NULL, 
@@ -58,8 +57,17 @@ namespace VocabularyReminder.DataAccessLibrary
                     Status INTEGER NULL DEFAULT 1 )";
                 createTable = new SqliteCommand(tableCommand, db);
                 createTable.ExecuteReader();
-
                 createTable.Dispose();
+
+                tableCommand = @"CREATE TABLE IF NOT EXISTS VocabularyMappings (
+	                    DictionaryId INTEGER,
+	                    VocabularyId INTEGER,
+	                    PRIMARY KEY (DictionaryId, VocabularyId)
+                    )";
+                createTable = new SqliteCommand(tableCommand, db);
+                createTable.ExecuteReader();
+                createTable.Dispose();
+
                 db.Close();
                 db.Dispose();
             }
@@ -77,6 +85,20 @@ namespace VocabularyReminder.DataAccessLibrary
                 context.Vocabularies.Add(voca);
                 await context.SaveChangesAsync();
                 return voca.Id;
+            }
+        }
+
+        public static async Task<bool> AddVocabularyMappingAsync(int dicId, int vocaId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                var voca = new VocabularyMapping()
+                {
+                    VocabularyId = vocaId,
+                    DictionaryId = dicId
+                };
+                context.VocabularyMappings.Add(voca);
+                return await context.SaveChangesAsync() > 0;
             }
         }
 
@@ -122,27 +144,39 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
-        public static async Task<Vocabulary> GetNextVocabularyAsync(int Id)
+        public static async Task<Vocabulary> GetNextVocabularyAsync(int dicId, int Id)
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id > Id && e.Status == 1).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.VocabularyMappings
+                    .Where(e => e.DictionaryId == dicId && e.VocabularyId > Id && e.Vocabulary.Status == 1)
+                    .OrderBy(e => e.VocabularyId)
+                    .Select(x => x.Vocabulary)
+                    .FirstOrDefaultAsync();
             }
         }
 
-        public static async Task<Vocabulary> GetRandomVocabularyAsync(int Id)
+        public static async Task<Vocabulary> GetRandomVocabularyAsync(int dicId, int Id)
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Id != Id && e.Status == 1).OrderBy(e => Guid.NewGuid()).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.VocabularyMappings
+                    .Where(e => e.DictionaryId == dicId && e.VocabularyId != Id && e.Vocabulary.Status == 1)
+                    .Select(x => x.Vocabulary)
+                    .OrderBy(e => Guid.NewGuid())
+                    .FirstOrDefaultAsync();
             }
         }
 
-        public static async Task<Vocabulary> GetFirstVocabularyAsync()
+        public static async Task<Vocabulary> GetFirstVocabularyAsync(int dicId)
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.Vocabularies.Where(e => e.Status == 1).OrderBy(e => e.Id).FirstOrDefaultAsync();
+                return CurrentVocabulary = await context.VocabularyMappings
+                    .Where(e => e.DictionaryId == dicId && e.Vocabulary.Status == 1)
+                    .OrderBy(e => e.VocabularyId)
+                    .Select(x => x.Vocabulary)
+                    .FirstOrDefaultAsync();
             }
         }
 
@@ -173,6 +207,14 @@ namespace VocabularyReminder.DataAccessLibrary
                 db.Dispose();
             }
             return _Stats;
+        }
+
+        public static async Task<List<Dictionary>> GetDictionariesAsync()
+        {
+            using (var context = new VocaDbContext())
+            {
+                return await context.Dictionaries.Where(e => e.Status == 1).ToListAsync();
+            }
         }
 
         public static async Task<List<Vocabulary>> GetListVocabularyToPreloadMp3Async()

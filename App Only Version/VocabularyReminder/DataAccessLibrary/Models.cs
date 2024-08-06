@@ -2,13 +2,13 @@
 
 namespace VocabularyReminder.DataAccessLibrary
 {
-    public class Dictionary
-    {
-        public int DictionaryId { get; set; }
-        public string Name { get; set; }
+    //public class Dictionary
+    //{
+    //    public int DictionaryId { get; set; }
+    //    public string Name { get; set; }
 
-        public List<Vocabulary> Words { get; } = new List<Vocabulary>();
-    }
+    //    public List<Vocabulary> Words { get; } = new List<Vocabulary>();
+    //}
 
     public class Stats
     {

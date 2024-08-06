@@ -28,6 +28,7 @@ namespace VocabularyReminder
     public partial class App : Application
     {
 
+        public static int GlobalDicId = 0;
         public static int GlobalWordId = 0;
         public static bool isRandomWords = false;
         public static bool isAutoPlaySounds = false;

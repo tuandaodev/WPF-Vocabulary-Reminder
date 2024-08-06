@@ -228,9 +228,20 @@ namespace VocabularyReminder
             App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
             App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
 
+            Load_Dictionaries();
             Status_Reset();
             // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
 
+        }
+
+        private void Load_Dictionaries()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                List<Dictionary> dictionaries = DataAccess.GetDictionariesAsync().Result;
+                this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
+                this.Inp_GlobalDictionaryId.SelectedIndex = 0;
+            });
         }
 
         private void Status_Reset()
@@ -281,6 +292,8 @@ namespace VocabularyReminder
                 var inputWords = GetListWords();
                 if (inputWords == default) return;
 
+                var dicId = (int)this.Inp_GlobalDictionaryId.SelectedValue;
+
                 List<Vocabulary> existWords = new List<Vocabulary>();
                 List<string> newWords = new List<string>();
                 foreach (var word in inputWords)
@@ -290,6 +303,11 @@ namespace VocabularyReminder
                         existWords.Add(_item);
                     else
                         newWords.Add(word);
+                }
+
+                foreach (var word in existWords)
+                {
+                    await DataAccess.AddVocabularyMappingAsync(dicId, word.Id);
                 }
 
                 if (!newWords.Any())
@@ -313,8 +331,10 @@ namespace VocabularyReminder
                     };
                     Parallel.ForEach(newWords, parallelOptions, async _item =>
                     {
-                        if (await DataAccess.AddVocabularyAsync(_item) > 0)
+                        var newVocaId = await DataAccess.AddVocabularyAsync(_item);
+                        if (newVocaId > 0)
                         {
+                            await DataAccess.AddVocabularyMappingAsync(dicId, newVocaId);
                             CountSuccess++;
                         }
                         Status_UpdateProgressBar(++Count, TotalWords);
@@ -510,6 +530,7 @@ namespace VocabularyReminder
                 RegisterHotKeys();
 
                 IsStarted = true;
+                App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
                 Btn_StartLearning.Content = "Stop Learning";
@@ -535,6 +556,9 @@ namespace VocabularyReminder
                               Console.WriteLine(String.Format("Last Reation {0} -> wait more {1} ms", App.LastReaction.ToShortTimeString(), _waitMore));
                               Thread.Sleep(_waitMore);
                           }
+
+                          if ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
+                              continue;
 
                           VocabularyToast.ClearApplicationToast();
                           await LoadVocabulary();
@@ -592,12 +616,12 @@ namespace VocabularyReminder
         {
             if (_item != null) return _item;
             if (App.isRandomWords)
-                _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
+                _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
             else
-                _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
+                _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
 
             if (_item == null || _item.Id == 0)
-                _item = await DataAccess.GetFirstVocabularyAsync();
+                _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
 
             return _item;
         }

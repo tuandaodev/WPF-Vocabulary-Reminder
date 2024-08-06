@@ -91,16 +91,16 @@ namespace VocabularyReminder
                         App.GlobalWordId = int.Parse(args["WordId"]);
                         if (App.isRandomWords)
                         {
-                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
+                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
                         else
                         {
-                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
+                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
 
                         if (_item == null || _item.Id == 0)
                         {
-                            _item = await DataAccess.GetFirstVocabularyAsync();
+                            _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
                         }
                         App.GlobalWordId = _item != null ? _item.Id : 0;
 
@@ -134,16 +134,16 @@ namespace VocabularyReminder
 
                         if (App.isRandomWords)
                         {
-                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalWordId);
+                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
                         else
                         {
-                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalWordId);
+                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
 
                         if (_item == null || _item.Id == 0)
                         {
-                            _item = await DataAccess.GetFirstVocabularyAsync();
+                            _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
                         }
                         App.GlobalWordId = _item != null ? _item.Id : 0;
                         VocabularyToast.ShowToastByVocabularyItem(_item);
