@@ -283,11 +283,18 @@ namespace VocabularyReminder
             // Read the dictionary CSV file
             var (dictionary, maxWordLength) = StaticDataAccess.ReadDictionaryCSV(ApplicationIO.GetDictionaryCSV());
 
+            tempInp = CleanParagraph(tempInp);
+
             // Parse the paragraph into words using the dictionary
             var ListWord = ParseParagraph(tempInp, dictionary, maxWordLength);
             ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
 
             return ListWord;
+        }
+
+        private string CleanParagraph(string paragraph)
+        {
+            return paragraph.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ").Replace("  ", " ").Trim();
         }
 
         private List<string> ParseParagraph(string paragraph, HashSet<string> dictionary, int maxWordLength)
@@ -344,7 +351,8 @@ namespace VocabularyReminder
                         newWords.Add(word);
                 }
 
-                foreach (var word in existWords)
+                // Only add existing not-learning words
+                foreach (var word in existWords.Where(x => x.Status == 1))
                 {
                     await DataAccess.AddVocabularyMappingAsync(dicId, word.Id);
                 }

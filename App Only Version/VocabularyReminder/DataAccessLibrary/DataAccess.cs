@@ -277,6 +277,15 @@ namespace VocabularyReminder.DataAccessLibrary
             using (var context = new VocaDbContext())
             {
                 await context.Vocabularies.Where(e => e.Type == string.Empty && e.Ipa == null && e.Translate == string.Empty).DeleteFromQueryAsync();
+
+                var orphanedMappings = await context.VocabularyMappings
+                        .Where(vm => !context.Vocabularies.Any(v => v.Id == vm.VocabularyId))
+                        .ToListAsync();
+                if (orphanedMappings.Any())
+                {
+                    context.VocabularyMappings.RemoveRange(orphanedMappings);
+                    await context.SaveChangesAsync();
+                }
             }
         }
     }
