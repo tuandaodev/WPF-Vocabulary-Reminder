@@ -44,7 +44,7 @@ namespace VocabularyReminder.DataAccessLibrary
 
                 tableCommand = @"CREATE TABLE IF NOT EXISTS Vocabulary (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Word NVARCHAR(2048) NOT NULL UNIQUE, 
+                    Word NVARCHAR(2048) NOT NULL, 
                     Type NVARCHAR(100) NULL, 
                     Ipa NVARCHAR(100) NULL, 
                     Ipa2 NVARCHAR(100) NULL, 
@@ -270,6 +270,22 @@ namespace VocabularyReminder.DataAccessLibrary
             using (var context = new VocaDbContext())
             {
                 return await context.Vocabularies.Where(e => e.Word == word.Trim()).FirstOrDefaultAsync();
+            }
+        }
+
+        public static async Task<List<Vocabulary>> GetUnprocessVocabulariesAsync()
+        {
+            using (var context = new VocaDbContext())
+            {
+                return await context.Vocabularies.Where(e => e.Ipa == null || e.Translate == string.Empty).ToListAsync();
+            }
+        }
+
+        public static async Task<List<EVVocabulary>> GetEVVocabulariesAsync()
+        {
+            using (var context = new DicEVContext())
+            {
+                return await context.Vocabularies.ToListAsync();
             }
         }
 

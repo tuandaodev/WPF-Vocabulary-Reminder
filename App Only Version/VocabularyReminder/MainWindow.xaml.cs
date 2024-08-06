@@ -1,6 +1,7 @@
 ﻿using DesktopNotifications.Services;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Design.PluralizationServices;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -408,26 +409,32 @@ namespace VocabularyReminder
         private async Task BackgroundCrawl()
         {
             Status_UpdateMessage("Start Crawling...");
-
             await Task.Run(() =>
             {
-                Status_UpdateMessage("[1/3] Start Get Translate...");
+                Status_UpdateMessage("[1/4] Start Getting Translate...");
                 ProcessBackgroundTranslate();
-                Status_UpdateMessage("[1/3] Finished Get Translate.");
+                Status_UpdateMessage("[1/4] Finished Getting Translate.");
             });   // wait to process all
 
             await Task.Run(() =>
             {
-                Status_UpdateMessage("[2/3] Start Get Vocabulary Information: Define, Example, Ipa...");
+                Status_UpdateMessage("[2/4] Start Getting Vocabulary Information: Define, Example, Ipa...");
                 ProcessBackgroundGetWordDefineInformation();
-                Status_UpdateMessage("[2/3] Finished Get Vocabulary Information: Define, Example, Ipa.");
+                Status_UpdateMessage("[2/4] Finished Getting Vocabulary Information: Define, Example, Ipa.");
             });   // wait to process all
 
             await Task.Run(() =>
             {
-                Status_UpdateMessage("[3/3] Start Get Related Words...");
+                Status_UpdateMessage("[3/4] Start Getting Related Words...");
                 ProcessBackgroundGetRelatedWords();
-                Status_UpdateMessage("[3/3] Finished Get Related Words.");
+                Status_UpdateMessage("[3/4] Finished Getting Related Words.");
+            });   // wait to process all
+
+            await Task.Run(() =>
+            {
+                Status_UpdateMessage("[4/4] Start Getting from local dictionary for unprocess Words...");
+                ProcessBackgroundUnprocessWords();
+                Status_UpdateMessage("[4/4] Finished Getting from local dictionary for unprocess Words.");
             });   // wait to process all
 
             Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
@@ -481,11 +488,22 @@ namespace VocabularyReminder
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
 
+                var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
+                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
                 {
-                    TranslateService.GetVocabularyTranslate(_item).Wait();
+                    var voca = await TranslateService.GetVocabularyTranslate(_item);
+                    if (string.IsNullOrEmpty(voca.Translate))
+                    {
+                        if (service.IsPlural(_item.Word))
+                        {
+                            _item.Word = service.Singularize(_item.Word);
+                            await TranslateService.GetVocabularyTranslate(_item);
+                        }
+                    }
+
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
@@ -539,6 +557,49 @@ namespace VocabularyReminder
             catch (Exception ex)
             {
                 Status_UpdateMessage("Crawling: Process Background Get Related Words Fail: " + ex.Message);
+            }
+        }
+
+        public async void ProcessBackgroundUnprocessWords()
+        {
+            try
+            {
+                var listVocabulary = await DataAccess.GetUnprocessVocabulariesAsync();
+                if (!listVocabulary.Any())
+                    return;
+
+                var evDic = await DataAccess.GetEVVocabulariesAsync();
+
+                int TotalItems = listVocabulary.Count;
+                int Count = 0;
+
+                var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+
+                foreach (var item in listVocabulary)
+                {
+                    var exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
+                    if (exist == null)
+                    {
+                        if (service.IsPlural(item.Word))
+                        {
+                            item.Word = service.Singularize(item.Word);
+                            exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+
+                    if (exist != null)
+                    {
+                        if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
+                        if (string.IsNullOrEmpty(item.Translate)) item.Ipa = exist.Description;
+                        await DataAccess.UpdateVocabularyAsync(item);
+                    }
+
+                    Status_UpdateProgressBar(++Count, TotalItems);
+                }
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage("Crawling: Process Background Unprocess words Fail: " + ex.Message);
             }
         }
 

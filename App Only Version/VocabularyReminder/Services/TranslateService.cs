@@ -20,7 +20,7 @@ namespace DesktopNotifications.Services
 
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
 
-        public static async Task GetVocabularyTranslate(Vocabulary item)
+        public static async Task<Vocabulary> GetVocabularyTranslate(Vocabulary item)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -35,10 +35,10 @@ namespace DesktopNotifications.Services
                 if (translates != null && translates.Count > 0)
                 foreach (var node in translates)
                 {
-                        if (!String.IsNullOrEmpty(node.InnerText))
-                        {
-                            listTrans.Add(node.InnerText);
-                        }
+                    if (!String.IsNullOrEmpty(node.InnerText))
+                    {
+                        listTrans.Add(node.InnerText);
+                    }
                 }
 
                 List<string> listTypes = new List<string>();
@@ -74,7 +74,7 @@ namespace DesktopNotifications.Services
                 }
 
                 await DataAccess.UpdateVocabularyAsync(item);
-                //Console.WriteLine(String.Format("Translate Completed: {0}", item.Word));
+                return item;
             }
         }
 

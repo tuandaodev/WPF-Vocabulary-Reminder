@@ -85,6 +85,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
@@ -110,6 +111,7 @@
     <Compile Include="DataAccessLibrary\DataAccess.cs" />
     <Compile Include="DataAccessLibrary\ApplicationIO.cs" />
     <Compile Include="DataAccessLibrary\Models.cs" />
+    <Compile Include="DataAccessLibrary\DicEVContext.cs" />
     <Compile Include="DataAccessLibrary\VocaDbContext.cs" />
     <Compile Include="LearnedWordsWindow.xaml.cs">
       <DependentUpon>LearnedWordsWindow.xaml</DependentUpon>
@@ -169,6 +171,9 @@
     </EmbeddedResource>
     <None Include="Data\dictionary.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\dict_ev.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

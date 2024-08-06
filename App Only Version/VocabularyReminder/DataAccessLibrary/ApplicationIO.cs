@@ -46,5 +46,10 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             return Path.Combine(GetApplicationFolderPath(), DatabaseFileName);
         }
+
+        public static string GetEVDatabasePath()
+        {
+            return Path.Combine(SelfData, "dict_ev.db");
+        }
     }
 }
