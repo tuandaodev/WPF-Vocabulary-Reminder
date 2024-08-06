@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -240,7 +239,7 @@ namespace VocabularyReminder
             {
                 List<Dictionary> dictionaries = DataAccess.GetDictionariesAsync().Result;
                 this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
-                this.Inp_GlobalDictionaryId.SelectedIndex = 0;
+                this.Inp_GlobalDictionaryId.SelectedIndex = dictionaries.Max(e => e.Id) - 1;
             });
         }
 
@@ -279,10 +278,50 @@ namespace VocabularyReminder
                 return default;
             }
 
-            var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
+            //var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
+
+            // Read the dictionary CSV file
+            var (dictionary, maxWordLength) = StaticDataAccess.ReadDictionaryCSV(ApplicationIO.GetDictionaryCSV());
+
+            // Parse the paragraph into words using the dictionary
+            var ListWord = ParseParagraph(tempInp, dictionary, maxWordLength);
             ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
 
             return ListWord;
+        }
+
+        private List<string> ParseParagraph(string paragraph, HashSet<string> dictionary, int maxWordLength)
+        {
+            var wordSet = new HashSet<string>();
+            var wordArray = paragraph.Split(new char[] { ' ', ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            int i = 0;
+
+            while (i < wordArray.Length)
+            {
+                bool foundCompound = false;
+                for (int length = maxWordLength; length > 0; length--)
+                {
+                    if (i + length <= wordArray.Length)
+                    {
+                        string word = string.Join(" ", wordArray.Skip(i).Take(length)).ToLower().Trim();
+                        if (dictionary.Contains(word))
+                        {
+                            wordSet.Add(word);
+                            i += length;
+                            foundCompound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!foundCompound)
+                {
+                    wordSet.Add(wordArray[i].ToLower().Trim());
+                    i++;
+                }
+            }
+
+            return wordSet.ToList();
         }
 
         private async void Btn_Import_Click(object sender, RoutedEventArgs e)

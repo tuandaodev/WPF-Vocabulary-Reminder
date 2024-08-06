@@ -10,6 +10,12 @@ namespace VocabularyReminder.DataAccessLibrary
 
         private const string Mp3Folder = "Mp3";
         private const string ImagesFolder = "Images";
+        private const string SelfData = "Data";
+
+        public static string GetDictionaryCSV()
+        {
+            return Path.Combine(SelfData, "dictionary.csv");
+        }
 
         public static string GetApplicationFolderPath()
         {
