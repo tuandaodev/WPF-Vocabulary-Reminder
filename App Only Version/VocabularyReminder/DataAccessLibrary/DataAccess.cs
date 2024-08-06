@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -97,7 +98,7 @@ namespace VocabularyReminder.DataAccessLibrary
                     VocabularyId = vocaId,
                     DictionaryId = dicId
                 };
-                context.VocabularyMappings.Add(voca);
+                context.VocabularyMappings.AddOrUpdate(voca);
                 return await context.SaveChangesAsync() > 0;
             }
         }
@@ -276,7 +277,12 @@ namespace VocabularyReminder.DataAccessLibrary
         {
             using (var context = new VocaDbContext())
             {
-                await context.Vocabularies.Where(e => e.Type == string.Empty && e.Ipa == null && e.Translate == string.Empty).DeleteFromQueryAsync();
+                var cleanWords = await context.Vocabularies.Where(e => e.Type == string.Empty && e.Ipa == null && (e.Translate == string.Empty)).ToListAsync();
+                if (cleanWords.Any())
+                {
+                    context.Vocabularies.RemoveRange(cleanWords);
+                    await context.SaveChangesAsync();
+                }
 
                 var orphanedMappings = await context.VocabularyMappings
                         .Where(vm => !context.Vocabularies.Any(v => v.Id == vm.VocabularyId))

@@ -374,7 +374,7 @@ namespace VocabularyReminder
 
                     ParallelOptions parallelOptions = new ParallelOptions
                     {
-                        MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread
+                        MaxDegreeOfParallelism = 1
                     };
                     Parallel.ForEach(newWords, parallelOptions, async _item =>
                     {
