@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 
 namespace VocabularyReminder.DataAccessLibrary
@@ -50,6 +50,11 @@ namespace VocabularyReminder.DataAccessLibrary
         public static string GetEVDatabasePath()
         {
             return Path.Combine(SelfData, "dict_ev.db");
+        }
+
+        public static string GetSettingsPath()
+        {
+            return Path.Combine(GetApplicationFolderPath(), "settings.json");
         }
     }
 }

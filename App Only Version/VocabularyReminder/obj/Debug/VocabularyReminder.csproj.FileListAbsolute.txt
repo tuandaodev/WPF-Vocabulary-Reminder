@@ -328,3 +328,9 @@ C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyR
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\Vocabula.35AF3D7A.Up2Date
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.exe
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\VocabularyReminder.pdb
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.IO.Pipelines.dll
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Text.Json.dll
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\System.ValueTuple.dll

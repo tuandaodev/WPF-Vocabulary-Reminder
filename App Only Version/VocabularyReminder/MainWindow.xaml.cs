@@ -1,4 +1,4 @@
-﻿using DesktopNotifications.Services;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Text.Json;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
 
@@ -164,6 +165,9 @@ namespace VocabularyReminder
             App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
             App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
 
+            // Add selection changed handler
+            this.Inp_GlobalDictionaryId.SelectionChanged += Inp_GlobalDictionaryId_SelectionChanged;
+
             Load_Dictionaries();
             Status_Reset();
         }
@@ -174,6 +178,29 @@ namespace VocabularyReminder
             {
                 List<Dictionary> dictionaries = DataAccess.GetDictionariesAsync().Result;
                 this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
+                
+                // Load saved dictionary ID from settings
+                string settingsPath = ApplicationIO.GetSettingsPath();
+                if (File.Exists(settingsPath))
+                {
+                    try
+                    {
+                        var json = File.ReadAllText(settingsPath);
+                        var settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                        if (settings.ContainsKey("lastDictionaryId"))
+                        {
+                            int lastId = ((JsonElement)settings["lastDictionaryId"]).GetInt32();
+                            if (dictionaries.Any(d => d.Id == lastId))
+                            {
+                                this.Inp_GlobalDictionaryId.SelectedValue = lastId;
+                                return;
+                            }
+                        }
+                    }
+                    catch { }
+                }
+                
+                // Default to last dictionary if no saved setting
                 this.Inp_GlobalDictionaryId.SelectedIndex = dictionaries.Max(e => e.Id) - 1;
             });
         }
@@ -747,6 +774,39 @@ namespace VocabularyReminder
             VocabularyToast.ClearApplicationToast();
             UnRegisterHotKeys();
             base.OnClosed(e);
+        }
+
+        private void Inp_GlobalDictionaryId_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (Inp_GlobalDictionaryId.SelectedValue == null) return;
+
+            var settings = new Dictionary<string, object>();
+            string settingsPath = ApplicationIO.GetSettingsPath();
+
+            // Load existing settings if any
+            if (File.Exists(settingsPath))
+            {
+                try
+                {
+                    var json = File.ReadAllText(settingsPath);
+                    settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                }
+                catch { }
+            }
+
+            // Update or add the lastDictionaryId setting
+            settings["lastDictionaryId"] = Inp_GlobalDictionaryId.SelectedValue;
+
+            // Save settings
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(settings, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(settingsPath, json);
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage($"Failed to save dictionary preference: {ex.Message}");
+            }
         }
 
         private void Frm_MainWindow_Activated(object sender, EventArgs e)
