@@ -63,6 +63,9 @@
         <Button x:Name="Btn_Sync" Content="Sync" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Sync_Click"/>
         <Button x:Name="Btn_Cleanup" Content="Cleanup" Grid.Row="3" Height="Auto" Margin="41,74,0,1" Grid.ColumnSpan="2" Click="Btn_Cleanup_Click"/>
         <CheckBox x:Name="Inp_AutoPlayOption" Content="Auto Play Sounds" Margin="41,74,0,0" Grid.Row="7" IsChecked="True" Grid.ColumnSpan="2" Height="15" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148"/>
-        <ComboBox x:Name="Inp_GlobalDictionaryId" Grid.Column="7" HorizontalAlignment="Center" Margin="0,81,0,0" Grid.Row="1" VerticalAlignment="Top" Width="166" Height="26" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+        <StackPanel Grid.Column="7" Grid.Row="1" Orientation="Horizontal" Margin="0,81,0,0" VerticalAlignment="Top">
+            <ComboBox x:Name="Inp_GlobalDictionaryId" Width="120" Height="26" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+            <Button x:Name="Btn_ManageDictionary" Content="Manage" Width="60" Height="26" Click="Btn_ManageDictionary_Click" Margin="5,0,0,0"/>
+        </StackPanel>
     </Grid>
 </Window>

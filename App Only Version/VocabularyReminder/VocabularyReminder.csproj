@@ -113,6 +113,9 @@
     <Compile Include="DataAccessLibrary\Models.cs" />
     <Compile Include="DataAccessLibrary\DicEVContext.cs" />
     <Compile Include="DataAccessLibrary\VocaDbContext.cs" />
+    <Compile Include="DictionaryManagementWindow.xaml.cs">
+      <DependentUpon>DictionaryManagementWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="LearnedWordsWindow.xaml.cs">
       <DependentUpon>LearnedWordsWindow.xaml</DependentUpon>
     </Compile>
@@ -128,6 +131,10 @@
     <Compile Include="VocaPopup.xaml.cs">
       <DependentUpon>VocaPopup.xaml</DependentUpon>
     </Compile>
+    <Page Include="DictionaryManagementWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="LearnedWordsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

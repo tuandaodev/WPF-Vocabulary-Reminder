@@ -110,12 +110,6 @@ namespace VocabularyReminder
                             break;
                         case HOTKEY_ID + 2:
                             App.LastReaction = DateTime.Now;
-                            //if (App.isShowPopup)
-                            //{
-                            //    App.isShowPopup = false;
-                            //    BackgroundService.HideToast();
-                            //    handled = true;
-                            //}
                             ToggleLearning();
                             handled = true;
                             break;
@@ -151,70 +145,12 @@ namespace VocabularyReminder
             return IntPtr.Zero;
         }
 
-        //private IntPtr HwndHook2(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        //{
-        //    const int WM_HOTKEY = 0x0312;
-        //    switch (msg)
-        //    {
-        //        case WM_HOTKEY:
-        //            switch (wParam.ToInt32())
-        //            {
-        //                case HOTKEY_ID+1:
-        //                    int vkey = (((int)lParam >> 16) & 0xFFFF);
-        //                    // Detect keys and modifier
-        //                    //System.Windows.Forms.Keys key = ((System.Windows.Forms.Keys)(((int)lParam) >> 0x10)) & System.Windows.Forms.Keys.KeyCode;
-        //                    ModifierKeys modifier = ((ModifierKeys)((int)lParam)) & ((ModifierKeys)0xffff);
-
-        //                    if (vkey == System.Windows.Forms.Keys.F7.GetHashCode()) // Play Sound 1
-        //                    {
-        //                        //Console.WriteLine("play 1");
-        //                        BackgroundService.ActionPlay(1);
-        //                    } else if (vkey == System.Windows.Forms.Keys.F8.GetHashCode())  // Play Sound 2
-        //                    {
-        //                        //Console.WriteLine("play 2");
-        //                        BackgroundService.ActionPlay(2);
-        //                    } else if (vkey == System.Windows.Forms.Keys.Scroll.GetHashCode())  // Next
-        //                    {
-        //                        //Console.WriteLine("next");
-        //                        BackgroundService.NextVocabulary();
-        //                    }
-        //                    else if (vkey == System.Windows.Forms.Keys.Pause.GetHashCode())  // Next and Delete
-        //                    {
-        //                        //Console.WriteLine("next and delete");
-        //                        BackgroundService.NextAndDeleteVocabulary();
-        //                    }
-        //                    else if (modifier == ModifierKeys.Shift && vkey == System.Windows.Forms.Keys.Escape.GetHashCode())  // Show Current
-        //                    {
-        //                        //Console.WriteLine("show current toast");
-        //                        BackgroundService.showCurrentToast();
-        //                    }
-        //                    else if (vkey == System.Windows.Forms.Keys.Escape.GetHashCode())  // Close Toast
-        //                    {
-        //                        //Console.WriteLine("ESC Close toast");
-        //                        BackgroundService.HideToast();
-        //                    }
-        //                    else if (vkey == System.Windows.Forms.Keys.PrintScreen.GetHashCode()) // Delete
-        //                    {
-        //                        //Console.WriteLine("delete current toast");
-        //                        BackgroundService.DeleteVocabulary();
-        //                    }
-        //                    handled = true;
-        //                    break;
-        //            }
-        //            break;
-        //    }
-        //    return IntPtr.Zero;
-        //}
-
         /* End HotKey */
-
-
 
         CancellationTokenSource _TokenSource;
         CancellationToken _CancelToken;
 
         private bool IsStarted = false;
-
 
         const int CoreMultipleThread = 3;
 
@@ -230,8 +166,6 @@ namespace VocabularyReminder
 
             Load_Dictionaries();
             Status_Reset();
-            // IMPORTANT: Look at App.xaml.cs for required registration and activation steps
-
         }
 
         private void Load_Dictionaries()
@@ -279,14 +213,10 @@ namespace VocabularyReminder
                 return default;
             }
 
-            //var ListWord = Regex.Split(tempInp, "\r\n|\r|\n").ToList();
-
-            // Read the dictionary CSV file
             var (dictionary, maxWordLength) = StaticDataAccess.ReadDictionaryCSV(ApplicationIO.GetDictionaryCSV());
 
             tempInp = CleanParagraph(tempInp);
 
-            // Parse the paragraph into words using the dictionary
             var ListWord = ParseParagraph(tempInp, dictionary, maxWordLength);
             ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
 
@@ -352,7 +282,6 @@ namespace VocabularyReminder
                         newWords.Add(word);
                 }
 
-                // Only add existing not-learning words
                 foreach (var word in existWords.Where(x => x.Status == 1))
                 {
                     await DataAccess.AddVocabularyMappingAsync(dicId, word.Id);
@@ -360,7 +289,12 @@ namespace VocabularyReminder
 
                 if (!newWords.Any())
                 {
-                    MessageBox.Show("All vocabulary already in database, please Start to show in this list only");
+                    string message = "All vocabulary already in database, please Start to show in this list only";
+                    if (existWords.Count > 0)
+                    {
+                        message += ". There are " + existWords.Count.ToString() + " words that are learnt.";
+                    }
+                    MessageBox.Show(message);
                     return;
                 }
 
@@ -619,14 +553,6 @@ namespace VocabularyReminder
 
         private void Btn_StartLearning_Click(object sender, RoutedEventArgs e)
         {
-            //Popup codePopup = new Popup();
-            //TextBlock popupText = new TextBlock();
-            //popupText.Text = "Popup Text";
-            //popupText.Background = Brushes.LightBlue;
-            //popupText.Foreground = Brushes.Blue;
-            //codePopup.Child = popupText;
-
-            //codePopup.IsOpen = true;
             _vocabularies.Clear();
             ToggleLearning();
         }
@@ -709,7 +635,7 @@ namespace VocabularyReminder
                 _ = Task.Run(() => Mp3.PlayFile(vocabulary));
             }
 
-            App.GlobalWordId = vocabulary.Id;
+            App.GlobalWordId = vocabulary?.Id ?? 0;
         }
 
         private async Task<Vocabulary> GetVocabulary(Vocabulary _item = null)
@@ -762,12 +688,8 @@ namespace VocabularyReminder
         private void Inp_TimeRepeat_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-            // Use SelectionStart property to find the caret position.
-            // Insert the previewed text into the existing text in the textbox.
             var fullText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
-
             double val;
-            // If parsing is successful, set Handled to false
             e.Handled = !double.TryParse(fullText, out val);
         }
 
@@ -793,7 +715,7 @@ namespace VocabularyReminder
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * CoreMultipleThread;    // TODO
+                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * CoreMultipleThread;    
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     Mp3.preloadMp3MultipleAsync(_item).Wait();
@@ -831,7 +753,6 @@ namespace VocabularyReminder
         {
             Reload_Stats();
         }
-
 
         private void Btn_ShowLearnedList_Click(object sender, RoutedEventArgs e)
         {
@@ -888,6 +809,13 @@ namespace VocabularyReminder
         private async void Btn_Cleanup_Click(object sender, RoutedEventArgs e)
         {
             await DataAccess.CleanUnableToGetAsync();
+        }
+
+        private void Btn_ManageDictionary_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new DictionaryManagementWindow();
+            window.Closed += (s, args) => Load_Dictionaries();
+            window.Show();
         }
     }
 }
