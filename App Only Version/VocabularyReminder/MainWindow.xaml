@@ -13,59 +13,141 @@
         TextOptions.TextRenderingMode="Auto"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        Title="Vocabulary Reminder" Height="746.25" Width="995" Closing="Window_Closing" Activated="Frm_MainWindow_Activated">
-    <Grid>
+        Title="Vocabulary Reminder"
+        MinHeight="600" MinWidth="800"
+        Height="750" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing"
+        Activated="Frm_MainWindow_Activated">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="0.6*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.5*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="0.5*"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="250"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="Inp_ListWord" TextWrapping="Wrap" Grid.Column="3" Grid.Row="1" Grid.RowSpan="5" AcceptsReturn="True" Grid.ColumnSpan="3" LostFocus="Inp_ListWord_LostFocus" GotFocus="Inp_ListWord_GotFocus" />
-        <Button x:Name="Btn_Import" Content="Import" Grid.Column="1" Click="Btn_Import_Click" Grid.Row="1" Height="Auto"/>
-        <Button x:Name="Btn_ProcessDeleteData" Content="Delete All Data" Grid.Column="7" Grid.Row="5" Click="Btn_ProcessDeleteData_Click" Height="Auto" />
-        <Button x:Name="Btn_StartLearning" Content="Start Learning" Grid.Column="3" Grid.Row="7" Click="Btn_StartLearning_Click" Grid.ColumnSpan="3" Height="Auto" />
-
-        <StatusBar Grid.Row="9" Grid.ColumnSpan="10">
-            <ProgressBar x:Name="Status_ProgessBar" Width="100" Value="0" Maximum="0" Height="15"/>
-            <TextBlock x:Name="Status_Message" TextWrapping="Wrap" Text="Message..."/>
-        </StatusBar>
-        <TextBox x:Name="Inp_TimeRepeat" Grid.Column="1" HorizontalAlignment="Left" Height="22" Margin="128,4,0,0" Grid.Row="7" TextWrapping="Wrap" Text="30" VerticalAlignment="Top" Width="37" PreviewTextInput="Inp_TimeRepeat_PreviewTextInput" TextAlignment="Right" />
-        <Label Content="Time/word (s):" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Margin="0,4,0,0" Grid.Column="1"/>
-        <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Grid.Column="1" Grid.Row="5" Click="Btn_PreloadMp3_Click" Height="Auto" />
-        <CheckBox x:Name="Inp_RandomOption" Content="Random Words" HorizontalAlignment="Left" Margin="41,44,0,0" Grid.Row="7" IsChecked="True" Height="15" Width="148" Grid.ColumnSpan="2" VerticalAlignment="Top"/>
-        <Button x:Name="Btn_Import_Auto" Content="Import 3000 words" Grid.Column="7" Grid.Row="3" Click="Btn_Import_Auto_Click" Height="Auto"/>
-        <Label Content="Remembered Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top"/>
-        <Label Content="Imported Words:" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="0,31,0,0" Width="113"/>
-        <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Width="49" Margin="150,0,0,0" Grid.ColumnSpan="2"/>
-        <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Column="7" HorizontalAlignment="Left" Grid.Row="1" VerticalAlignment="Top" Margin="150,31,0,0" Width="49" Grid.ColumnSpan="2"/>
-        <Button x:Name="Btn_ShowLearnedList" Content="Show Learned Words" Grid.Column="7" Grid.Row="7" Click="Btn_ShowLearnedList_Click" Height="Auto" />
-        <Button x:Name="Btn_Start_Custom" Content="Start From Input" Grid.Row="3" Height="Auto" Margin="41,0,82,75" Grid.ColumnSpan="3" Click="Btn_Start_Custom_Click"/>
-        <Button x:Name="Btn_Backup" Content="Backup" Grid.Column="7" Grid.Row="4" Height="Auto" Margin="0,1,41,21" Grid.ColumnSpan="2" Click="Btn_Backup_Click"/>
-        <Button x:Name="Btn_Sync" Content="Sync" Grid.Row="3" Height="Auto" Margin="41,37,0,38" Grid.ColumnSpan="2" Click="Btn_Sync_Click"/>
-        <Button x:Name="Btn_Cleanup" Content="Cleanup" Grid.Row="3" Height="Auto" Margin="41,74,0,1" Grid.ColumnSpan="2" Click="Btn_Cleanup_Click"/>
-        <CheckBox x:Name="Inp_AutoPlayOption" Content="Auto Play Sounds" Margin="41,74,0,0" Grid.Row="7" IsChecked="True" Grid.ColumnSpan="2" Height="15" VerticalAlignment="Top" HorizontalAlignment="Left" Width="148"/>
-        <StackPanel Grid.Column="7" Grid.Row="1" Orientation="Horizontal" Margin="0,81,0,0" VerticalAlignment="Top">
-            <ComboBox x:Name="Inp_GlobalDictionaryId" Width="120" Height="26" DisplayMemberPath="Name" SelectedValuePath="Id"/>
-            <Button x:Name="Btn_ManageDictionary" Content="Manage" Width="60" Height="26" Click="Btn_ManageDictionary_Click" Margin="5,0,0,0"/>
+        <!-- Left Panel -->
+        <StackPanel Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,15,0">
+            <Button x:Name="Btn_Import" Content="Import" Click="Btn_Import_Click" Margin="0,0,0,10"/>
+            <Button x:Name="Btn_Start_Custom" Content="Start From Input" Click="Btn_Start_Custom_Click" Margin="0,0,0,10"/>
+            <Button x:Name="Btn_Sync" Content="Sync" Click="Btn_Sync_Click" Margin="0,0,0,10"/>
+            <Button x:Name="Btn_Cleanup" Content="Cleanup" Click="Btn_Cleanup_Click" Margin="0,0,0,10"/>
+            <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Click="Btn_PreloadMp3_Click"/>
         </StackPanel>
+
+        <!-- Center Panel -->
+        <TextBox x:Name="Inp_ListWord"
+                Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                TextWrapping="Wrap" AcceptsReturn="True"
+                VerticalAlignment="Stretch"
+                MinHeight="200"
+                Margin="0,0,15,0"
+                LostFocus="Inp_ListWord_LostFocus"
+                GotFocus="Inp_ListWord_GotFocus"/>
+
+        <!-- Right Panel -->
+        <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2">
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Label Content="Remembered Words:" Grid.Row="0" Grid.Column="0"/>
+                <Label x:Name="Label_Stats_RememberedWords" Content="0" Grid.Row="0" Grid.Column="1"/>
+                
+                <Label Content="Imported Words:" Grid.Row="1" Grid.Column="0"/>
+                <Label x:Name="Label_Stats_ImportedWords" Content="0" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <ComboBox x:Name="Inp_GlobalDictionaryId"
+                         Width="150"
+                         DisplayMemberPath="Name"
+                         SelectedValuePath="Id"/>
+                <Button x:Name="Btn_ManageDictionary"
+                       Content="Manage"
+                       Click="Btn_ManageDictionary_Click"
+                       Margin="5,0,0,0"/>
+            </StackPanel>
+
+            <Button x:Name="Btn_Import_Auto"
+                    Content="Import 3000 words"
+                    Click="Btn_Import_Auto_Click"
+                    Margin="0,0,0,10"/>
+            
+            <Button x:Name="Btn_Backup"
+                    Content="Backup"
+                    Click="Btn_Backup_Click"
+                    Margin="0,0,0,10"/>
+            
+            <Button x:Name="Btn_ProcessDeleteData"
+                    Content="Delete All Data"
+                    Click="Btn_ProcessDeleteData_Click"/>
+        </StackPanel>
+
+        <!-- Bottom Controls -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,15">
+            <Label Content="Time/word (s):" VerticalAlignment="Center"/>
+            <TextBox x:Name="Inp_TimeRepeat"
+                     Width="50"
+                     Margin="5,0,15,0"
+                     Text="30"
+                     PreviewTextInput="Inp_TimeRepeat_PreviewTextInput"
+                     TextAlignment="Right"
+                     VerticalAlignment="Center"/>
+            
+            <CheckBox x:Name="Inp_RandomOption"
+                      Content="Random Words"
+                      IsChecked="True"
+                      VerticalAlignment="Center"
+                      Margin="0,0,15,0"/>
+            
+            <CheckBox x:Name="Inp_AutoPlayOption"
+                      Content="Auto Play Sounds"
+                      IsChecked="True"
+                      VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="0,15">
+            <Button x:Name="Btn_StartLearning"
+                    Content="Start Learning"
+                    Click="Btn_StartLearning_Click"
+                    Margin="0,0,15,0"
+                    MinWidth="150"/>
+            
+            <Button x:Name="Btn_ShowLearnedList"
+                    Content="Show Learned Words"
+                    Click="Btn_ShowLearnedList_Click"
+                    MinWidth="150"/>
+        </StackPanel>
+
+        <!-- Status Bar -->
+        <StatusBar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,15,0,0">
+            <ProgressBar x:Name="Status_ProgessBar"
+                        Width="100" Value="0"
+                        Maximum="0" Height="15"/>
+            <TextBlock x:Name="Status_Message"
+                      Text="Message..."
+                      Margin="10,0,0,0"/>
+        </StatusBar>
     </Grid>
 </Window>
