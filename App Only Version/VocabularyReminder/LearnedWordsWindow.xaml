@@ -31,6 +31,10 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <ComboBox x:Name="DictionaryFilter" Grid.Column="1" HorizontalAlignment="Left" Margin="10,41,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="DictionaryFilter_SelectionChanged" Grid.RowSpan="2">
+        </ComboBox>
+
         <ComboBox x:Name="Filter" Grid.Column="1" HorizontalAlignment="Left" Margin="80,41,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="Filter_SelectionChanged" Grid.RowSpan="2">
             <ComboBoxItem Content="Read" Tag="true" />
             <ComboBoxItem Content="UnRead" Tag="false" />

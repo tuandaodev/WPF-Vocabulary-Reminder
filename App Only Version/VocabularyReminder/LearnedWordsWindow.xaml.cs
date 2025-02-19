@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,7 +14,19 @@ namespace VocabularyReminder
         public LearnedWordsWindow()
         {
             InitializeComponent();
-            //Reload();
+            LoadDictionariesAsync().ConfigureAwait(false);
+        }
+
+        private async Task LoadDictionariesAsync()
+        {
+            var dictionaries = await DataAccess.GetDictionariesAsync();
+            DictionaryFilter.Items.Clear();
+            DictionaryFilter.Items.Add(new ComboBoxItem { Content = "All", Tag = 0 });
+            foreach (var dictionary in dictionaries)
+            {
+                DictionaryFilter.Items.Add(new ComboBoxItem { Content = dictionary.Name, Tag = dictionary.Id });
+            }
+            DictionaryFilter.SelectedIndex = 0;
         }
 
         private async Task ReloadAsync()
@@ -25,8 +37,11 @@ namespace VocabularyReminder
             if (!string.IsNullOrEmpty(Filter.Text))
                 isRead = Filter.Text.Equals("Read");
             var searchContent = FilterContent.Text?.Trim();
+            
+            var selectedDictionary = DictionaryFilter.SelectedItem as ComboBoxItem;
+            int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : 0;
 
-            var VocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent);
+            var VocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent, dictionaryId);
             View_ListLearnedWords.Items.Clear();
 
             foreach (var _item in VocabularyList)
@@ -52,6 +67,11 @@ namespace VocabularyReminder
         {
             if (e.Key == System.Windows.Input.Key.Enter)
                 await ReloadAsync();
+        }
+
+        private async void DictionaryFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            await ReloadAsync();
         }
     }
 }

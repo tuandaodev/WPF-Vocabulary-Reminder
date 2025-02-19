@@ -1,4 +1,4 @@
-﻿using FAI.Core.Utilities.Linq;
+﻿﻿using FAI.Core.Utilities.Linq;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -251,17 +251,26 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
-        public static async Task<List<Vocabulary>> GetListLearndedAsync(bool? isRead, string searchContent)
+        public static async Task<List<Vocabulary>> GetListLearndedAsync(bool? isRead, string searchContent, int dictionaryId = 0)
         {
             using (var context = new VocaDbContext())
             {
+                var query = context.Vocabularies.AsQueryable();
+
+                // Apply dictionary filter if specified
+                if (dictionaryId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
+                }
+
                 Expression<Func<Vocabulary, bool>> exp = x => true;
                 if (isRead.HasValue)
                     exp = exp.And(e => e.Status == (isRead.Value ? 0 : 1));
                 if (!string.IsNullOrEmpty(searchContent))
                     exp = exp.And(e => e.Word.Contains(searchContent.Trim()));
 
-                return await context.Vocabularies.Where(exp).ToListAsync();
+                return await query.Where(exp).ToListAsync();
             }
         }
 
