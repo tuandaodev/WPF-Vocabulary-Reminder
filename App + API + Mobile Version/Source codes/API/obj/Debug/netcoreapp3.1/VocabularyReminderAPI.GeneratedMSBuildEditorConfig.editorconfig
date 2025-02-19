@@ -1,3 +1,5 @@
 is_global = true
 build_property.RootNamespace = VocabularyReminderAPI
-build_property.ProjectDir = D:\VocabularyReminder\Source codes\API\
+build_property.ProjectDir = C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App + API + Mobile Version\Source codes\API\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

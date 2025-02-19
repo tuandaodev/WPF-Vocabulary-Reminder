@@ -3,12 +3,14 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
+using Windows.Media.SpeechSynthesis;
 
 namespace DesktopNotifications.Services
 {
     public class Mp3
     {
         public static WMPLib.WindowsMediaPlayer Player;
+        public static SpeechSynthesizer SpeechSynthesizer;
 
         public static async Task PlayFile(Vocabulary item)
         {
