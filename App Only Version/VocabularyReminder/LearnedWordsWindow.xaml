@@ -5,42 +5,104 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
-        Title="Learned Words" Height="528.879" Width="877.586" Activated="Frm_LearnedWords_Activated">
-    <Grid>
+        Title="Learned Words" 
+        Height="600" Width="900" 
+        MinHeight="400" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        Activated="Frm_LearnedWords_Activated">
+    <Window.Resources>
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="150"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="5,0"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-            <ColumnDefinition Width="10*"></ColumnDefinition>
-            <ColumnDefinition Width="1*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <ListView x:Name="View_ListLearnedWords" Grid.Column="1" Grid.Row="3">
+
+        <!-- Filter Controls Panel -->
+        <Border Grid.Row="0" 
+                BorderBrush="#DDDDDD" 
+                BorderThickness="1" 
+                CornerRadius="4" 
+                Padding="15"
+                Margin="0,0,0,10"
+                Background="#F5F5F5">
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="DictionaryFilter" 
+                         SelectionChanged="DictionaryFilter_SelectionChanged"/>
+                
+                <ComboBox x:Name="Filter" 
+                         SelectionChanged="Filter_SelectionChanged">
+                    <ComboBoxItem Content="Read" Tag="true"/>
+                    <ComboBoxItem Content="UnRead" Tag="false"/>
+                </ComboBox>
+                
+                <TextBox x:Name="FilterContent" 
+                         KeyDown="FilterContent_KeyDown"/>
+                
+                <Button x:Name="BtnSearch" 
+                        Content="Search"
+                        Click="Btn_OnFilter_Click"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ListView -->
+        <ListView x:Name="View_ListLearnedWords" 
+                  Grid.Row="1"
+                  BorderThickness="1"
+                  BorderBrush="#DDDDDD">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}"/>
-                    <GridViewColumn Header="Word" DisplayMemberBinding="{Binding Word}"/>
-                    <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Type}"/>
-                    <GridViewColumn Header="Ipa" DisplayMemberBinding="{Binding Ipa}"/>
-                    <GridViewColumn Header="Ipa" DisplayMemberBinding="{Binding Ipa2}"/>
-                    <GridViewColumn Header="Translate" DisplayMemberBinding="{Binding Translate}"/>
+                    <GridViewColumn Header="ID" 
+                                  DisplayMemberBinding="{Binding Id}"
+                                  Width="50"/>
+                    <GridViewColumn Header="Word" 
+                                  DisplayMemberBinding="{Binding Word}"
+                                  Width="150"/>
+                    <GridViewColumn Header="Type" 
+                                  DisplayMemberBinding="{Binding Type}"
+                                  Width="80"/>
+                    <GridViewColumn Header="IPA (US)" 
+                                  DisplayMemberBinding="{Binding Ipa}"
+                                  Width="120"/>
+                    <GridViewColumn Header="IPA (UK)" 
+                                  DisplayMemberBinding="{Binding Ipa2}"
+                                  Width="120"/>
+                    <GridViewColumn Header="Translation" 
+                                  DisplayMemberBinding="{Binding Translate}"
+                                  Width="Auto"/>
                 </GridView>
             </ListView.View>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="Padding" Value="5"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F0F7FF"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
         </ListView>
-
-        <ComboBox x:Name="DictionaryFilter" Grid.Column="1" HorizontalAlignment="Left" Margin="10,41,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="DictionaryFilter_SelectionChanged" Grid.RowSpan="2">
-        </ComboBox>
-
-        <ComboBox x:Name="Filter" Grid.Column="1" HorizontalAlignment="Left" Margin="80,41,0,0" Grid.Row="1" VerticalAlignment="Top" Width="120" SelectionChanged="Filter_SelectionChanged" Grid.RowSpan="2">
-            <ComboBoxItem Content="Read" Tag="true" />
-            <ComboBoxItem Content="UnRead" Tag="false" />
-        </ComboBox>
-        <TextBox x:Name="FilterContent" Grid.Column="1" HorizontalAlignment="Left" Margin="220,44,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Grid.RowSpan="2" KeyDown="FilterContent_KeyDown"/>
-        <Button x:Name="BtnSearch" Grid.Column="1" Content="Search" HorizontalAlignment="Left" Margin="366,38,0,0" Grid.RowSpan="2" Grid.Row="1" VerticalAlignment="Top" Click="Btn_OnFilter_Click"/>
-
     </Grid>
 </Window>
