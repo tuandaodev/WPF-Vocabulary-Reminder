@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
@@ -161,12 +161,13 @@ namespace VocabularyReminder
         {
             InitializeComponent();
             this.Inp_ListWord.Text = placeHolder;
-
-            App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
-            App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
-
-            // Add selection changed handler
+            // Add event handlers
             this.Inp_GlobalDictionaryId.SelectionChanged += Inp_GlobalDictionaryId_SelectionChanged;
+            this.Inp_RandomOption.Checked += Settings_Changed;
+            this.Inp_RandomOption.Unchecked += Settings_Changed;
+            this.Inp_AutoPlayOption.Checked += Settings_Changed;
+            this.Inp_AutoPlayOption.Unchecked += Settings_Changed;
+            this.Inp_TimeRepeat.TextChanged += Settings_Changed;
 
             Load_Dictionaries();
             Status_Reset();
@@ -179,7 +180,6 @@ namespace VocabularyReminder
                 List<Dictionary> dictionaries = DataAccess.GetDictionariesAsync().Result;
                 this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
                 
-                // Load saved dictionary ID from settings
                 string settingsPath = ApplicationIO.GetSettingsPath();
                 if (File.Exists(settingsPath))
                 {
@@ -187,12 +187,32 @@ namespace VocabularyReminder
                     {
                         var json = File.ReadAllText(settingsPath);
                         var settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                        
+                        // Load dictionary ID
                         if (settings.ContainsKey("lastDictionaryId"))
                         {
                             int lastId = ((JsonElement)settings["lastDictionaryId"]).GetInt32();
                             if (dictionaries.Any(d => d.Id == lastId))
                             {
                                 this.Inp_GlobalDictionaryId.SelectedValue = lastId;
+                                
+                                // Load other settings
+                                if (settings.ContainsKey("isRandomWords"))
+                                {
+                                    Inp_RandomOption.IsChecked = ((JsonElement)settings["isRandomWords"]).GetBoolean();
+                                }
+                                if (settings.ContainsKey("isAutoPlaySounds"))
+                                {
+                                    Inp_AutoPlayOption.IsChecked = ((JsonElement)settings["isAutoPlaySounds"]).GetBoolean();
+                                }
+                                if (settings.ContainsKey("timeRepeat"))
+                                {
+                                    Inp_TimeRepeat.Text = ((JsonElement)settings["timeRepeat"]).GetInt32().ToString();
+                                }
+
+                                App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
+                                App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+                                
                                 return;
                             }
                         }
@@ -779,7 +799,16 @@ namespace VocabularyReminder
         private void Inp_GlobalDictionaryId_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Inp_GlobalDictionaryId.SelectedValue == null) return;
+            SaveSettings();
+        }
 
+        private void Settings_Changed(object sender, EventArgs e)
+        {
+            SaveSettings();
+        }
+
+        private void SaveSettings()
+        {
             var settings = new Dictionary<string, object>();
             string settingsPath = ApplicationIO.GetSettingsPath();
 
@@ -794,8 +823,11 @@ namespace VocabularyReminder
                 catch { }
             }
 
-            // Update or add the lastDictionaryId setting
+            // Update settings
             settings["lastDictionaryId"] = Inp_GlobalDictionaryId.SelectedValue;
+            settings["isRandomWords"] = Inp_RandomOption.IsChecked;
+            settings["isAutoPlaySounds"] = Inp_AutoPlayOption.IsChecked;
+            settings["timeRepeat"] = int.Parse(Inp_TimeRepeat.Text);
 
             // Save settings
             try
@@ -805,7 +837,7 @@ namespace VocabularyReminder
             }
             catch (Exception ex)
             {
-                Status_UpdateMessage($"Failed to save dictionary preference: {ex.Message}");
+                Status_UpdateMessage($"Failed to save settings: {ex.Message}");
             }
         }
 
