@@ -695,7 +695,11 @@ namespace VocabularyReminder
             //VocabularyToast.ShowToastByVocabularyItem(vocabulary);
             if (App.isAutoPlaySounds)
             {
-                _ = Task.Run(() => Mp3.PlayFile(vocabulary));
+                _ = Task.Run(async () =>
+                {
+                    await Mp3.PlayFile(vocabulary);
+                    await DataAccess.UpdateViewDateAsync(vocabulary?.Id ?? 0);
+                });
             }
 
             App.GlobalWordId = vocabulary?.Id ?? 0;

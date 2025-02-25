@@ -13,11 +13,11 @@
     <SourceRoot Include="C:\Users\tuan.dao\.nuget\packages\" />
   </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\EntityFramework.props" Condition="Exists('$(NuGetPackageRoot)entityframework\6.4.4\buildTransitive\EntityFramework.props')" />
+    <Import Project="$(NuGetPackageRoot)entityframework\6.5.1\buildTransitive\EntityFramework.props" Condition="Exists('$(NuGetPackageRoot)entityframework\6.5.1\buildTransitive\EntityFramework.props')" />
     <Import Project="$(NuGetPackageRoot)microsoft.windows.sdk.contracts\10.0.18362.2002-preview\build\Microsoft.Windows.SDK.Contracts.props" Condition="Exists('$(NuGetPackageRoot)microsoft.windows.sdk.contracts\10.0.18362.2002-preview\build\Microsoft.Windows.SDK.Contracts.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <PkgEntityFramework Condition=" '$(PkgEntityFramework)' == '' ">C:\Users\tuan.dao\.nuget\packages\entityframework\6.4.4</PkgEntityFramework>
+    <PkgEntityFramework Condition=" '$(PkgEntityFramework)' == '' ">C:\Users\tuan.dao\.nuget\packages\entityframework\6.5.1</PkgEntityFramework>
     <PkgSystem_Data_SQLite_EF6 Condition=" '$(PkgSystem_Data_SQLite_EF6)' == '' ">C:\Users\tuan.dao\.nuget\packages\system.data.sqlite.ef6\1.0.118</PkgSystem_Data_SQLite_EF6>
   </PropertyGroup>
 </Project>

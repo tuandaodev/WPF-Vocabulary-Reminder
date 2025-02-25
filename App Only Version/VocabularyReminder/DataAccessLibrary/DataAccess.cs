@@ -111,6 +111,27 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
+        public static async Task UpdateViewDateAsync(int _Id)
+        {
+            using (var context = new VocaDbContext())
+            {
+                var result = await context.Vocabularies
+                    .Where(e => e.Id == _Id)
+                    .UpdateFromQueryAsync(x => new Vocabulary()
+                    {
+                        ViewedDate = DateTime.Now,
+                    });
+            }
+        }
+
+        public static async Task UpdateAsync(Vocabulary item)
+        {
+            using (var context = new VocaDbContext())
+            {
+                await context.SingleUpdateAsync(item);
+            }
+        }
+
         public static async Task UpdateStatusAsync(int _Id, int _Status = 0)
         {
             if (CurrentVocabulary != null
@@ -124,7 +145,8 @@ namespace VocabularyReminder.DataAccessLibrary
                     .Where(e => e.Id == _Id)
                     .UpdateFromQueryAsync(x => new Vocabulary()
                     {
-                        Status = _Status
+                        Status = _Status,
+                        LearnedDate = _Status == 0 ? DateTime.Now : DateTime.MinValue,
                     });
                 if (result > 0 && CurrentVocabulary != null && CurrentVocabulary.Id == _Id)
                 {

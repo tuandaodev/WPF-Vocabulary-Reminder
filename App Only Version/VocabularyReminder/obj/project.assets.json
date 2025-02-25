@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "EntityFramework/6.4.4": {
+      "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
@@ -628,7 +628,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "EntityFramework/6.4.4": {
+      "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
@@ -1204,7 +1204,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-arm64": {
-      "EntityFramework/6.4.4": {
+      "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
@@ -1783,7 +1783,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "EntityFramework/6.4.4": {
+      "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
@@ -2362,7 +2362,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "EntityFramework/6.4.4": {
+      "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
           "System.ComponentModel.DataAnnotations"
@@ -2942,30 +2942,31 @@
     }
   },
   "libraries": {
-    "EntityFramework/6.4.4": {
-      "sha512": "yj1+/4tci7Panu3jKDHYizxwVm0Jvm7b7m057b5h4u8NUHGCR8WIWirBTw+8EptRffwftIWPBeIRGNKD1ewEMQ==",
+    "EntityFramework/6.5.1": {
+      "sha512": "sQRP2lWg1i3aAGWqdliAM8zrGx7LHMUk+9/MoxUjwfTZYGMXvZ2JYZTlyTm1PqDxvn3c9E3U76TWDON7Y5+CVA==",
       "type": "package",
-      "path": "entityframework/6.4.4",
+      "path": "entityframework/6.5.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
+        "README.md",
         "build/EntityFramework.DefaultItems.props",
         "build/EntityFramework.props",
         "build/EntityFramework.targets",
         "build/Microsoft.Data.Entity.Build.Tasks.dll",
-        "build/netcoreapp3.0/EntityFramework.props",
-        "build/netcoreapp3.0/EntityFramework.targets",
+        "build/net6.0/EntityFramework.props",
+        "build/net6.0/EntityFramework.targets",
         "buildTransitive/EntityFramework.props",
         "buildTransitive/EntityFramework.targets",
-        "buildTransitive/netcoreapp3.0/EntityFramework.props",
-        "buildTransitive/netcoreapp3.0/EntityFramework.targets",
+        "buildTransitive/net6.0/EntityFramework.props",
+        "buildTransitive/net6.0/EntityFramework.targets",
         "content/net40/App.config.install.xdt",
         "content/net40/App.config.transform",
         "content/net40/Web.config.install.xdt",
         "content/net40/Web.config.transform",
-        "entityframework.6.4.4.nupkg.sha512",
+        "entityframework.6.5.1.nupkg.sha512",
         "entityframework.nuspec",
         "lib/net40/EntityFramework.SqlServer.dll",
         "lib/net40/EntityFramework.SqlServer.xml",
@@ -2988,15 +2989,19 @@
         "tools/install.ps1",
         "tools/net40/any/ef6.exe",
         "tools/net40/any/ef6.pdb",
+        "tools/net40/win-arm64/ef6.exe",
+        "tools/net40/win-arm64/ef6.pdb",
         "tools/net40/win-x86/ef6.exe",
         "tools/net40/win-x86/ef6.pdb",
         "tools/net45/any/ef6.exe",
         "tools/net45/any/ef6.pdb",
+        "tools/net45/win-arm64/ef6.exe",
+        "tools/net45/win-arm64/ef6.pdb",
         "tools/net45/win-x86/ef6.exe",
         "tools/net45/win-x86/ef6.pdb",
-        "tools/netcoreapp3.0/any/ef6.dll",
-        "tools/netcoreapp3.0/any/ef6.pdb",
-        "tools/netcoreapp3.0/any/ef6.runtimeconfig.json"
+        "tools/net6.0/any/ef6.dll",
+        "tools/net6.0/any/ef6.pdb",
+        "tools/net6.0/any/ef6.runtimeconfig.json"
       ]
     },
     "HtmlAgilityPack/1.11.18": {
@@ -4097,7 +4102,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "EntityFramework >= 6.4.4",
+      "EntityFramework >= 6.5.1",
       "HtmlAgilityPack >= 1.11.18",
       "MaterialDesignThemes >= 3.0.1",
       "Microsoft.Data.Sqlite >= 3.1.1",
@@ -4151,7 +4156,7 @@
         "dependencies": {
           "EntityFramework": {
             "target": "Package",
-            "version": "[6.4.4, )"
+            "version": "[6.5.1, )"
           },
           "HtmlAgilityPack": {
             "target": "Package",

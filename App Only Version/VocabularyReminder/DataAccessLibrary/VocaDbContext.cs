@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -97,6 +98,10 @@ namespace VocabularyReminder.DataAccessLibrary
         public string Related { get; set; }
 
         public int? Status { get; set; } = 1;  // default value
+
+        public DateTime? ViewedDate { get; set; }
+
+        public DateTime? LearnedDate { get; set; }
 
         public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }

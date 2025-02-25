@@ -59,6 +59,10 @@ namespace VocabularyReminder.Services
             if (App.isAutoPlaySounds)
             {
                 await Mp3.PlayFile(_item);
+
+                _item.ViewedDate = DateTime.Now;
+                await DataAccess.UpdateAsync(_item);
+                //await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             }
             _item = null;
         }
@@ -93,6 +97,7 @@ namespace VocabularyReminder.Services
             if (App.isAutoPlaySounds)
             {
                 await Mp3.PlayFile(_item);
+                await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             }
                               
             _item = null;
@@ -102,6 +107,7 @@ namespace VocabularyReminder.Services
         {
             var _item = await DataAccess.GetVocabularyByIdAsync(App.GlobalWordId);
             VocabularyDisplay.ShowVocabulary(_item);
+            await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             _item = null;
         }
     }
