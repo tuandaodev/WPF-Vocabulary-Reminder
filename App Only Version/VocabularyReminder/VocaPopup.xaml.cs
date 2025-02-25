@@ -1,7 +1,8 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
+using System.Threading.Tasks;
 
 namespace VocabularyReminder
 {
@@ -86,6 +87,22 @@ namespace VocabularyReminder
         {
             await BackgroundService.NextAndDeleteVocabulary();
             this.Close();
+        }
+
+        private async void Btn_ReadExample_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Label_Example.Text))
+                {
+                    await TextToSpeechService.SpeakTextAsync(Label_Example.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error reading text: " + ex.Message, "Text-to-Speech Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         public void SetVocabulary(Vocabulary _item)

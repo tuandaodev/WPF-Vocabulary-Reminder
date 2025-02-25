@@ -530,6 +530,18 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Speech/9.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Speech"
+        ],
+        "compile": {
+          "lib/net462/_._": {}
+        },
+        "runtime": {
+          "lib/net462/_._": {}
+        }
+      },
       "System.Text.Encodings.Web/9.0.2": {
         "type": "package",
         "dependencies": {
@@ -1104,6 +1116,18 @@
         },
         "build": {
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
+        }
+      },
+      "System.Speech/9.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Speech"
+        ],
+        "compile": {
+          "lib/net462/_._": {}
+        },
+        "runtime": {
+          "lib/net462/_._": {}
         }
       },
       "System.Text.Encodings.Web/9.0.2": {
@@ -1685,6 +1709,18 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Speech/9.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Speech"
+        ],
+        "compile": {
+          "lib/net462/_._": {}
+        },
+        "runtime": {
+          "lib/net462/_._": {}
+        }
+      },
       "System.Text.Encodings.Web/9.0.2": {
         "type": "package",
         "dependencies": {
@@ -2264,6 +2300,18 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Speech/9.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Speech"
+        ],
+        "compile": {
+          "lib/net462/_._": {}
+        },
+        "runtime": {
+          "lib/net462/_._": {}
+        }
+      },
       "System.Text.Encodings.Web/9.0.2": {
         "type": "package",
         "dependencies": {
@@ -2841,6 +2889,18 @@
         },
         "build": {
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
+        }
+      },
+      "System.Speech/9.0.2": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Speech"
+        ],
+        "compile": {
+          "lib/net462/_._": {}
+        },
+        "runtime": {
+          "lib/net462/_._": {}
         }
       },
       "System.Text.Encodings.Web/9.0.2": {
@@ -3894,6 +3954,35 @@
         "version.txt"
       ]
     },
+    "System.Speech/9.0.2": {
+      "sha512": "arQPudYrkW+cZfF7qyKcv9ukR7lM54AKyQDPX/2RPrC1EFlkYWHeOI6ST6VeI8hefW4zH9f/FnThuC70LFNd9A==",
+      "type": "package",
+      "path": "system.speech/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Speech.targets",
+        "lib/net462/_._",
+        "lib/net8.0/System.Speech.dll",
+        "lib/net8.0/System.Speech.xml",
+        "lib/net9.0/System.Speech.dll",
+        "lib/net9.0/System.Speech.xml",
+        "lib/netstandard2.0/System.Speech.dll",
+        "lib/netstandard2.0/System.Speech.xml",
+        "runtimes/win/lib/net8.0/System.Speech.dll",
+        "runtimes/win/lib/net8.0/System.Speech.xml",
+        "runtimes/win/lib/net9.0/System.Speech.dll",
+        "runtimes/win/lib/net9.0/System.Speech.xml",
+        "system.speech.9.0.2.nupkg.sha512",
+        "system.speech.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Text.Encodings.Web/9.0.2": {
       "sha512": "/kCGdrXg0PXrvkHYyHubXJHcmCAvJrxTZ7g4XS6UCxY1JW79aMjtUW6UYNECHJmiyFZsZ/vUuWOM4CtNpiNt8Q==",
       "type": "package",
@@ -4112,6 +4201,7 @@
       "QueryString.NET >= 1.0.0",
       "System.Data.SQLite >= 1.0.118",
       "System.Data.SQLite.EF6 >= 1.0.118",
+      "System.Speech >= 9.0.2",
       "System.Text.Json >= 9.0.2",
       "Z.EntityFramework.Extensions >= 8.102.3"
     ]
@@ -4193,6 +4283,10 @@
           "System.Data.SQLite.EF6": {
             "target": "Package",
             "version": "[1.0.118, )"
+          },
+          "System.Speech": {
+            "target": "Package",
+            "version": "[9.0.2, )"
           },
           "System.Text.Json": {
             "target": "Package",

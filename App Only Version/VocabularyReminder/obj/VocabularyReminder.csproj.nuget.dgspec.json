@@ -79,6 +79,10 @@
               "target": "Package",
               "version": "[1.0.118, )"
             },
+            "System.Speech": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
             "System.Text.Json": {
               "target": "Package",
               "version": "[9.0.2, )"

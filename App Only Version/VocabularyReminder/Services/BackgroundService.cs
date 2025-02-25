@@ -61,8 +61,7 @@ namespace VocabularyReminder.Services
                 await Mp3.PlayFile(_item);
 
                 _item.ViewedDate = DateTime.Now;
-                await DataAccess.UpdateAsync(_item);
-                //await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
+                await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             }
             _item = null;
         }

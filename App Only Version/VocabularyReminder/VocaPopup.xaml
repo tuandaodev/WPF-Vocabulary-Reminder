@@ -180,7 +180,14 @@
                       TextWrapping="Wrap"
                       Foreground="#FFFFFF"
                       FontSize="16"
-                      Margin="0,4,0,12"/>
+                      Margin="0,4,0,4"/>
+            
+            <Button x:Name="Btn_ReadExample"
+                    Content="Read Example"
+                    HorizontalAlignment="Left"
+                    Width="120"
+                    Margin="0,0,0,12"
+                    Click="Btn_ReadExample_Click"/>
 
             <!-- Related Words -->
             <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>

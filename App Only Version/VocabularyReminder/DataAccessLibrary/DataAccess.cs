@@ -124,14 +124,6 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
-        public static async Task UpdateAsync(Vocabulary item)
-        {
-            using (var context = new VocaDbContext())
-            {
-                await context.SingleUpdateAsync(item);
-            }
-        }
-
         public static async Task UpdateStatusAsync(int _Id, int _Status = 0)
         {
             if (CurrentVocabulary != null
