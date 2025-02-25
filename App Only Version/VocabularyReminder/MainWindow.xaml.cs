@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
+﻿﻿﻿﻿using DesktopNotifications.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
@@ -167,6 +167,8 @@ namespace VocabularyReminder
             this.Inp_RandomOption.Unchecked += Settings_Changed;
             this.Inp_AutoPlayOption.Checked += Settings_Changed;
             this.Inp_AutoPlayOption.Unchecked += Settings_Changed;
+            this.Inp_UseCustomPopup.Checked += Settings_Changed;
+            this.Inp_UseCustomPopup.Unchecked += Settings_Changed;
             this.Inp_TimeRepeat.TextChanged += Settings_Changed;
 
             Load_Dictionaries();
@@ -209,9 +211,14 @@ namespace VocabularyReminder
                                 {
                                     Inp_TimeRepeat.Text = ((JsonElement)settings["timeRepeat"]).GetInt32().ToString();
                                 }
+                                if (settings.ContainsKey("isUseCustomPopup"))
+                                {
+                                    Inp_UseCustomPopup.IsChecked = ((JsonElement)settings["isUseCustomPopup"]).GetBoolean();
+                                }
 
                                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+                                App.isUseCustomPopup = Inp_UseCustomPopup.IsChecked.GetValueOrDefault();
                                 
                                 return;
                             }
@@ -617,6 +624,8 @@ namespace VocabularyReminder
                 App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+                App.isUseCustomPopup = Inp_UseCustomPopup.IsChecked.GetValueOrDefault();
+
                 Btn_StartLearning.Content = "Stop Learning";
                 // Init value
                 _TokenSource = new CancellationTokenSource();
@@ -644,13 +653,15 @@ namespace VocabularyReminder
                           if ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
                               continue;
 
-                          VocabularyToast.ClearApplicationToast();
+                          //VocabularyToast.ClearApplicationToast();
+                          VocabularyDisplay.Hide();
                           await LoadVocabulary();
 
                           if (_CancelToken.IsCancellationRequested)
                           {
                               Console.WriteLine("task canceled");
-                              VocabularyToast.ClearApplicationToast();
+                              //VocabularyToast.ClearApplicationToast();
+                              VocabularyDisplay.Hide();
                               break;
                           }
                           Thread.Sleep(TimeRepeat);
@@ -679,7 +690,8 @@ namespace VocabularyReminder
         {
             Vocabulary _item = null;
             var vocabulary = await GetVocabulary(_item);
-            VocabularyToast.ShowToastByVocabularyItem(vocabulary);
+            VocabularyDisplay.ShowVocabulary(vocabulary);
+            //VocabularyToast.ShowToastByVocabularyItem(vocabulary);
             if (App.isAutoPlaySounds)
             {
                 _ = Task.Run(() => Mp3.PlayFile(vocabulary));
@@ -831,6 +843,7 @@ namespace VocabularyReminder
             settings["lastDictionaryId"] = Inp_GlobalDictionaryId.SelectedValue;
             settings["isRandomWords"] = Inp_RandomOption.IsChecked;
             settings["isAutoPlaySounds"] = Inp_AutoPlayOption.IsChecked;
+            settings["isUseCustomPopup"] = Inp_UseCustomPopup.IsChecked;
             settings["timeRepeat"] = int.Parse(Inp_TimeRepeat.Text);
 
             // Save settings

@@ -1,11 +1,11 @@
-﻿using DesktopNotifications.Services;
+﻿﻿using DesktopNotifications.Services;
 using System;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder.Services
 {
-    class BackgroundService
+    public class BackgroundService
     {
         public static async Task ActionPlay(int playId = 1)
         {
@@ -34,7 +34,7 @@ namespace VocabularyReminder.Services
         public static void HideToast()
         {
             App.isShowPopup = false;
-            VocabularyToast.ClearApplicationToast();
+            VocabularyDisplay.Hide();
         }
 
         public static async Task NextVocabulary()
@@ -55,7 +55,7 @@ namespace VocabularyReminder.Services
                 _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
             }
             App.GlobalWordId = _item != null ? _item.Id : 0;
-            VocabularyToast.ShowToastByVocabularyItem(_item);
+            VocabularyDisplay.ShowVocabulary(_item);
             if (App.isAutoPlaySounds)
             {
                 await Mp3.PlayFile(_item);
@@ -66,7 +66,7 @@ namespace VocabularyReminder.Services
         public static async Task DeleteVocabularyAsync()
         {
             await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);
-            VocabularyToast.ClearApplicationToast();
+            VocabularyDisplay.Hide();
         }
 
         public static async Task NextAndDeleteVocabulary()
@@ -89,7 +89,7 @@ namespace VocabularyReminder.Services
                 _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
             }
             App.GlobalWordId = _item != null ? _item.Id : 0;
-            VocabularyToast.ShowToastByVocabularyItem(_item);
+            VocabularyDisplay.ShowVocabulary(_item);
             if (App.isAutoPlaySounds)
             {
                 await Mp3.PlayFile(_item);
@@ -101,7 +101,7 @@ namespace VocabularyReminder.Services
         public static async Task ShowCurrentToast()
         {
             var _item = await DataAccess.GetVocabularyByIdAsync(App.GlobalWordId);
-            VocabularyToast.ShowToastByVocabularyItem(_item);
+            VocabularyDisplay.ShowVocabulary(_item);
             _item = null;
         }
     }

@@ -135,9 +135,15 @@
                       Margin="0,0,15,0"/>
             
             <CheckBox x:Name="Inp_AutoPlayOption"
-                      Content="Auto Play Sounds"
-                      IsChecked="True"
-                      VerticalAlignment="Center"/>
+                       Content="Auto Play Sounds"
+                       IsChecked="True"
+                       VerticalAlignment="Center"
+                       Margin="0,0,15,0"/>
+            
+            <CheckBox x:Name="Inp_UseCustomPopup"
+                       Content="Use Custom Popup"
+                       IsChecked="False"
+                       VerticalAlignment="Center"/>
         </StackPanel>
 
         <!-- Action Buttons -->

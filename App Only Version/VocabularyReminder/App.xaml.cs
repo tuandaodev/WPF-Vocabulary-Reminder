@@ -33,6 +33,7 @@ namespace VocabularyReminder
         public static bool isRandomWords = false;
         public static bool isAutoPlaySounds = false;
         public static bool isShowPopup = false;
+        public static bool isUseCustomPopup = false;
         public static DateTime LastReaction;
 
         protected override void OnStartup(StartupEventArgs e)

@@ -125,6 +125,7 @@
     <Compile Include="Services\Mp3.cs" />
     <Compile Include="Services\PlaybackService.cs" />
     <Compile Include="Services\TranslateService.cs" />
+    <Compile Include="Services\VocabularyDisplay.cs" />
     <Compile Include="Utils\ExpressionStarter.cs" />
     <Compile Include="Utils\PredicateBuilder.cs" />
     <Compile Include="VocabularyToast.cs" />
