@@ -29,8 +29,21 @@
             <Setter Property="Background" Value="#333333"/>
             <Setter Property="Foreground" Value="#FFFFFF"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="10,5"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#444444"/>
@@ -125,7 +138,7 @@
                                    Foreground="#666666"/>
                             <Label x:Name="Label_IPA"
                                    Content="IPA"
-                                   FontSize="14"
+                                   FontSize="16"
                                    Padding="0"
                                    Margin="0,0,24,0"/>
                         </StackPanel>
@@ -136,7 +149,7 @@
                                    Foreground="#666666"/>
                             <Label x:Name="Label_IPA2"
                                    Content="IPA 2"
-                                   FontSize="14"
+                                   FontSize="16"
                                    Padding="0"
                                    Margin="0,0,24,0"/>
                         </StackPanel>
@@ -180,24 +193,34 @@
             <!-- Control Buttons -->
             <UniformGrid Rows="1" Margin="0,10,0,0">
                 <Button x:Name="Btn_PlaySound1"
-                        Content="Play Sound 1"
+                        ToolTip="Play Sound US (F8)"
+                        Content="▶"
                         Margin="0,0,5,0"
+                        FontSize="14"
                         Click="Btn_PlaySound1_Click"/>
                 <Button x:Name="Btn_PlaySound2"
-                        Content="Play Sound 2"
+                        ToolTip="Play Sound UK (SHIFT+F8)"
+                        Content="▷"
                         Margin="5,0"
+                        FontSize="14"
                         Click="Btn_PlaySound2_Click"/>
                 <Button x:Name="Btn_Delete"
-                        Content="Delete"
+                        ToolTip="Delete (PRINTSCREEN)"
+                        Content="✖"
                         Margin="5,0"
+                        FontSize="14"
                         Click="Btn_Delete_Click"/>
                 <Button x:Name="Btn_Next"
-                        Content="Next"
+                        ToolTip="Next (SCROLL)"
+                        Content="➔"
                         Margin="5,0"
+                        FontSize="14"
                         Click="Btn_Next_Click"/>
                 <Button x:Name="Btn_NextAndDelete"
-                        Content="Next + Delete"
+                        ToolTip="Next and Delete (PAUSE)"
+                        Content="➔✖"
                         Margin="5,0,0,0"
+                        FontSize="14"
                         Click="Btn_NextAndDelete_Click"/>
             </UniformGrid>
                 </StackPanel>
