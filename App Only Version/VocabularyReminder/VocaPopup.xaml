@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
         Title="VocaPopup"
-        Width="500"
-        MinHeight="300"
+        Width="600"
+        MinHeight="400"
         MaxHeight="1000"
         SizeToContent="Height"
         Background="#1E1E1E"
@@ -24,6 +24,21 @@
             <Setter Property="Foreground" Value="#666666"/>
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="Margin" Value="0,8,0,2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#333333"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Height" Value="32"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#444444"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#555555"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     
@@ -87,22 +102,44 @@
                 <StackPanel DockPanel.Dock="Left">
                     <Label x:Name="Label_Word"
                            Content="Word"
-                           FontSize="24"
+                           FontSize="32"
                            FontWeight="Bold"
                            Padding="0"
                            Margin="0"/>
-                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                        <Label x:Name="Label_IPA"
-                               Content="IPA"
-                               FontSize="12"
-                               Padding="0"
-                               Margin="0,0,12,0"/>
-                        <Label x:Name="Label_Type"
-                               Content="Type"
-                               FontSize="12"
-                               FontStyle="Italic"
-                               Padding="0"
-                               Margin="0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <StackPanel>
+                            <Label Content="IPA 1"
+                                   FontSize="10"
+                                   Padding="0"
+                                   Foreground="#666666"/>
+                            <Label x:Name="Label_IPA"
+                                   Content="IPA"
+                                   FontSize="14"
+                                   Padding="0"
+                                   Margin="0,0,24,0"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="IPA 2"
+                                   FontSize="10"
+                                   Padding="0"
+                                   Foreground="#666666"/>
+                            <Label x:Name="Label_IPA2"
+                                   Content="IPA 2"
+                                   FontSize="14"
+                                   Padding="0"
+                                   Margin="0,0,24,0"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="Type"
+                                   FontSize="10"
+                                   Padding="0"
+                                   Foreground="#666666"/>
+                            <Label x:Name="Label_Type"
+                                   Content="Type"
+                                   FontSize="14"
+                                   FontStyle="Italic"
+                                   Padding="0"/>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </DockPanel>
@@ -113,14 +150,14 @@
                       Text="Vietnamese translation"
                       TextWrapping="Wrap"
                       Foreground="#FFFFFF"
-                      FontSize="14"
-                      Margin="0,4"/>
+                      FontSize="18"
+                      Margin="0,4,0,8"/>
             <TextBlock x:Name="Label_Translate2"
                       Text="English definition"
                       TextWrapping="Wrap"
                       Foreground="#FFFFFF"
-                      FontSize="14"
-                      Margin="0,4"/>
+                      FontSize="18"
+                      Margin="0,4,0,12"/>
 
             <!-- Example -->
             <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
@@ -128,7 +165,8 @@
                       Text="Example usage"
                       TextWrapping="Wrap"
                       Foreground="#FFFFFF"
-                      Margin="0,4"/>
+                      FontSize="16"
+                      Margin="0,4,0,12"/>
 
             <!-- Related Words -->
             <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>
@@ -136,7 +174,32 @@
                       Text="Related words"
                       TextWrapping="Wrap"
                       Foreground="#FFFFFF"
-                      Margin="0,4"/>
+                      FontSize="16"
+                      Margin="0,4,0,20"/>
+
+            <!-- Control Buttons -->
+            <UniformGrid Rows="1" Margin="0,10,0,0">
+                <Button x:Name="Btn_PlaySound1"
+                        Content="Play Sound 1"
+                        Margin="0,0,5,0"
+                        Click="Btn_PlaySound1_Click"/>
+                <Button x:Name="Btn_PlaySound2"
+                        Content="Play Sound 2"
+                        Margin="5,0"
+                        Click="Btn_PlaySound2_Click"/>
+                <Button x:Name="Btn_Delete"
+                        Content="Delete"
+                        Margin="5,0"
+                        Click="Btn_Delete_Click"/>
+                <Button x:Name="Btn_Next"
+                        Content="Next"
+                        Margin="5,0"
+                        Click="Btn_Next_Click"/>
+                <Button x:Name="Btn_NextAndDelete"
+                        Content="Next + Delete"
+                        Margin="5,0,0,0"
+                        Click="Btn_NextAndDelete_Click"/>
+            </UniformGrid>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

@@ -1,6 +1,7 @@
-﻿﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
+using VocabularyReminder.Services;
 
 namespace VocabularyReminder
 {
@@ -59,6 +60,34 @@ namespace VocabularyReminder
             this.Close();
         }
 
+        private async void Btn_PlaySound1_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.ActionPlay(1);
+        }
+
+        private async void Btn_PlaySound2_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.ActionPlay(2);
+        }
+
+        private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.DeleteVocabularyAsync();
+            this.Close();
+        }
+
+        private async void Btn_Next_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.NextVocabulary();
+            this.Close();
+        }
+
+        private async void Btn_NextAndDelete_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.NextAndDeleteVocabulary();
+            this.Close();
+        }
+
         public void SetVocabulary(Vocabulary _item)
         {
             _vocabulary = _item;
@@ -69,13 +98,13 @@ namespace VocabularyReminder
         {
             this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
             
-            var ipa = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
-                ? this._vocabulary.Ipa
-                : $"{this._vocabulary.Ipa} • {this._vocabulary.Ipa2}";
-            this.Label_IPA.Content = $"/{ipa}/";
+            this.Label_IPA.Content = $"{this._vocabulary.Ipa}";
+            this.Label_IPA2.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2)
+                ? "-"
+                : $"{this._vocabulary.Ipa2}";
             
             this.Label_Type.Content = this._vocabulary.Type;
-
+            
             this.Label_Translate1.Text = this._vocabulary.Translate;
             this.Label_Translate2.Text = this._vocabulary.Define;
             this.Label_Example.Text = this._vocabulary.Example;
