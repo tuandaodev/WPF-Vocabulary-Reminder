@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
@@ -590,9 +590,12 @@ namespace VocabularyReminder
             {
                 if (IsActive)
                 {
-                    Stats _Stats = DataAccess.GetStats();
+                    var dictionaryId = (int)this.Inp_GlobalDictionaryId.SelectedValue;
+                    Stats _Stats = DataAccess.GetStats(dictionaryId);
                     this.Label_Stats_ImportedWords.Content = _Stats.Total.ToString();
                     this.Label_Stats_RememberedWords.Content = _Stats.Remembered.ToString();
+                    this.Label_LearnedCount.Content = _Stats.DictionaryLearned.ToString();
+                    this.Label_NotLearnedCount.Content = _Stats.DictionaryNotLearned.ToString();
                 }
             });
         }
@@ -800,6 +803,7 @@ namespace VocabularyReminder
         {
             if (Inp_GlobalDictionaryId.SelectedValue == null) return;
             SaveSettings();
+            Reload_Stats();
         }
 
         private void Settings_Changed(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿﻿﻿using System.Collections.Generic;
 
 namespace VocabularyReminder.DataAccessLibrary
 {
@@ -14,6 +14,8 @@ namespace VocabularyReminder.DataAccessLibrary
     {
         public int Total { get; set; }
         public int Remembered { get; set; }
+        public int DictionaryLearned { get; set; }
+        public int DictionaryNotLearned { get; set; }
     }
 
     //public class Vocabulary

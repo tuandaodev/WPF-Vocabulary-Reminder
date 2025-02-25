@@ -81,6 +81,23 @@
                        Click="Btn_ManageDictionary_Click"
                        Margin="5,0,0,0"/>
             </StackPanel>
+            
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                
+                <Label Content="Learned:" Grid.Row="0" Grid.Column="0"/>
+                <Label x:Name="Label_LearnedCount" Content="0" Grid.Row="0" Grid.Column="1"/>
+                
+                <Label Content="Not Learned:" Grid.Row="1" Grid.Column="0"/>
+                <Label x:Name="Label_NotLearnedCount" Content="0" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
 
             <Button x:Name="Btn_Import_Auto"
                     Content="Import 3000 words"

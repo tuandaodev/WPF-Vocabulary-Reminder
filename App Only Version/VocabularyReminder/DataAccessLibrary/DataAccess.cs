@@ -1,4 +1,4 @@
-﻿﻿using FAI.Core.Utilities.Linq;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using FAI.Core.Utilities.Linq;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -181,18 +181,26 @@ namespace VocabularyReminder.DataAccessLibrary
             }
         }
 
-        public static Stats GetStats()
+        public static Stats GetStats(int dictionaryId = 0)
         {
             string dbpath = ApplicationIO.GetDatabasePath();
             Stats _Stats = new Stats();
             using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
             {
-                string cmd = @" SELECT COUNT(*) as Total,
-                                (SELECT COUNT(*) FROM Vocabulary WHERE Status = 0) as Remembered
-                                FROM Vocabulary";
+                string cmd = @" SELECT
+                                (SELECT COUNT(*) FROM Vocabulary) as Total,
+                                (SELECT COUNT(*) FROM Vocabulary WHERE Status = 0) as Remembered,
+                                (SELECT COUNT(*) FROM Vocabulary v
+                                INNER JOIN VocabularyMappings vm ON v.Id = vm.VocabularyId
+                                WHERE vm.DictionaryId = @dicId AND v.Status = 0) as DictionaryLearned,
+                                (SELECT COUNT(*) FROM Vocabulary v
+                                INNER JOIN VocabularyMappings vm ON v.Id = vm.VocabularyId
+                                WHERE vm.DictionaryId = @dicId AND v.Status = 1) as DictionaryNotLearned
+                                FROM Vocabulary LIMIT 1";
 
                 db.Open();
                 SqliteCommand selectCommand = new SqliteCommand(cmd, db);
+                selectCommand.Parameters.AddWithValue("@dicId", dictionaryId);
                 SqliteDataReader query = selectCommand.ExecuteReader();
 
                 
@@ -200,6 +208,8 @@ namespace VocabularyReminder.DataAccessLibrary
                 {
                     _Stats.Total = int.Parse(query.GetString(0));
                     _Stats.Remembered = int.Parse(query.GetString(1));
+                    _Stats.DictionaryLearned = int.Parse(query.GetString(2));
+                    _Stats.DictionaryNotLearned = int.Parse(query.GetString(3));
                 }
 
                 selectCommand.Dispose();
