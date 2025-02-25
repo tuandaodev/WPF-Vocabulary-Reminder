@@ -12,6 +12,7 @@
         SizeToContent="Height"
         Background="#1E1E1E"
         WindowStyle="None"
+        ShowInTaskbar="False"
         AllowsTransparency="True"
         BorderBrush="#333333"
         BorderThickness="1">

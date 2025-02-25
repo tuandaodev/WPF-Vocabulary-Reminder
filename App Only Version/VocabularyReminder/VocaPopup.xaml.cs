@@ -24,18 +24,18 @@ namespace VocabularyReminder
             this.Loaded += (s, e) => {
                 var workArea = System.Windows.SystemParameters.WorkArea;
                 this.Left = workArea.Right - this.ActualWidth - 20;  // 20px margin from right
-                this.Top = workArea.Bottom - this.ActualHeight - 40;  // 40px margin from bottom
+                this.Top = workArea.Bottom - this.ActualHeight - 20;  // 40px margin from bottom
                 
                 // Add subtle fade-in animation after positioning
                     var fadeIn = new System.Windows.Media.Animation.DoubleAnimation
                     {
                         From = 0,
-                        To = 1,
+                        To = 0.95,
                         Duration = TimeSpan.FromMilliseconds(200)
                     };
                     this.BeginAnimation(Window.OpacityProperty, fadeIn);
                 };
-    
+
                 // Initialize auto-close timer
                 autoCloseTimer = new System.Windows.Forms.Timer();
             autoCloseTimer.Tick += delegate {

@@ -681,6 +681,7 @@ namespace VocabularyReminder
             IsStarted = false;
             Btn_StartLearning.Content = "Start Learning";
 
+            VocabularyDisplay.Hide();
             _TokenSource.Cancel();
             UnRegisterHotKeys();
             Console.WriteLine("Stop and active Cancel Token");
@@ -806,7 +807,7 @@ namespace VocabularyReminder
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (_TokenSource != null) _TokenSource.Cancel();
-            VocabularyToast.ClearApplicationToast();
+            VocabularyDisplay.Hide();
             UnRegisterHotKeys();
             base.OnClosed(e);
         }
