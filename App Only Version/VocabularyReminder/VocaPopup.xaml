@@ -5,23 +5,140 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
         mc:Ignorable="d"
-        Title="VocaPopup" Height="450" Width="800" OpacityMask="#FFF9F9F9" Background="#FF202020">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="49*"/>
-            <ColumnDefinition Width="181*"/>
-            <ColumnDefinition Width="225*"/>
-            <ColumnDefinition Width="113*"/>
-            <ColumnDefinition Width="39*"/>
-            <ColumnDefinition Width="193*"/>
-        </Grid.ColumnDefinitions>
-        <Label x:Name="Label_Translate1" Content="Translate" Margin="0,73,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="5" HorizontalAlignment="Left" Width="776" Grid.Column="1" Foreground="#DDFFFFFF"/>
-        <Label x:Name="Label_Word" Grid.Column="1" Content="Word" HorizontalAlignment="Left" Margin="0,17,0,0" VerticalAlignment="Top" Foreground="#DDFFFFFF" FontWeight="Bold" FontSize="18"/>
-        <Label x:Name="Label_IPA" Grid.Column="1" Content="IPA" HorizontalAlignment="Left" Margin="73,21,0,0" VerticalAlignment="Top" Foreground="#DDFFFFFF"/>
-        <Label x:Name="Label_Translate2" Content="Translate" Margin="0,104,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="5" HorizontalAlignment="Left" Width="776" Grid.Column="1" Foreground="#DDFFFFFF"/>
-        <Label x:Name="Label_Type" Grid.Column="1" Content="Type" HorizontalAlignment="Left" Margin="0,44,0,0" VerticalAlignment="Top" Foreground="#DDFFFFFF" FontStyle="Italic"/>
-        <Label x:Name="Label_Example" Content="Example" Margin="0,133,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="5" HorizontalAlignment="Left" Width="776" Grid.Column="1" Foreground="#DDFFFFFF"/>
-        <Label x:Name="Label_Same" Content="Same" Margin="0,162,0,0" VerticalAlignment="Top" Height="24" Grid.ColumnSpan="5" HorizontalAlignment="Left" Width="776" Grid.Column="1" Foreground="#DDFFFFFF"/>
+        Title="VocaPopup"
+        Width="500"
+        MinHeight="300"
+        MaxHeight="1000"
+        SizeToContent="Height"
+        Background="#1E1E1E"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        BorderBrush="#333333"
+        BorderThickness="1">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Margin" Value="0,4"/>
+        </Style>
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#666666"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Margin" Value="0,8,0,2"/>
+        </Style>
+    </Window.Resources>
+    
+    <Border Padding="20" Background="#1E1E1E" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-    </Grid>
+           <!-- Close Button -->
+           <Button x:Name="CloseButton"
+                   Grid.Row="0"
+                        Content="✕"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Width="24"
+                        Height="24"
+                        Margin="0,-12,-12,0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#666666"
+                        Click="CloseButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="12">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#333333"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            
+            <ScrollViewer Grid.Row="1"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Disabled"
+                         Margin="0,5,0,0">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Background" Value="#1E1E1E"/>
+                        <Setter Property="Foreground" Value="#333333"/>
+                    </Style>
+                </ScrollViewer.Resources>
+                
+                <StackPanel>
+            <!-- Header -->
+            <DockPanel Margin="0,0,0,10">
+                <StackPanel DockPanel.Dock="Left">
+                    <Label x:Name="Label_Word"
+                           Content="Word"
+                           FontSize="24"
+                           FontWeight="Bold"
+                           Padding="0"
+                           Margin="0"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                        <Label x:Name="Label_IPA"
+                               Content="IPA"
+                               FontSize="12"
+                               Padding="0"
+                               Margin="0,0,12,0"/>
+                        <Label x:Name="Label_Type"
+                               Content="Type"
+                               FontSize="12"
+                               FontStyle="Italic"
+                               Padding="0"
+                               Margin="0"/>
+                    </StackPanel>
+                </StackPanel>
+            </DockPanel>
+
+            <!-- Translations -->
+            <TextBlock Text="TRANSLATIONS" Style="{StaticResource SectionTitle}"/>
+            <TextBlock x:Name="Label_Translate1"
+                      Text="Vietnamese translation"
+                      TextWrapping="Wrap"
+                      Foreground="#FFFFFF"
+                      FontSize="14"
+                      Margin="0,4"/>
+            <TextBlock x:Name="Label_Translate2"
+                      Text="English definition"
+                      TextWrapping="Wrap"
+                      Foreground="#FFFFFF"
+                      FontSize="14"
+                      Margin="0,4"/>
+
+            <!-- Example -->
+            <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
+            <TextBlock x:Name="Label_Example"
+                      Text="Example usage"
+                      TextWrapping="Wrap"
+                      Foreground="#FFFFFF"
+                      Margin="0,4"/>
+
+            <!-- Related Words -->
+            <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>
+            <TextBlock x:Name="Label_Same"
+                      Text="Related words"
+                      TextWrapping="Wrap"
+                      Foreground="#FFFFFF"
+                      Margin="0,4"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </Window>

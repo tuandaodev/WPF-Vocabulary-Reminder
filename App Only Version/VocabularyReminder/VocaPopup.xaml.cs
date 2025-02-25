@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 
@@ -10,27 +10,53 @@ namespace VocabularyReminder
     public partial class VocaPopup : Window
     {
         private Vocabulary _vocabulary { get; set; }
-        private System.Windows.Forms.Timer tmr;
+        private System.Windows.Forms.Timer autoCloseTimer;
 
         public VocaPopup()
         {
             InitializeComponent();
 
-            //this.Opacity = 0.5;
-            //this.AllowsTransparency = true;
             this.WindowStartupLocation = WindowStartupLocation.Manual;
-            var desktopWorkingArea = System.Windows.SystemParameters.WorkArea;
-            this.Left = desktopWorkingArea.Right - this.Width;
-            this.Top = desktopWorkingArea.Bottom - this.Height;
-            this.WindowStyle = WindowStyle.None;
             this.Topmost = true;
-
-            tmr = new System.Windows.Forms.Timer();
-            tmr.Tick += delegate {
+            this.Opacity = 0;
+            
+            this.Loaded += (s, e) => {
+                var workArea = System.Windows.SystemParameters.WorkArea;
+                this.Left = workArea.Right - this.ActualWidth - 20;  // 20px margin from right
+                this.Top = workArea.Bottom - this.ActualHeight - 40;  // 40px margin from bottom
+                
+                // Add subtle fade-in animation after positioning
+                    var fadeIn = new System.Windows.Media.Animation.DoubleAnimation
+                    {
+                        From = 0,
+                        To = 1,
+                        Duration = TimeSpan.FromMilliseconds(200)
+                    };
+                    this.BeginAnimation(Window.OpacityProperty, fadeIn);
+                };
+    
+                // Initialize auto-close timer
+                autoCloseTimer = new System.Windows.Forms.Timer();
+            autoCloseTimer.Tick += delegate {
                 this.Close();
             };
-            tmr.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
-            tmr.Start();
+            autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
+            autoCloseTimer.Start();
+        }
+
+        private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            autoCloseTimer.Stop(); // Pause auto-close when user is viewing
+        }
+
+        private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            autoCloseTimer.Start(); // Resume auto-close when user moves away
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
         public void SetVocabulary(Vocabulary _item)
@@ -41,17 +67,23 @@ namespace VocabularyReminder
 
         private void MappingDisplay()
         {
-            this.Label_Word.Content = this._vocabulary.Word;
-            this.Label_IPA.Content = this._vocabulary.Ipa;
-            if (this._vocabulary.Ipa2 != this._vocabulary.Ipa)
-                this.Label_IPA.Content = this._vocabulary.Ipa + " " + this._vocabulary.Ipa2;
-
+            this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
+            
+            var ipa = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
+                ? this._vocabulary.Ipa
+                : $"{this._vocabulary.Ipa} • {this._vocabulary.Ipa2}";
+            this.Label_IPA.Content = $"/{ipa}/";
+            
             this.Label_Type.Content = this._vocabulary.Type;
 
-            this.Label_Translate1.Content = "VI: " + this._vocabulary.Translate;
-            this.Label_Translate2.Content = "EN: " + this._vocabulary.Define;
-            this.Label_Example.Content = this._vocabulary.Example + this._vocabulary.Example;
-            this.Label_Same.Content = this._vocabulary.Related;
+            this.Label_Translate1.Text = this._vocabulary.Translate;
+            this.Label_Translate2.Text = this._vocabulary.Define;
+            this.Label_Example.Text = this._vocabulary.Example;
+            
+            var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
+                ? "None"
+                : this._vocabulary.Related;
+            this.Label_Same.Text = relatedWords;
         }
     }
 }
