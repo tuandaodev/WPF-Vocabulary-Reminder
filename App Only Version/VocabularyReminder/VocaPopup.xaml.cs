@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
@@ -89,6 +89,34 @@ namespace VocabularyReminder
             this.Close();
         }
 
+        private async void Btn_TranslateExample_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Label_Example.Text))
+                {
+                    Btn_TranslateExample.IsEnabled = false;
+                    var translation = await DesktopNotifications.Services.TranslateService.GetGoogleTranslate(Label_Example.Text);
+                    if (!string.IsNullOrEmpty(translation) && translation != Label_Example.Text)
+                    {
+                        Label_ExampleTranslation.Text = translation;
+                        Label_ExampleTranslation.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+                    }
+                    Btn_TranslateExample.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error translating text: " + ex.Message, "Translation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                Btn_TranslateExample.IsEnabled = true;
+            }
+        }
+
         private async void Btn_ReadExample_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -125,6 +153,8 @@ namespace VocabularyReminder
             this.Label_Translate1.Text = this._vocabulary.Translate;
             this.Label_Translate2.Text = this._vocabulary.Define;
             this.Label_Example.Text = this._vocabulary.Example;
+            this.Label_ExampleTranslation.Text = string.Empty;
+            this.Label_ExampleTranslation.Visibility = Visibility.Collapsed;
             
             var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
                 ? "None"

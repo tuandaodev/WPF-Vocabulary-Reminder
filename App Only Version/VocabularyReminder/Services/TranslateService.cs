@@ -1,8 +1,9 @@
-﻿using HtmlAgilityPack;
+﻿﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
 
@@ -19,6 +20,36 @@ namespace DesktopNotifications.Services
         const string xpath_mp3 = "//span[@class='phonetics']/*";
 
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
+
+        public static async Task<string> GetGoogleTranslate(string text)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                try
+                {
+                    var url = $"https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=vi&dt=t&q={Uri.EscapeDataString(text)}";
+                    var response = await httpClient.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+                    var result = await response.Content.ReadAsStringAsync();
+                    
+                    // Parse Google Translate response
+                    // Response format is like: [[["translated text","original text",null,null,1]],null,"en",null,null,null,null,[]]
+                    var jsonResult = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(result);
+                    if (jsonResult.ValueKind == JsonValueKind.Array &&
+                        jsonResult[0].ValueKind == JsonValueKind.Array &&
+                        jsonResult[0][0].ValueKind == JsonValueKind.Array)
+                    {
+                        var translatedText = jsonResult[0][0][0].GetString();
+                        return translatedText ?? text;
+                    }
+                    return text;
+                }
+                catch
+                {
+                    return text; // Return original text if translation fails
+                }
+            }
+        }
 
         public static async Task<Vocabulary> GetVocabularyTranslate(Vocabulary item)
         {
