@@ -1,4 +1,4 @@
-﻿// ******************************************************************
+﻿﻿// ******************************************************************
 // Copyright (c) Microsoft. All rights reserved.
 // This code is licensed under the MIT License (MIT).
 // THE CODE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
@@ -27,6 +27,12 @@ namespace VocabularyReminder
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnExit(ExitEventArgs e)
+        {
+            // Clear cached data when application exits
+            Services.CacheService.Clear();
+            base.OnExit(e);
+        }
 
         public static int GlobalDicId = 0;
         public static int GlobalWordId = 0;

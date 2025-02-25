@@ -1,4 +1,4 @@
-﻿﻿using HtmlAgilityPack;
+﻿﻿﻿﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,12 @@ namespace DesktopNotifications.Services
 
         public static async Task<string> GetGoogleTranslate(string text)
         {
+            // Check cache first
+            if (VocabularyReminder.Services.CacheService.TryGetTranslation(text, out string cachedTranslation))
+            {
+                return cachedTranslation;
+            }
+
             using (HttpClient httpClient = new HttpClient())
             {
                 try
@@ -40,7 +46,12 @@ namespace DesktopNotifications.Services
                         jsonResult[0][0].ValueKind == JsonValueKind.Array)
                     {
                         var translatedText = jsonResult[0][0][0].GetString();
-                        return translatedText ?? text;
+                        if (translatedText != null)
+                        {
+                            // Cache the successful translation
+                            VocabularyReminder.Services.CacheService.CacheTranslation(text, translatedText);
+                            return translatedText;
+                        }
                     }
                     return text;
                 }
