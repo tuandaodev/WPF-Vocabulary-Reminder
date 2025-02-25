@@ -100,15 +100,26 @@
             <!-- Header -->
             <DockPanel Margin="0,0,0,10">
                 <StackPanel DockPanel.Dock="Left">
-                    <Label x:Name="Label_Word"
-                           Content="Word"
-                           FontSize="32"
-                           FontWeight="Bold"
-                           Padding="0"
-                           Margin="0"/>
+                    <DockPanel>
+                        <Label x:Name="Label_Word"
+                               Content="Word"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               Padding="0"
+                               Margin="0"/>
+                        <Label x:Name="Label_Type"
+                               Content="Type"
+                               FontSize="16"
+                               FontStyle="Italic"
+                               Padding="0"
+                               Margin="12,12,0,0"
+                               VerticalAlignment="Top"
+                               Foreground="#999999"/>
+                    </DockPanel>
+                    
                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                         <StackPanel>
-                            <Label Content="IPA 1"
+                            <Label Content="IPA US"
                                    FontSize="10"
                                    Padding="0"
                                    Foreground="#666666"/>
@@ -119,7 +130,7 @@
                                    Margin="0,0,24,0"/>
                         </StackPanel>
                         <StackPanel>
-                            <Label Content="IPA 2"
+                            <Label Content="IPA UK"
                                    FontSize="10"
                                    Padding="0"
                                    Foreground="#666666"/>
@@ -128,17 +139,6 @@
                                    FontSize="14"
                                    Padding="0"
                                    Margin="0,0,24,0"/>
-                        </StackPanel>
-                        <StackPanel>
-                            <Label Content="Type"
-                                   FontSize="10"
-                                   Padding="0"
-                                   Foreground="#666666"/>
-                            <Label x:Name="Label_Type"
-                                   Content="Type"
-                                   FontSize="14"
-                                   FontStyle="Italic"
-                                   Padding="0"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
