@@ -203,6 +203,12 @@
                         Width="120"
                         Margin="8,0,0,0"
                         Click="Btn_TranslateExample_Click"/>
+                <Button x:Name="Btn_GetExamplePhonetics"
+                        Content="Get Phonetics"
+                        HorizontalAlignment="Left"
+                        Width="120"
+                        Margin="8,0,0,0"
+                        Click="Btn_GetExamplePhonetics_Click"/>
             </StackPanel>
 
             <!-- Related Words -->

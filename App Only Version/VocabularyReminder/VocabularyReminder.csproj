@@ -124,7 +124,9 @@
     <Compile Include="Services\CacheService.cs" />
     <Compile Include="Services\Helper.cs" />
     <Compile Include="Services\Import.cs" />
+    <Compile Include="Services\IPA.cs" />
     <Compile Include="Services\Mp3.cs" />
+    <Compile Include="Services\PhoneticService.cs" />
     <Compile Include="Services\PlaybackService.cs" />
     <Compile Include="Services\TextToSpeechService.cs" />
     <Compile Include="Services\TranslateService.cs" />
@@ -268,7 +270,11 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Data\IPA.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

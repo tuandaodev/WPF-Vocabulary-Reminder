@@ -5,6 +5,7 @@ using System.Data.SQLite;
 
 namespace VocabularyReminder.DataAccessLibrary
 {
+    //This Context is used to READ-ONLY from existing vocabulary
     public class DicEVContext : DbContext
     {
         public DicEVContext() : base(new SQLiteConnection()

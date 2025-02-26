@@ -1,8 +1,7 @@
-﻿﻿﻿﻿using System;
+﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
-using System.Threading.Tasks;
 
 namespace VocabularyReminder
 {
@@ -11,7 +10,9 @@ namespace VocabularyReminder
     /// </summary>
     public partial class VocaPopup : Window
     {
+        private static IPA _ipaService;
         private Vocabulary _vocabulary { get; set; }
+
         private System.Windows.Forms.Timer autoCloseTimer;
 
         public VocaPopup()
@@ -130,6 +131,67 @@ namespace VocabularyReminder
             {
                 MessageBox.Show("Error reading text: " + ex.Message, "Text-to-Speech Error",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private async void Btn_GetExamplePhonetics_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(Label_Example.Text))
+                return;
+
+            try
+            {
+                // Disable button while processing
+                Btn_GetExamplePhonetics.IsEnabled = false;
+
+                // Initialize IPA service if needed
+                if (_ipaService == null)
+                {
+                    try
+                    {
+                        _ipaService = new IPA();
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to initialize IPA service: {ex.Message}");
+                        MessageBox.Show("Failed to load IPA dictionary.", "IPA Service Error",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+                    }
+                }
+
+                // Try IPA service
+                if (_ipaService != null)
+                {
+                    string ipa = null;
+                    
+                    try
+                    {
+                        ipa = _ipaService.EnglishToIPA(Label_Example.Text);
+                        // If IPA service returns the same word, it means no phonetic found
+                        if (ipa == Label_Example.Text.ToLower())
+                        {
+                            ipa = null;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"IPA lookup failed for word '{Label_Example.Text}': {ex.Message}");
+                        ipa = null;
+                    }
+
+                    // Update UI with final result
+                    Label_Example.Text = ipa ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error getting phonetics: {ex.Message}", "Phonetics Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                // Re-enable button
+                Btn_GetExamplePhonetics.IsEnabled = true;
             }
         }
 

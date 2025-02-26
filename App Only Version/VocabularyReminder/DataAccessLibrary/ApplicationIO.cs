@@ -17,6 +17,11 @@ namespace VocabularyReminder.DataAccessLibrary
             return Path.Combine(SelfData, "dictionary.csv");
         }
 
+        public static string GetIPACSV()
+        {
+            return Path.Combine(SelfData, "IPA.txt");
+        }
+
         public static string GetApplicationFolderPath()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), LocalFolder);
