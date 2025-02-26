@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿﻿using System;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
@@ -180,7 +180,15 @@ namespace VocabularyReminder
                     }
 
                     // Update UI with final result
-                    Label_Example.Text = ipa ?? string.Empty;
+                    if (!string.IsNullOrEmpty(ipa))
+                    {
+                        Label_ExamplePhonetic.Text = ipa;
+                        Label_ExamplePhonetic.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
             catch (Exception ex)
@@ -217,6 +225,8 @@ namespace VocabularyReminder
             this.Label_Example.Text = this._vocabulary.Example;
             this.Label_ExampleTranslation.Text = string.Empty;
             this.Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+            this.Label_ExamplePhonetic.Text = string.Empty;
+            this.Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
             
             var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
                 ? "None"

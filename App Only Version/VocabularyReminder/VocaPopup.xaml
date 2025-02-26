@@ -183,13 +183,22 @@
                       Margin="0,4,0,4"/>
 
             <TextBlock x:Name="Label_ExampleTranslation"
-                      Text=""
-                      TextWrapping="Wrap"
-                      Foreground="#88FFFFFF"
-                      FontStyle="Italic"
-                      FontSize="14"
-                      Margin="0,4,0,12"
-                      Visibility="Collapsed"/>
+                       Text=""
+                       TextWrapping="Wrap"
+                       Foreground="#88FFFFFF"
+                       FontStyle="Italic"
+                       FontSize="14"
+                       Margin="0,4,0,4"
+                       Visibility="Collapsed"/>
+            
+            <TextBlock x:Name="Label_ExamplePhonetic"
+                       Text=""
+                       TextWrapping="Wrap"
+                       Foreground="#88FFFFFF"
+                       FontStyle="Italic"
+                       FontSize="14"
+                       Margin="0,0,0,12"
+                       Visibility="Collapsed"/>
             
             <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                 <Button x:Name="Btn_ReadExample"
