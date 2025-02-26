@@ -1,3 +1,0 @@
-E:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Debug\cab1.cab
-E:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Debug\Vocabulary Reminder.msi
-E:\WPF-Vocabulary-Reminder\VocabularyReminderInstaller\bin\Debug\Vocabulary Reminder.wixpdb
