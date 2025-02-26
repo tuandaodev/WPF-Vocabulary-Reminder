@@ -1,4 +1,4 @@
-﻿﻿﻿﻿using HtmlAgilityPack;
+﻿﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -20,6 +20,14 @@ namespace DesktopNotifications.Services
         const string xpath_mp3 = "//span[@class='phonetics']/*";
 
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
+
+        public static GetCambridgeWordUrL() {
+            return mainTranslateUrl + item.Word.ToLower();;
+        }
+
+        public static GetOxfordWordUrL() {
+            return mainGetPlayUrl + item.Word.ToLower();
+        }
 
         public static async Task<string> GetGoogleTranslate(string text)
         {
@@ -66,7 +74,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = mainTranslateUrl + item.Word.ToLower();
+                string _wordUrl = GetCambridgeWordUrL(item.Word);
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
@@ -124,7 +132,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = mainGetPlayUrl + item.Word.ToLower();
+                string _wordUrl = GetOxfordWordUrL(item.Word);
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
