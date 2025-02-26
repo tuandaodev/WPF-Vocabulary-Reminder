@@ -1,4 +1,5 @@
-﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
@@ -134,7 +135,47 @@ namespace VocabularyReminder
             }
         }
 
-        private async void Btn_GetExamplePhonetics_Click(object sender, RoutedEventArgs e)
+        private void Btn_OpenCambridge_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_vocabulary?.Word))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = DesktopNotifications.Services.Helper.GetCambridgeWordUrl(_vocabulary.Word),
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening Cambridge Dictionary: {ex.Message}", "Browser Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void Btn_OpenOxford_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_vocabulary?.Word))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = DesktopNotifications.Services.Helper.GetOxfordWordUrl(_vocabulary.Word),
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening Oxford Dictionary: {ex.Message}", "Browser Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void Btn_GetExamplePhonetics_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(Label_Example.Text))
                 return;
@@ -163,7 +204,7 @@ namespace VocabularyReminder
                 if (_ipaService != null)
                 {
                     string ipa = null;
-                    
+
                     try
                     {
                         ipa = _ipaService.EnglishToIPA(Label_Example.Text);

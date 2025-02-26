@@ -1,4 +1,4 @@
-﻿﻿using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -11,23 +11,15 @@ namespace DesktopNotifications.Services
 {
     class TranslateService
     {
-        public static string mainTranslateUrl = "https://dictionary.cambridge.org/vi/dictionary/english-vietnamese/";
+        //public static string mainTranslateUrl = "https://dictionary.cambridge.org/vi/dictionary/english-vietnamese/";
         const string xpath_translate = "//span[@class='trans dtrans']";
         const string xpath_ipa = "//span[@class='ipa dipa']";
         const string xpath_type = "//span[@class='pos dpos']";
 
-        public static string mainGetPlayUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
+        //public static string mainGetPlayUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
         const string xpath_mp3 = "//span[@class='phonetics']/*";
 
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
-
-        public static GetCambridgeWordUrL() {
-            return mainTranslateUrl + item.Word.ToLower();;
-        }
-
-        public static GetOxfordWordUrL() {
-            return mainGetPlayUrl + item.Word.ToLower();
-        }
 
         public static async Task<string> GetGoogleTranslate(string text)
         {
@@ -74,7 +66,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = GetCambridgeWordUrL(item.Word);
+                string _wordUrl = Helper.GetCambridgeWordUrl(item.Word);
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
@@ -132,7 +124,7 @@ namespace DesktopNotifications.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = GetOxfordWordUrL(item.Word);
+                string _wordUrl = Helper.GetOxfordWordUrl(item.Word);
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();

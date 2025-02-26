@@ -114,22 +114,50 @@
             <!-- Header -->
             <DockPanel Margin="0,0,0,10">
                 <StackPanel DockPanel.Dock="Left">
-                    <DockPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
                         <Label x:Name="Label_Word"
-                               Content="Word"
-                               FontSize="32"
-                               FontWeight="Bold"
-                               Padding="0"
-                               Margin="0"/>
+                                Grid.Column="0"
+                                Content="Word"
+                                FontSize="32"
+                                FontWeight="Bold"
+                                Padding="0"
+                                Margin="0"/>
                         <Label x:Name="Label_Type"
-                               Content="Type"
-                               FontSize="16"
-                               FontStyle="Italic"
-                               Padding="0"
-                               Margin="12,12,0,0"
-                               VerticalAlignment="Top"
-                               Foreground="#999999"/>
-                    </DockPanel>
+                                Grid.Column="1"
+                                Content="Type"
+                                FontSize="16"
+                                FontStyle="Italic"
+                                Padding="0"
+                                Margin="12,12,0,0"
+                                VerticalAlignment="Top"
+                                Foreground="#999999"/>
+                        
+                        <Button x:Name="Btn_OpenCambridge"
+                                Grid.Column="3"
+                                Content="🔍 C"
+                                ToolTip="Open in Cambridge Dictionary"
+                                Width="40"
+                                Height="36"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Top"
+                                Click="Btn_OpenCambridge_Click"/>
+                        <Button x:Name="Btn_OpenOxford"
+                                Grid.Column="4"
+                                Content="🔍 O"
+                                ToolTip="Open in Oxford Dictionary"
+                                Width="40"
+                                Height="36"
+                                VerticalAlignment="Top"
+                                Click="Btn_OpenOxford_Click"/>
+                    </Grid>
                     
                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
                         <StackPanel>
@@ -187,16 +215,16 @@
                        TextWrapping="Wrap"
                        Foreground="#88FFFFFF"
                        FontStyle="Italic"
-                       FontSize="14"
+                       FontSize="16"
                        Margin="0,4,0,4"
                        Visibility="Collapsed"/>
             
             <TextBlock x:Name="Label_ExamplePhonetic"
                        Text=""
                        TextWrapping="Wrap"
-                       Foreground="#88FFFFFF"
+                       Foreground="#FFFFFF"
                        FontStyle="Italic"
-                       FontSize="14"
+                       FontSize="18"
                        Margin="0,0,0,12"
                        Visibility="Collapsed"/>
             
@@ -213,11 +241,11 @@
                         Margin="8,0,0,0"
                         Click="Btn_TranslateExample_Click"/>
                 <Button x:Name="Btn_GetExamplePhonetics"
-                        Content="Get Phonetics"
-                        HorizontalAlignment="Left"
-                        Width="120"
-                        Margin="8,0,0,0"
-                        Click="Btn_GetExamplePhonetics_Click"/>
+                          Content="Get Phonetics"
+                          HorizontalAlignment="Left"
+                          Width="120"
+                          Margin="8,0,0,0"
+                          Click="Btn_GetExamplePhonetics_Click"/>
             </StackPanel>
 
             <!-- Related Words -->
