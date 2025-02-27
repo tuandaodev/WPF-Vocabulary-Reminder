@@ -73,11 +73,11 @@
             },
             "System.Data.SQLite": {
               "target": "Package",
-              "version": "[1.0.118, )"
+              "version": "[1.0.119, )"
             },
             "System.Data.SQLite.EF6": {
               "target": "Package",
-              "version": "[1.0.118, )"
+              "version": "[1.0.119, )"
             },
             "System.Speech": {
               "target": "Package",

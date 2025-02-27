@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
+using VocabularyReminder.Utils;
 
 namespace VocabularyReminder.Services
 {
@@ -60,7 +61,7 @@ namespace VocabularyReminder.Services
             {
                 await Mp3.PlayFile(_item);
 
-                _item.ViewedDate = DateTime.Now;
+                _item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
                 await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             }
             _item = null;

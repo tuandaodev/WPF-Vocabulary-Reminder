@@ -39,7 +39,8 @@
             <Button x:Name="Btn_Start_Custom" Content="Start From Input" Click="Btn_Start_Custom_Click" Margin="0,0,0,10"/>
             <Button x:Name="Btn_Sync" Content="Sync" Click="Btn_Sync_Click" Margin="0,0,0,10"/>
             <Button x:Name="Btn_Cleanup" Content="Cleanup" Click="Btn_Cleanup_Click" Margin="0,0,0,10"/>
-            <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Click="Btn_PreloadMp3_Click"/>
+            <Button x:Name="Btn_PreloadMp3" Content="Download Mp3" Click="Btn_PreloadMp3_Click" Margin="0,0,0,10"/>
+            <Button x:Name="Btn_TestDefinition" Content="Test Definition" Click="Btn_TestDefinition_Click"/>
         </StackPanel>
 
         <!-- Center Panel -->

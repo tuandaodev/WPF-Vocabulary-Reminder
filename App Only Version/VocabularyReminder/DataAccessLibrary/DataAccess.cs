@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using FAI.Core.Utilities.Linq;
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using FAI.Core.Utilities.Linq;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -69,6 +69,33 @@ namespace VocabularyReminder.DataAccessLibrary
                 createTable.ExecuteReader();
                 createTable.Dispose();
 
+                // Execute date to Unix timestamp migration
+                string migrationPath = Path.Combine(ApplicationIO.GetApplicationFolderPath(), "Migration_DateToUnix.sql");
+                if (File.Exists(migrationPath))
+                {
+                    string[] migrationCommands = File.ReadAllText(migrationPath).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string command in migrationCommands)
+                    {
+                        if (!string.IsNullOrWhiteSpace(command))
+                        {
+                            using (var cmd = new SqliteCommand(command.Trim(), db))
+                            {
+                                try
+                                {
+                                    cmd.ExecuteNonQuery();
+                                }
+                                catch (SqliteException ex)
+                                {
+                                    // Log error but continue with other commands
+                                    Console.WriteLine($"Migration error: {ex.Message}");
+                                }
+                            }
+                        }
+                    }
+                    // Delete migration file after successful execution
+                    File.Delete(migrationPath);
+                }
+
                 db.Close();
                 db.Dispose();
             }
@@ -119,7 +146,7 @@ namespace VocabularyReminder.DataAccessLibrary
                     .Where(e => e.Id == _Id)
                     .UpdateFromQueryAsync(x => new Vocabulary()
                     {
-                        ViewedDate = DateTime.Now,
+                        ViewedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                     });
             }
         }
@@ -138,7 +165,7 @@ namespace VocabularyReminder.DataAccessLibrary
                     .UpdateFromQueryAsync(x => new Vocabulary()
                     {
                         Status = _Status,
-                        LearnedDate = _Status == 0 ? DateTime.Now : DateTime.MinValue,
+                        LearnedDate = _Status == 0 ? DateTimeOffset.UtcNow.ToUnixTimeSeconds() : 0,
                     });
                 if (result > 0 && CurrentVocabulary != null && CurrentVocabulary.Id == _Id)
                 {

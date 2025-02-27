@@ -263,7 +263,7 @@ namespace VocabularyReminder
             
             this.Label_Translate1.Text = this._vocabulary.Translate;
             this.Label_Translate2.Text = this._vocabulary.Define;
-            this.Label_Example.Text = this._vocabulary.Example;
+            this.Label_Example.Text = $"{this._vocabulary.Example}";
             this.Label_ExampleTranslation.Text = string.Empty;
             this.Label_ExampleTranslation.Visibility = Visibility.Collapsed;
             this.Label_ExamplePhonetic.Text = string.Empty;

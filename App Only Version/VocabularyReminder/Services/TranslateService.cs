@@ -1,24 +1,59 @@
-﻿using HtmlAgilityPack;
+﻿﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
+using VocabularyReminder.Utils;
 
 namespace DesktopNotifications.Services
 {
+    public class ExtendedWordDataDto
+    {
+        public string ID { get; set; }
+        public string Source { get; set; }
+        public string Level { get; set; }
+        public string Type { get; set; }
+        public List<DefinitionDto> Definitions { get; set; } = new List<DefinitionDto>();
+        public List<IdiomDataDto> Idioms { get; set; }
+        public string Ipa { get; set; }
+        public string Ipa2 { get; set; }
+        public string Audio { get; set; }
+        public string Audio2 { get; set; }
+    }
+
+    public class DefinitionDto
+    {
+        public string PartOfSpeech { get; set; }
+        public string Level { get; set; }
+        public string Definition { get; set; }
+        public List<ExampleDto> Examples { get; set; }
+        public string Topic { get; set; }
+    }
+
+    public class ExampleDto {
+        public string Struct { get; set; }
+        public string Example { get; set; }
+    }
+
+    public class IdiomDataDto
+    {
+        public string Phrase { get; set; }
+        public string Level { get; set; }
+        public string Definition { get; set; }
+        public List<string> Examples { get; set; }
+        public List<string> Labels { get; set; }
+    }
+
     class TranslateService
     {
-        //public static string mainTranslateUrl = "https://dictionary.cambridge.org/vi/dictionary/english-vietnamese/";
         const string xpath_translate = "//span[@class='trans dtrans']";
         const string xpath_ipa = "//span[@class='ipa dipa']";
         const string xpath_type = "//span[@class='pos dpos']";
-
-        //public static string mainGetPlayUrl = "https://www.oxfordlearnersdictionaries.com/definition/english/";
         const string xpath_mp3 = "//span[@class='phonetics']/*";
-
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
 
         public static async Task<string> GetGoogleTranslate(string text)
@@ -39,7 +74,6 @@ namespace DesktopNotifications.Services
                     var result = await response.Content.ReadAsStringAsync();
                     
                     // Parse Google Translate response
-                    // Response format is like: [[["translated text","original text",null,null,1]],null,"en",null,null,null,null,[]]
                     var jsonResult = System.Text.Json.JsonSerializer.Deserialize<JsonElement>(result);
                     if (jsonResult.ValueKind == JsonValueKind.Array &&
                         jsonResult[0].ValueKind == JsonValueKind.Array &&
@@ -57,12 +91,12 @@ namespace DesktopNotifications.Services
                 }
                 catch
                 {
-                    return text; // Return original text if translation fails
+                    return text;
                 }
             }
         }
 
-        public static async Task<Vocabulary> GetVocabularyTranslate(Vocabulary item)
+        public static async Task<Vocabulary> GetVocabularyTranslateAsync(Vocabulary item)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -95,7 +129,6 @@ namespace DesktopNotifications.Services
                         }
                     }
                 }
-                    
 
                 if (listTrans.Count > 0)
                 {
@@ -120,7 +153,7 @@ namespace DesktopNotifications.Services
             }
         }
 
-        public static async Task GetWordDefineInformation(Vocabulary item)
+        public static async Task GetWordDefineInformationAsync(Vocabulary item)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -128,72 +161,351 @@ namespace DesktopNotifications.Services
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
-                document.LoadHtml(await content.ReadAsStringAsync());
-                // Get Title
+                string htmlContent = await content.ReadAsStringAsync();
+                document.LoadHtml(htmlContent);
 
-                var DefineNode = document.DocumentNode.SelectSingleNode("(//span[@class='def'])[1]");
-                if (DefineNode != null)
+                var extendedData = new ExtendedWordDataDto
                 {
-                    item.Define = DefineNode.InnerText;
+                    Source = "OF"
+                };
+                // Get word type from pos span
+                var posSpan = document.DocumentNode.SelectSingleNode("//span[@class='pos']");
+                if (posSpan != null)
+                {
+                    extendedData.Type = posSpan.InnerText?.Trim();
                 }
 
-                var ExampleNodes = document.DocumentNode.SelectNodes("(//ul[@class='examples']//span[@class='x'])[position()<3]");
-                if (ExampleNodes != null && ExampleNodes.Count > 0)
+                // Get main word's CEFR level from Oxford 3000 symbol
+                var symbolsDiv = document.DocumentNode.SelectSingleNode("//div[@class='symbols']");
+                if (symbolsDiv != null)
                 {
-                    int _count = 0;
-                    foreach (var node in ExampleNodes)
+                    var levelLink = symbolsDiv.SelectSingleNode(".//a[contains(@href, 'level=')]");
+                    if (levelLink != null)
                     {
-                        _count++;
-                        if (_count == 1)
+                        var href = levelLink.GetAttributeValue("href", "");
+                        var levelMatch = System.Text.RegularExpressions.Regex.Match(href, @"level=(\w\d)");
+                        if (levelMatch.Success)
                         {
-                            item.Example = (node != null) ? node.InnerText : "";
-                        }
-                        else if (_count == 2)
-                        {
-                            item.Example2 = (node != null) ? node.InnerText : "";
+                            extendedData.Level = levelMatch.Groups[1].Value.ToUpper();
                         }
                     }
                 }
 
+                // Extract word identity from the redirected URL
+                string responseUrl = response.RequestMessage.RequestUri.AbsolutePath;
+                string[] urlParts = responseUrl.Split('/');
+                if (urlParts.Length > 0)
+                {
+                    extendedData.ID = urlParts[urlParts.Length - 1];
+                }
+
+                // Get IPA and audio information
                 var IpaNodes = document.DocumentNode.SelectNodes("//span[@class='phonetics']//div[contains(@class, 'phon')]");
                 if (IpaNodes != null && IpaNodes.Count > 0)
                 {
-                    int _count = 0;
-                    foreach (var node in IpaNodes)
-                    {
-                        _count++;
-                        if (_count == 1)
-                        {
-                            item.Ipa = (node != null) ? node.InnerText : "";
-                        }
-                        else if (_count == 2)
-                        {
-                            item.Ipa2 = (node != null) ? node.InnerText : "";
-                        }
-                    }
+                    extendedData.Ipa = IpaNodes[0]?.InnerText?.Trim().Trim('/') ?? null;
+                    if (IpaNodes.Count > 1)
+                        extendedData.Ipa2 = IpaNodes[1]?.InnerText?.Trim().Trim('/') ?? null;
                 }
 
                 var soundNodes = document.DocumentNode.SelectNodes("//span[@class='phonetics']/div/div[contains(@class, 'sound')][1]");
                 if (soundNodes != null && soundNodes.Count > 0)
                 {
-                    int _count = 0;
-                    foreach (var node in soundNodes)
+                    extendedData.Audio = soundNodes[0]?.GetAttributeValue("data-src-mp3", null);
+                    if (soundNodes.Count > 1)
+                        extendedData.Audio2 = soundNodes[1]?.GetAttributeValue("data-src-mp3", null);
+                }
+
+                // Try to get multiple senses first
+                var multipleSensesOl = document.DocumentNode.SelectNodes("//ol[@class='senses_multiple']");
+                var singleSense = document.DocumentNode.SelectNodes("//ol[@class='sense_single']/li[@class='sense']");
+
+                // Handle multiple senses
+                if (multipleSensesOl != null)
+                {
+                    foreach (var ol in multipleSensesOl)
                     {
-                        _count++;
-                        if (_count == 1)
+                        // Handle direct senses (without part of speech)
+                        var directSenses = ol.SelectNodes("./li[@class='sense']");
+                        if (directSenses != null)
                         {
-                            item.PlayURL = (node != null) ? node.GetAttributeValue("data-src-mp3", "") : "";
-                        } else if (_count == 2)
+                            foreach (var sense in directSenses)
+                            {
+                                var definition = new DefinitionDto();
+                                definition.PartOfSpeech = null; // No part of speech for direct senses
+
+                                // Get CEFR level
+                                var cefr = sense.GetAttributeValue("cefr", null);
+                                if (!string.IsNullOrEmpty(cefr))
+                                {
+                                    definition.Level = cefr.ToUpper();
+                                }
+
+                                // Get definition text
+                                var defNode = sense.SelectSingleNode(".//span[@class='def']");
+                                definition.Definition = defNode?.InnerText?.Trim() ?? null;
+
+                                // Get examples
+                                var examplesUl = sense.SelectNodes(".//ul[@class='examples']");
+                                if (examplesUl != null)
+                                {
+                                    foreach (var ul in examplesUl)
+                                    {
+                                        var examples = new List<ExampleDto>();
+                                        var items = ul.SelectNodes(".//li");
+                                        if (items != null)
+                                        {
+                                            foreach (var li in items)
+                                            {
+                                                var example = new ExampleDto();
+                                                var structNode = li.SelectSingleNode(".//span[@class='cf']");
+                                                example.Struct = structNode?.InnerText?.Trim() ?? null;
+                                                var exampleNode = li.SelectSingleNode(".//span[@class='x']");
+                                                example.Example = exampleNode?.InnerText?.Trim() ?? null;
+                                                if (!string.IsNullOrEmpty(example.Example))
+                                                {
+                                                    examples.Add(example);
+                                                }
+                                            }
+                                        }
+
+                                        if (definition.Examples == null)
+                                            definition.Examples = new List<ExampleDto>();
+
+                                        definition.Examples.AddRange(examples);
+                                    }
+                                }
+
+                                // Get topic
+                                var topicNode = sense.SelectSingleNode(".//span[@class='topic_name']");
+                                definition.Topic = topicNode?.InnerText?.Trim() ?? null;
+
+                                if (!string.IsNullOrEmpty(definition.Definition))
+                                {
+                                    extendedData.Definitions.Add(definition);
+                                }
+                            }
+                        }
+
+                        // Handle senses grouped by part of speech
+                        var posGroups = ol.SelectNodes("./span[@class='shcut-g']");
+                        if (posGroups != null)
                         {
-                            item.PlayURL2 = (node != null) ? node.GetAttributeValue("data-src-mp3", "") : "";
+                            foreach (var posSection in posGroups)
+                            {
+                                // Get heading for part of speech group
+                                var shcutTitle = posSection.SelectSingleNode(".//h2[@class='shcut']")?.InnerText;
+
+                                var senses = posSection.SelectNodes(".//li[@class='sense']");
+                                if (senses != null)
+                                {
+                                    foreach (var sense in senses)
+                                    {
+                                        var definition = new DefinitionDto();
+
+                                        definition.PartOfSpeech = shcutTitle;
+
+                                        // Get CEFR level
+                                        var cefr = sense.GetAttributeValue("cefr", null);
+                                        if (!string.IsNullOrEmpty(cefr))
+                                        {
+                                            definition.Level = cefr.ToUpper();
+                                        }
+
+                                        // Get definition text
+                                        var defNode = sense.SelectSingleNode(".//span[@class='def']");
+                                        definition.Definition = defNode?.InnerText?.Trim() ?? null;
+
+                                        // Get examples
+                                        var examplesUl = sense.SelectNodes(".//ul[@class='examples']");
+                                        if (examplesUl != null)
+                                        {
+                                            foreach (var ul in examplesUl)
+                                            {
+                                                var examples = new List<ExampleDto>();
+                                                var exampleItems = ul.SelectNodes(".//li");
+                                                if (exampleItems != null)
+                                                {
+                                                    foreach (var exampleItem in exampleItems)
+                                                    {
+                                                        var example = new ExampleDto();
+                                                        var structNode = exampleItem.SelectSingleNode(".//span[@class='cf']");
+                                                        example.Struct = structNode?.InnerText?.Trim() ?? null;
+                                                        var exampleNode = exampleItem.SelectSingleNode(".//span[@class='x']");
+                                                        example.Example = exampleNode?.InnerText?.Trim() ?? null;
+                                                        if (!string.IsNullOrEmpty(example.Example))
+                                                        {
+                                                            examples.Add(example);
+                                                        }
+                                                    }
+                                                }
+
+                                                if (definition.Examples == null)
+                                                    definition.Examples = new List<ExampleDto>();
+
+                                                definition.Examples.AddRange(examples);
+                                            }
+                                        }
+
+                                        // Get topic
+                                        var topicNode = sense.SelectSingleNode(".//span[@class='topic_name']");
+                                        definition.Topic = topicNode?.InnerText?.Trim() ?? null;
+
+                                        if (!string.IsNullOrEmpty(definition.Definition))
+                                        {
+                                            extendedData.Definitions.Add(definition);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Handle single sense
+                else if (singleSense != null && singleSense.Count > 0)
+                {
+                    foreach (var sense in singleSense)
+                    {
+                        var definition = new DefinitionDto();
+
+                        // Get CEFR level
+                        var cefr = sense.GetAttributeValue("cefr", null);
+                        if (!string.IsNullOrEmpty(cefr))
+                        {
+                            definition.Level = cefr.ToUpper();
+                        }
+
+                        // Get definition text
+                        var defNode = sense.SelectSingleNode(".//span[@class='def']");
+                        definition.Definition = defNode?.InnerText?.Trim() ?? null;
+
+                        // Get examples
+                        var examplesUl = sense.SelectNodes(".//ul[@class='examples']");
+                        if (examplesUl != null)
+                        {
+                            foreach (var ul in examplesUl)
+                            {
+                                var examples = new List<ExampleDto>();
+                                var exampleItems = ul.SelectNodes(".//li");
+                                if (exampleItems != null)
+                                {
+                                    foreach (var exampleItem in exampleItems)
+                                    {
+                                        var example = new ExampleDto();
+                                        var structNode = exampleItem.SelectSingleNode(".//span[@class='cf']");
+                                        example.Struct = structNode?.InnerText?.Trim() ?? null;
+                                        var exampleNode = exampleItem.SelectSingleNode(".//span[@class='x']");
+                                        example.Example = exampleNode?.InnerText?.Trim() ?? null;
+                                        if (!string.IsNullOrEmpty(example.Example))
+                                        {
+                                            examples.Add(example);
+                                        }
+                                    }
+                                }
+
+                                if (definition.Examples == null)
+                                    definition.Examples = new List<ExampleDto>();
+
+                                definition.Examples.AddRange(examples);
+                            }
+                        }
+
+                        // Get topic
+                        var topicNode = sense.SelectSingleNode(".//span[@class='topic_name']");
+                        definition.Topic = topicNode?.InnerText?.Trim() ?? null;
+
+                        if (!string.IsNullOrEmpty(definition.Definition))
+                        {
+                            extendedData.Definitions.Add(definition);
                         }
                     }
                 }
 
-                if (!String.IsNullOrEmpty(item.PlayURL))
+                // Get idioms section
+                var idiomsSection = document.DocumentNode.SelectSingleNode("//div[@class='idioms']");
+                if (idiomsSection != null)
                 {
-                    await DataAccess.UpdateVocabularyAsync(item);
+                    var idiomBlocks = idiomsSection.SelectNodes(".//span[@class='idm-g']");
+                    if (idiomBlocks != null)
+                    {
+                        foreach (var idiomBlock in idiomBlocks)
+                        {
+                            var idiom = new IdiomDataDto();
+
+                            // Get idiom phrase
+                            var phraseNode = idiomBlock.SelectSingleNode(".//span[@class='idm']");
+                            idiom.Phrase = phraseNode?.InnerText?.Trim() ?? null;
+
+                            // Get CEFR level
+                            var cefr = phraseNode?.GetAttributeValue("cefr", null);
+                            if (!string.IsNullOrEmpty(cefr))
+                            {
+                                idiom.Level = cefr.ToUpper();
+                            }
+
+                            // Get labels (informal, humorous, etc.)
+                            var labelsNode = idiomBlock.SelectSingleNode(".//span[@class='labels']");
+                            if (labelsNode != null)
+                            {
+                                idiom.Labels = labelsNode.InnerText.Split(',')
+                                    .Select(l => l.Trim().Trim("()".ToCharArray()))
+                                    .Where(l => !string.IsNullOrEmpty(l))
+                                    .ToList();
+                            }
+
+                            // Get definition
+                            var defNode = idiomBlock.SelectSingleNode(".//span[@class='def']");
+                            idiom.Definition = defNode?.InnerText?.Trim() ?? null;
+
+                            // Get examples
+                            var examples = idiomBlock.SelectNodes(".//ul[@class='examples']//span[@class='x']");
+                            if (examples != null)
+                                idiom.Examples = examples.Select(x => x.InnerText.Trim()).ToList();
+
+                            if (!string.IsNullOrEmpty(idiom.Phrase) && !string.IsNullOrEmpty(idiom.Definition))
+                            {
+                                if (extendedData.Idioms == null)
+                                    extendedData.Idioms = new List<IdiomDataDto>();
+
+                                extendedData.Idioms.Add(idiom);
+                            }
+                        }
+                    }
                 }
+
+                // Replace media URL
+                if (!string.IsNullOrEmpty(extendedData.Audio) && extendedData.Audio.Contains("https://www.oxfordlearnersdictionaries.com"))
+                    extendedData.Audio = extendedData.Audio.Replace("https://www.oxfordlearnersdictionaries.com", "");
+
+                if (!string.IsNullOrEmpty(extendedData.Audio2) && extendedData.Audio2.Contains("https://www.oxfordlearnersdictionaries.com"))
+                    extendedData.Audio2 = extendedData.Audio2.Replace("https://www.oxfordlearnersdictionaries.com", "");
+
+                // Store legacy data for backward compatibility
+                if (extendedData.Definitions != null && extendedData.Definitions.Any())
+                {
+                    item.Define = extendedData.Definitions[0].Definition;
+
+                    if (extendedData.Definitions[0].Examples != null && extendedData.Definitions[0].Examples.Count > 0)
+                        item.Example = extendedData.Definitions[0].Examples[0].Example;
+
+                    if (extendedData.Definitions[0].Examples != null && extendedData.Definitions[0].Examples.Count > 1)
+                        item.Example2 = extendedData.Definitions[0].Examples[1].Example;
+                }
+
+                item.Ipa = extendedData.Ipa;
+                item.Ipa2 = extendedData.Ipa2;
+                item.PlayURL = extendedData.Audio;
+                item.PlayURL2 = extendedData.Audio2;
+
+                // Store complete data as JSON, ignoring null values
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+                item.Data = JsonConvert.SerializeObject(extendedData, jsonSettings);
+
+                item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
+                await DataAccess.UpdateVocabularyAsync(item);
             }
         }
 
@@ -236,5 +548,4 @@ namespace DesktopNotifications.Services
         [JsonProperty("from")]
         public string from { get; set; }
     }
-
 }

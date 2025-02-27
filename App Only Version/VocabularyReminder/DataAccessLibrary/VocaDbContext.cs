@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -67,6 +67,8 @@ namespace VocabularyReminder.DataAccessLibrary
         [MaxLength(2048)]
         public string Word { get; set; }
 
+        public string Data { get; set; }
+
         [MaxLength(100)]
         public string Type { get; set; }
 
@@ -98,10 +100,9 @@ namespace VocabularyReminder.DataAccessLibrary
         public string Related { get; set; }
 
         public int? Status { get; set; } = 1;  // default value
-
-        public DateTime? ViewedDate { get; set; }
-
-        public DateTime? LearnedDate { get; set; }
+        public long? ViewedDate { get; set; }  // Unix timestamp in seconds
+        public long? LearnedDate { get; set; }  // Unix timestamp in seconds
+        public long? CreatedDate { get; set; }  // Unix timestamp in seconds
 
         public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }
@@ -130,12 +131,10 @@ namespace VocabularyReminder.DataAccessLibrary
         [Key, Column(Order = 1)]
         public int VocabularyId { get; set; }
 
-
         [ForeignKey("DictionaryId")]
         public virtual Dictionary Dictionary { get; set; }
 
         [ForeignKey("VocabularyId")]
         public virtual Vocabulary Vocabulary { get; set; }
     }
-
 }

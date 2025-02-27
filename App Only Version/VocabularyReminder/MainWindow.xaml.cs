@@ -258,6 +258,7 @@ namespace VocabularyReminder
             });
         }
 
+        // Parse Input from UI to list of words by filter them via vocabularies in csv file
         private List<string> GetListWords() {
 
             string tempInp = Inp_ListWord.Text;
@@ -482,13 +483,13 @@ namespace VocabularyReminder
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                 Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
                 {
-                    var voca = await TranslateService.GetVocabularyTranslate(_item);
+                    var voca = await TranslateService.GetVocabularyTranslateAsync(_item);
                     if (string.IsNullOrEmpty(voca.Translate))
                     {
                         if (service.IsPlural(_item.Word))
                         {
                             _item.Word = service.Singularize(_item.Word);
-                            await TranslateService.GetVocabularyTranslate(_item);
+                            await TranslateService.GetVocabularyTranslateAsync(_item);
                         }
                     }
 
@@ -514,7 +515,7 @@ namespace VocabularyReminder
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
-                    TranslateService.GetWordDefineInformation(_item).Wait();
+                    TranslateService.GetWordDefineInformationAsync(_item).Wait();
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
@@ -931,5 +932,21 @@ namespace VocabularyReminder
             window.Closed += (s, args) => Load_Dictionaries();
             window.Show();
         }
+
+        private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
+        {
+            var voca = await DataAccess.GetVocabularyByWordAsync("bank");
+            await TranslateService.GetWordDefineInformationAsync(voca);
+            Console.WriteLine(voca);
+
+            voca = await DataAccess.GetVocabularyByWordAsync("translate");
+            await TranslateService.GetWordDefineInformationAsync(voca);
+            Console.WriteLine(voca);
+
+            voca = await DataAccess.GetVocabularyByWordAsync("study");
+            await TranslateService.GetWordDefineInformationAsync(voca);
+            Console.WriteLine(voca);
+        }
     }
+
 }
