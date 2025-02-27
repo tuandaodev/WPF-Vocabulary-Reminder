@@ -110,6 +110,11 @@
                     Click="Btn_Backup_Click"
                     Margin="0,0,0,10"/>
             
+            <Button x:Name="Btn_BackupLearned"
+                    Content="Backup Learned"
+                    Click="Btn_BackupLearned_Click"
+                    Margin="0,0,0,10"/>
+            
             <Button x:Name="Btn_ProcessDeleteData"
                     Content="Delete All Data"
                     Click="Btn_ProcessDeleteData_Click"/>

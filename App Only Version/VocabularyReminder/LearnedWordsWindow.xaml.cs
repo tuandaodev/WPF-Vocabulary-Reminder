@@ -1,4 +1,6 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿﻿﻿using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -72,6 +74,58 @@ namespace VocabularyReminder
         private async void DictionaryFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await ReloadAsync();
+        }
+
+        private static string EscapeCsvField(string field)
+        {
+            if (string.IsNullOrEmpty(field))
+                return "";
+
+            bool requiresQuoting = field.Contains(",") || field.Contains("\"") || field.Contains("\r") || field.Contains("\n");
+            if (!requiresQuoting)
+                return field;
+
+            return $"\"{field.Replace("\"", "\"\"")}\"";
+        }
+
+        private async void Btn_BackupLearned_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var learnedWords = await DataAccess.GetListLearndedAsync(true, null);
+                if (learnedWords == null || !learnedWords.Any())
+                {
+                    MessageBox.Show("No learned words found to backup.", "Backup", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                string backupPath = Path.Combine(ApplicationIO.GetApplicationFolderPath(), $"learned_words_backup_{DateTime.Now:yyyyMMdd_HHmmss}.csv");
+                using (var writer = new StreamWriter(backupPath, false, System.Text.Encoding.UTF8))
+                {
+                    // Write header
+                    await writer.WriteLineAsync("Word,Type,IPA (US),IPA (UK),Translation");
+
+                    // Write data
+                    foreach (var word in learnedWords)
+                    {
+                        var fields = new[]
+                        {
+                            EscapeCsvField(word.Word),
+                            EscapeCsvField(word.Type),
+                            EscapeCsvField(word.Ipa2),
+                            EscapeCsvField(word.Ipa),
+                            EscapeCsvField(word.Translate)
+                        };
+                        await writer.WriteLineAsync(string.Join(",", fields));
+                    }
+                }
+
+                MessageBox.Show($"Successfully backed up {learnedWords.Count} learned words to:\n{backupPath}", "Backup Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error backing up learned words: {ex.Message}", "Backup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

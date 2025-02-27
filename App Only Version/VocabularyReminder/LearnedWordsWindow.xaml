@@ -59,9 +59,14 @@
                 <TextBox x:Name="FilterContent" 
                          KeyDown="FilterContent_KeyDown"/>
                 
-                <Button x:Name="BtnSearch" 
+                <Button x:Name="BtnSearch"
                         Content="Search"
                         Click="Btn_OnFilter_Click"/>
+                        
+                <Button x:Name="BtnBackupLearned"
+                        Content="Backup"
+                        Margin="10,0,0,0"
+                        Click="Btn_BackupLearned_Click"/>
             </StackPanel>
         </Border>
 
