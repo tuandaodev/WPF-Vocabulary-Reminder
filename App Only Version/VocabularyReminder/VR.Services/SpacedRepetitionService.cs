@@ -18,9 +18,7 @@ namespace VR.Services
         // 4: Easy (Perfect recall - Increase interval)
 
         private const double MIN_EASE = 1.3;
-        private const int GRADUATING_INTERVAL = 1;  // 1 day
-        private const int EASY_INTERVAL = 4;        // 4 days
-        private const int MINIMUM_INTERVAL = 1;     // 1 day
+        private const int GRADUATING_INTERVAL = 1;  // 1 day (SM-2 default graduation interval)
         private static readonly int[] LEARNING_STEPS = { 1, 10 };  // Minutes: 1min, 10min
 
         public static async Task<List<Vocabulary>> LoadVocabulariesForReview(int dictionaryId = 0)
@@ -85,28 +83,20 @@ namespace VR.Services
 
             vocabulary.ReviewCount++;
 
-            if (quality == 1)  // Again
+            if (quality < 3)  // If rating is Again(1) or Hard(2)
             {
                 // Reset to first learning step
+                vocabulary.Interval = 0;
                 vocabulary.NextReviewDate = DateTime.Now.AddMinutes(LEARNING_STEPS[0]).ToUnixTimeInSeconds();
             }
-            else if (quality == 2)  // Hard
+            else // Good(3) or Easy(4)
             {
-                // Graduate but with shorter interval
+                // Graduate with 1 day interval per SM-2
                 vocabulary.Interval = GRADUATING_INTERVAL;
                 vocabulary.NextReviewDate = DateTime.Now.AddDays(GRADUATING_INTERVAL).ToUnixTimeInSeconds();
-            }
-            else if (quality == 3)  // Good
-            {
-                // Normal graduation
-                vocabulary.Interval = GRADUATING_INTERVAL;
-                vocabulary.NextReviewDate = DateTime.Now.AddDays(GRADUATING_INTERVAL).ToUnixTimeInSeconds();
-            }
-            else if (quality == 4)  // Easy
-            {
-                // Skip learning steps, go straight to easy interval
-                vocabulary.Interval = EASY_INTERVAL;
-                vocabulary.NextReviewDate = DateTime.Now.AddDays(EASY_INTERVAL).ToUnixTimeInSeconds();
+                
+                // Initialize EF according to quality per SM-2
+                vocabulary.EaseFactor = 2.5 + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
             }
         }
 
@@ -114,33 +104,25 @@ namespace VR.Services
         {
             vocabulary.ReviewCount++;
 
-            if (quality == 1)  // Again
+            if (quality < 3)  // Failed card (Again or Hard)
             {
-                // Card lapses
+                // Card lapses - return to learning steps
                 vocabulary.LapseCount++;
-                vocabulary.Interval = MINIMUM_INTERVAL;
+                vocabulary.Interval = 0;  // Reset interval
+                vocabulary.NextReviewDate = DateTime.Now.AddMinutes(LEARNING_STEPS[0]).ToUnixTimeInSeconds();
+                
+                // Decrease EF but not below minimum
                 vocabulary.EaseFactor = Math.Max(MIN_EASE, vocabulary.EaseFactor.Value - 0.2);
-                vocabulary.NextReviewDate = DateTime.Now.AddDays(MINIMUM_INTERVAL).ToUnixTimeInSeconds();
             }
-            else 
+            else  // Successful recall (Good or Easy)
             {
-                // Calculate new interval
-                double intervalModifier = 1.0;
-                if (quality == 2) intervalModifier = 0.8;  // Hard reduces interval
-                if (quality == 4) intervalModifier = 1.3;  // Easy increases interval
+                // Update EF according to SM-2 formula
+                double newEF = vocabulary.EaseFactor.Value + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02));
+                vocabulary.EaseFactor = Math.Max(MIN_EASE, newEF);
 
-                // Update ease factor
-                if (quality == 2)  // Hard
-                    vocabulary.EaseFactor = Math.Max(MIN_EASE, vocabulary.EaseFactor.Value - 0.15);
-                else if (quality == 3)  // Good
-                    vocabulary.EaseFactor = vocabulary.EaseFactor;  // No change
-                else if (quality == 4)  // Easy
-                    vocabulary.EaseFactor = Math.Max(MIN_EASE, vocabulary.EaseFactor.Value + 0.15);
-
-                // Calculate new interval
-                double newInterval = vocabulary.Interval.Value * vocabulary.EaseFactor.Value * intervalModifier;
-                vocabulary.Interval = (int)Math.Round(newInterval);
-
+                // Calculate new interval: I(n) = I(n-1) * EF
+                vocabulary.Interval = (int)Math.Round(vocabulary.Interval.Value * vocabulary.EaseFactor.Value);
+                
                 // Set next review date
                 vocabulary.NextReviewDate = DateTime.Now.AddDays(vocabulary.Interval.Value).ToUnixTimeInSeconds();
             }
