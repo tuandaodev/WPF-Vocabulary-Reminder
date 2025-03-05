@@ -21,6 +21,7 @@ namespace VocabularyReminder
             this.WindowStartupLocation = WindowStartupLocation.Manual;
             this.Topmost = true;
             this.Opacity = 0;
+            this.KeyDown += VocaPopup_KeyDown;
             
             this.Loaded += (s, e) => {
                 var workArea = System.Windows.SystemParameters.WorkArea;
@@ -44,6 +45,29 @@ namespace VocabularyReminder
             };
             autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
             autoCloseTimer.Start();
+        }
+
+        private void VocaPopup_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case System.Windows.Input.Key.D1:
+                case System.Windows.Input.Key.NumPad1:
+                    Btn_Again_Click(null, null);
+                    break;
+                case System.Windows.Input.Key.D2:
+                case System.Windows.Input.Key.NumPad2:
+                    Btn_Hard_Click(null, null);
+                    break;
+                case System.Windows.Input.Key.D3:
+                case System.Windows.Input.Key.NumPad3:
+                    Btn_Good_Click(null, null);
+                    break;
+                case System.Windows.Input.Key.D4:
+                case System.Windows.Input.Key.NumPad4:
+                    Btn_Easy_Click(null, null);
+                    break;
+            }
         }
 
         private void UpdateSrsInfo()
