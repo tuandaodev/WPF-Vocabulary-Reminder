@@ -16,10 +16,6 @@ namespace VR.Services
             {
                 ShowCustomPopup(vocabulary);
             }
-            else
-            {
-                VocabularyToastService.ShowToastByVocabularyItem(vocabulary);
-            }
             App.isShowPopup = true;
         }
 
@@ -50,10 +46,6 @@ namespace VR.Services
                         currentPopup = null;
                     }
                 });
-            }
-            else
-            {
-                VocabularyToastService.ClearApplicationToast();
             }
             App.isShowPopup = false;
         }

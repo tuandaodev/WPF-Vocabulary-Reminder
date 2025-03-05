@@ -137,7 +137,6 @@
     <Compile Include="VR.Utils\DateTimeExtenstions.cs" />
     <Compile Include="VR.Utils\ExpressionStarter.cs" />
     <Compile Include="VR.Utils\PredicateBuilder.cs" />
-    <Compile Include="VR.Services\VocabularyToastService.cs" />
     <Compile Include="VocaPopup.xaml.cs">
       <DependentUpon>VocaPopup.xaml</DependentUpon>
     </Compile>
@@ -158,7 +157,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DesktopNotificationManagerCompat.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -169,7 +167,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyNotificationActivator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
