@@ -18,9 +18,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using VocabularyReminder.DataAccessLibrary;
+using VR.Services;
 
-namespace VocabularyReminder
+namespace VR
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -44,7 +44,7 @@ namespace VocabularyReminder
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            DataAccess.InitializeDatabase();
+            DataService.InitializeDatabase();
             // Register AUMID, COM server, and activator
             DesktopNotificationManagerCompat.RegisterAumidAndComServer<MyNotificationActivator>("FreelancerHCM.VocabularyReminder");
             DesktopNotificationManagerCompat.RegisterActivator<MyNotificationActivator>();

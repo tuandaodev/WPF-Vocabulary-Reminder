@@ -11,18 +11,18 @@
 // ******************************************************************
 
 using DesktopNotifications;
-using DesktopNotifications.Services;
 using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using VocabularyReminder.DataAccessLibrary;
+using VR.Domain.Models;
+using VR.Services;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
-namespace VocabularyReminder
+namespace VR
 {
     // The GUID CLSID must be unique to your app. Create a new GUID if copying this code.
     [ClassInterface(ClassInterfaceType.None)]
@@ -61,14 +61,14 @@ namespace VocabularyReminder
                         if (App.GlobalWordId > 0)
                         {
                             string _mp3Url;
-                            if (VocabularyToast.ReloadLastToast())
+                            if (VocabularyToastService.ReloadLastToast())
                             {
                                 _mp3Url = args["PlayUrl"];
                             }
                             else
                             {
-                                _item = await DataAccess.GetVocabularyByIdAsync(App.GlobalWordId);
-                                VocabularyToast.ShowToastByVocabularyItem(_item);
+                                _item = await DataService.GetVocabularyByIdAsync(App.GlobalWordId);
+                                VocabularyToastService.ShowToastByVocabularyItem(_item);
                                 if (playId == 2)
                                 {
                                     _mp3Url = _item.PlayURL;
@@ -91,23 +91,23 @@ namespace VocabularyReminder
                         App.GlobalWordId = int.Parse(args["WordId"]);
                         if (App.isRandomWords)
                         {
-                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                            _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
                         else
                         {
-                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                            _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
 
                         if (_item == null || _item.Id == 0)
                         {
-                            _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
+                            _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
                         }
                         App.GlobalWordId = _item != null ? _item.Id : 0;
 
                         _ = Task.Run(async () =>
                           {
                               await Task.Delay(1000);
-                              VocabularyToast.ShowToastByVocabularyItem(_item);
+                              VocabularyToastService.ShowToastByVocabularyItem(_item);
                               if (App.isAutoPlaySounds)
                               {
                                   await Mp3Service.PlayFileAsync(_item);
@@ -125,28 +125,28 @@ namespace VocabularyReminder
 
                     case "delete":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
+                        await DataService.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
                         break;
 
                     case "nextdelete":
                         App.GlobalWordId = int.Parse(args["WordId"]);
-                        await DataAccess.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
+                        await DataService.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
 
                         if (App.isRandomWords)
                         {
-                            _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                            _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
                         else
                         {
-                            _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                            _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
                         }
 
                         if (_item == null || _item.Id == 0)
                         {
-                            _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
+                            _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
                         }
                         App.GlobalWordId = _item != null ? _item.Id : 0;
-                        VocabularyToast.ShowToastByVocabularyItem(_item);
+                        VocabularyToastService.ShowToastByVocabularyItem(_item);
                         if (App.isAutoPlaySounds)
                         {
                             _ = Task.Run(() => Mp3Service.PlayFileAsync(_item));

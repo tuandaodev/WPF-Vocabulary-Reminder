@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VocabularyReminder.Properties {
+namespace VR.Properties {
     using System;
     
     

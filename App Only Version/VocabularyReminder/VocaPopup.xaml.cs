@@ -2,14 +2,16 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media.Animation;
-using VocabularyReminder.DataAccessLibrary;
-using VocabularyReminder.Services;
+using VR.Domain;
+using VR.Domain.Models;
+using VR.Services;
+using VR.Utils;
 
-namespace VocabularyReminder
+namespace VR
 {
     public partial class VocaPopup : Window
     {
-        private static IPA _ipaService;
+        private static IPAService _ipaService;
         private Vocabulary _vocabulary { get; set; }
         private System.Windows.Forms.Timer autoCloseTimer;
 
@@ -182,7 +184,7 @@ namespace VocabularyReminder
                 if (!string.IsNullOrEmpty(Label_Example.Text))
                 {
                     Btn_TranslateExample.IsEnabled = false;
-                    var translation = await DesktopNotifications.Services.TranslateService.GetGoogleTranslate(Label_Example.Text);
+                    var translation = await TranslateService.GetGoogleTranslate(Label_Example.Text);
                     if (!string.IsNullOrEmpty(translation) && translation != Label_Example.Text)
                     {
                         Label_ExampleTranslation.Text = translation;
@@ -227,7 +229,7 @@ namespace VocabularyReminder
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = DesktopNotifications.Services.Helper.GetCambridgeWordUrl(_vocabulary.Word),
+                        FileName = Helper.GetCambridgeWordUrl(_vocabulary.Word),
                         UseShellExecute = true
                     });
                 }
@@ -247,7 +249,7 @@ namespace VocabularyReminder
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = DesktopNotifications.Services.Helper.GetOxfordWordUrl(_vocabulary.Word),
+                        FileName = Helper.GetOxfordWordUrl(_vocabulary.Word),
                         UseShellExecute = true
                     });
                 }
@@ -274,7 +276,7 @@ namespace VocabularyReminder
                 {
                     try
                     {
-                        _ipaService = new IPA();
+                        _ipaService = new IPAService();
                     }
                     catch (Exception ex)
                     {

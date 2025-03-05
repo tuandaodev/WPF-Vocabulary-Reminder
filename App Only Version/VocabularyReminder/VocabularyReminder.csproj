@@ -108,37 +108,40 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataAccessLibrary\StaticDataAccess.cs" />
-    <Compile Include="DataAccessLibrary\DataAccess.cs" />
-    <Compile Include="DataAccessLibrary\ApplicationIO.cs" />
-    <Compile Include="DataAccessLibrary\Models.cs" />
-    <Compile Include="DataAccessLibrary\DicEVContext.cs" />
-    <Compile Include="DataAccessLibrary\VocaDbContext.cs" />
+    <Compile Include="VR.Domain\Models\Dictionary.cs" />
+    <Compile Include="VR.Domain\Models\VocabularyMapping.cs" />
+    <Compile Include="VR.Infrastructure\StaticDataAccess.cs" />
+    <Compile Include="VR.Services\DataService.cs" />
+    <Compile Include="VR.Infrastructure\ApplicationIO.cs" />
+    <Compile Include="VR.Dto\StatsDto.cs" />
+    <Compile Include="VR.Domain\DicEVContext.cs" />
+    <Compile Include="VR.Domain\VocaDbContext.cs" />
     <Compile Include="DictionaryManagementWindow.xaml.cs">
       <DependentUpon>DictionaryManagementWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LearnedWordsWindow.xaml.cs">
       <DependentUpon>LearnedWordsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Services\BackgroundService.cs" />
-    <Compile Include="Services\CacheService.cs" />
-    <Compile Include="Services\Helper.cs" />
-    <Compile Include="Services\ImportBackupDataService.cs" />
-    <Compile Include="Services\IPA.cs" />
-    <Compile Include="Services\Mp3Service.cs" />
-    <Compile Include="Services\PhoneticService.cs" />
-    <Compile Include="Services\PlaybackService.cs" />
-    <Compile Include="Services\SpacedRepetitionService.cs" />
-    <Compile Include="Services\TextToSpeechService.cs" />
-    <Compile Include="Services\TranslateService.cs" />
-    <Compile Include="Services\VocabularyDisplay.cs" />
-    <Compile Include="Utils\DateTimeExtenstions.cs" />
-    <Compile Include="Utils\ExpressionStarter.cs" />
-    <Compile Include="Utils\PredicateBuilder.cs" />
-    <Compile Include="VocabularyToast.cs" />
+    <Compile Include="VR.Services\BackgroundService.cs" />
+    <Compile Include="VR.Services\CacheService.cs" />
+    <Compile Include="VR.Utils\Helper.cs" />
+    <Compile Include="VR.Services\ImportBackupDataService.cs" />
+    <Compile Include="VR.Services\IPAService.cs" />
+    <Compile Include="VR.Services\Mp3Service.cs" />
+    <Compile Include="VR.Services\PhoneticService.cs" />
+    <Compile Include="VR.Services\PlaybackService.cs" />
+    <Compile Include="VR.Services\SpacedRepetitionService.cs" />
+    <Compile Include="VR.Services\TextToSpeechService.cs" />
+    <Compile Include="VR.Services\TranslateService.cs" />
+    <Compile Include="VR.Services\VocabularyDisplayService.cs" />
+    <Compile Include="VR.Utils\DateTimeExtenstions.cs" />
+    <Compile Include="VR.Utils\ExpressionStarter.cs" />
+    <Compile Include="VR.Utils\PredicateBuilder.cs" />
+    <Compile Include="VR.Services\VocabularyToastService.cs" />
     <Compile Include="VocaPopup.xaml.cs">
       <DependentUpon>VocaPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VR.Domain\Models\Vocabulary.cs" />
     <Page Include="DictionaryManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -277,6 +280,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

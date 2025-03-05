@@ -1,9 +1,10 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using VocabularyReminder.DataAccessLibrary;
+using VR.Domain;
+using VR.Domain.Models;
 
-namespace VocabularyReminder
+namespace VR
 {
     public partial class DictionaryManagementWindow : Window
     {

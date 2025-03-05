@@ -1,15 +1,17 @@
-﻿﻿﻿﻿using System;
-using System.IO;
+﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using VocabularyReminder.DataAccessLibrary;
-using VocabularyReminder.Services;
+using VR.Domain;
+using VR.Domain.Models;
+using VR.Infrastructure;
+using VR.Services;
 
-namespace VocabularyReminder
+namespace VR
 {
     public partial class LearnedWordsWindow : Window
     {
@@ -90,7 +92,7 @@ namespace VocabularyReminder
 
         private async Task LoadDictionariesAsync()
         {
-            var dictionaries = await DataAccess.GetDictionariesAsync();
+            var dictionaries = await DataService.GetDictionariesAsync();
             DictionaryFilter.Items.Clear();
             DictionaryFilter.Items.Add(new ComboBoxItem { Content = "All", Tag = 0 });
             foreach (var dictionary in dictionaries)
@@ -112,7 +114,7 @@ namespace VocabularyReminder
             var selectedDictionary = DictionaryFilter.SelectedItem as ComboBoxItem;
             int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : 0;
 
-            var vocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent, dictionaryId);
+            var vocabularyList = await DataService.GetListLearndedAsync(isRead, searchContent, dictionaryId);
             View_ListLearnedWords.Items.Clear();
 
             foreach (var item in vocabularyList)
@@ -220,7 +222,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var learnedWords = await DataAccess.GetListLearndedAsync(true, null);
+                var learnedWords = await DataService.GetListLearndedAsync(true, null);
                 if (learnedWords == null || !learnedWords.Any())
                 {
                     MessageBox.Show("No learned words found to backup.", "Backup", MessageBoxButton.OK, MessageBoxImage.Information);

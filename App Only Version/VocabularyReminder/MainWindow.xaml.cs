@@ -1,21 +1,22 @@
-﻿﻿﻿﻿﻿﻿using DesktopNotifications.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity.Design.PluralizationServices;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Text.Json;
-using VocabularyReminder.DataAccessLibrary;
-using VocabularyReminder.Services;
+using VR.Domain.Models;
+using VR.Dto;
+using VR.Infrastructure;
+using VR.Services;
 
-namespace VocabularyReminder
+namespace VR
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -179,7 +180,7 @@ namespace VocabularyReminder
         {
             Dispatcher.Invoke(() =>
             {
-                List<Dictionary> dictionaries = DataAccess.GetDictionariesAsync().Result;
+                List<Dictionary> dictionaries = DataService.GetDictionariesAsync().Result;
                 this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
                 
                 string settingsPath = ApplicationIO.GetSettingsPath();
@@ -330,7 +331,7 @@ namespace VocabularyReminder
                 List<string> newWords = new List<string>();
                 foreach (var word in inputWords)
                 {
-                    var _item = await DataAccess.GetVocabularyByWordAsync(word);
+                    var _item = await DataService.GetVocabularyByWordAsync(word);
                     if (_item != null && _item.Id > 0)
                         existWords.Add(_item);
                     else
@@ -339,7 +340,7 @@ namespace VocabularyReminder
 
                 foreach (var word in existWords.Where(x => x.Status == 1))
                 {
-                    await DataAccess.AddVocabularyMappingAsync(dicId, word.Id);
+                    await DataService.AddVocabularyMappingAsync(dicId, word.Id);
                 }
 
                 if (!newWords.Any())
@@ -368,10 +369,10 @@ namespace VocabularyReminder
                     };
                     Parallel.ForEach(newWords, parallelOptions, async _item =>
                     {
-                        var newVocaId = await DataAccess.AddVocabularyAsync(_item);
+                        var newVocaId = await DataService.AddVocabularyAsync(_item);
                         if (newVocaId > 0)
                         {
-                            await DataAccess.AddVocabularyMappingAsync(dicId, newVocaId);
+                            await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
                             CountSuccess++;
                         }
                         Status_UpdateProgressBar(++Count, TotalWords);
@@ -453,7 +454,7 @@ namespace VocabularyReminder
                     var file = File.Create(ApplicationIO.GetDatabasePath());
                     file.Close();
                 }
-                DataAccess.InitializeDatabase();
+                DataService.InitializeDatabase();
                 App.GlobalWordId = 0;
                 Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
                 MessageBox.Show("Delete Data Completed.");
@@ -472,7 +473,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var ListVocabulary = await DataAccess.GetListVocabularyToTranslateAsync();
+                var ListVocabulary = await DataService.GetListVocabularyToTranslateAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -506,7 +507,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var ListVocabulary = await DataAccess.GetListVocabularyToGetDefineExampleMp3URLAsync();
+                var ListVocabulary = await DataService.GetListVocabularyToGetDefineExampleMp3URLAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -530,7 +531,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var ListVocabulary = await DataAccess.GetListVocabularyToGetRelatedWordsAsync();
+                var ListVocabulary = await DataService.GetListVocabularyToGetRelatedWordsAsync();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -553,11 +554,11 @@ namespace VocabularyReminder
         {
             try
             {
-                var listVocabulary = await DataAccess.GetUnprocessVocabulariesAsync();
+                var listVocabulary = await DataService.GetUnprocessVocabulariesAsync();
                 if (!listVocabulary.Any())
                     return;
 
-                var evDic = await DataAccess.GetEVVocabulariesAsync();
+                var evDic = await DataService.GetEVVocabulariesAsync();
 
                 int TotalItems = listVocabulary.Count;
                 int Count = 0;
@@ -580,7 +581,7 @@ namespace VocabularyReminder
                     {
                         if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
                         if (string.IsNullOrEmpty(item.Translate)) item.Ipa = exist.Description;
-                        await DataAccess.UpdateVocabularyAsync(item);
+                        await DataService.UpdateVocabularyAsync(item);
                     }
 
                     Status_UpdateProgressBar(++Count, TotalItems);
@@ -599,7 +600,7 @@ namespace VocabularyReminder
                 if (IsActive)
                 {
                     var dictionaryId = (int)this.Inp_GlobalDictionaryId.SelectedValue;
-                    Stats _Stats = DataAccess.GetStats(dictionaryId);
+                    StatDtos _Stats = DataService.GetStats(dictionaryId);
                     this.Label_Stats_ImportedWords.Content = _Stats.Total.ToString();
                     this.Label_Stats_RememberedWords.Content = _Stats.Remembered.ToString();
                     this.Label_LearnedCount.Content = _Stats.DictionaryLearned.ToString();
@@ -655,14 +656,14 @@ namespace VocabularyReminder
                               continue;
 
                           //VocabularyToast.ClearApplicationToast();
-                          VocabularyDisplay.Hide();
+                          VocabularyDisplayService.Hide();
                           await LoadVocabulary();
 
                           if (_CancelToken.IsCancellationRequested)
                           {
                               Console.WriteLine("task canceled");
                               //VocabularyToast.ClearApplicationToast();
-                              VocabularyDisplay.Hide();
+                              VocabularyDisplayService.Hide();
                               break;
                           }
                           Thread.Sleep(TimeRepeat);
@@ -682,7 +683,7 @@ namespace VocabularyReminder
             IsStarted = false;
             Btn_StartLearning.Content = "Start Learning";
 
-            VocabularyDisplay.Hide();
+            VocabularyDisplayService.Hide();
             _TokenSource.Cancel();
             UnRegisterHotKeys();
             Console.WriteLine("Stop and active Cancel Token");
@@ -692,14 +693,14 @@ namespace VocabularyReminder
         {
             Vocabulary _item = null;
             var vocabulary = await GetVocabulary(_item);
-            VocabularyDisplay.ShowVocabulary(vocabulary);
+            VocabularyDisplayService.ShowVocabulary(vocabulary);
             //VocabularyToast.ShowToastByVocabularyItem(vocabulary);
             if (App.isAutoPlaySounds)
             {
                 _ = Task.Run(async () =>
                 {
                     await Mp3Service.PlayFileAsync(vocabulary);
-                    await DataAccess.UpdateViewDateAsync(vocabulary?.Id ?? 0);
+                    await DataService.UpdateViewDateAsync(vocabulary?.Id ?? 0);
                 });
             }
 
@@ -718,12 +719,12 @@ namespace VocabularyReminder
         {
             if (_item != null) return _item;
             if (App.isRandomWords)
-                _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
             else
-                _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
 
             if (_item == null || _item.Id == 0)
-                _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
+                _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
 
             return _item;
         }
@@ -777,7 +778,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var ListVocabulary = await DataAccess.GetListVocabularyToPreloadMp3Async();
+                var ListVocabulary = await DataService.GetListVocabularyToPreloadMp3Async();
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -812,7 +813,7 @@ namespace VocabularyReminder
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (_TokenSource != null) _TokenSource.Cancel();
-            VocabularyDisplay.Hide();
+            VocabularyDisplayService.Hide();
             UnRegisterHotKeys();
             base.OnClosed(e);
         }
@@ -900,7 +901,7 @@ namespace VocabularyReminder
             _vocabularies = new List<Vocabulary>();
             foreach (var word in words)
             {
-                var _item = await DataAccess.GetVocabularyByWordAsync(word);
+                var _item = await DataService.GetVocabularyByWordAsync(word);
                 if (_item != null)
                     _vocabularies.Add(_item);
             }
@@ -923,7 +924,7 @@ namespace VocabularyReminder
 
         private async void Btn_Cleanup_Click(object sender, RoutedEventArgs e)
         {
-            await DataAccess.CleanUnableToGetAsync();
+            await DataService.CleanUnableToGetAsync();
         }
 
         private static string EscapeCsvField(string field)
@@ -942,7 +943,7 @@ namespace VocabularyReminder
         {
             try
             {
-                var learnedWords = await DataAccess.GetListLearndedAsync(true, null);
+                var learnedWords = await DataService.GetListLearndedAsync(true, null);
                 if (learnedWords == null || !learnedWords.Any())
                 {
                     MessageBox.Show("No learned words found to backup.", "Backup", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -987,15 +988,15 @@ namespace VocabularyReminder
 
         private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
         {
-            var voca = await DataAccess.GetVocabularyByWordAsync("bank");
+            var voca = await DataService.GetVocabularyByWordAsync("bank");
             await TranslateService.GetWordDefineInformationAsync(voca);
             Console.WriteLine(voca);
 
-            voca = await DataAccess.GetVocabularyByWordAsync("translate");
+            voca = await DataService.GetVocabularyByWordAsync("translate");
             await TranslateService.GetWordDefineInformationAsync(voca);
             Console.WriteLine(voca);
 
-            voca = await DataAccess.GetVocabularyByWordAsync("study");
+            voca = await DataService.GetVocabularyByWordAsync("study");
             await TranslateService.GetWordDefineInformationAsync(voca);
             Console.WriteLine(voca);
         }
