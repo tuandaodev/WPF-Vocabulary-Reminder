@@ -1,7 +1,6 @@
-﻿﻿using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
@@ -146,7 +145,7 @@ namespace VocabularyReminder
 
         private async void Btn_Next_Click(object sender, RoutedEventArgs e)
         {
-            await BackgroundService.NextVocabulary();
+            await BackgroundService.NextVocabularyAsync();
             this.Close();
         }
 

@@ -6,9 +6,9 @@ using VocabularyReminder.DataAccessLibrary;
 
 namespace VocabularyReminder.Services
 {
-    public class Import
+    public class ImportBackupDataService
     {
-        public async Task ImportDemo3000Words()
+        public async Task ImportDemo3000WordsAsync()
         {
             try
             {

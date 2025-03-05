@@ -1,22 +1,91 @@
-﻿﻿﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿using System;
 using System.IO;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using VocabularyReminder.DataAccessLibrary;
+using VocabularyReminder.Services;
 
 namespace VocabularyReminder
 {
-    /// <summary>
-    /// Interaction logic for LearnedWordsWindow.xaml
-    /// </summary>
     public partial class LearnedWordsWindow : Window
     {
+        private GridViewColumnHeader _lastHeaderClicked = null;
+        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
+
         public LearnedWordsWindow()
         {
             InitializeComponent();
             LoadDictionariesAsync().ConfigureAwait(false);
+        }
+
+        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+            var headerClicked = e.OriginalSource as GridViewColumnHeader;
+            if (headerClicked == null || headerClicked.Role == GridViewColumnHeaderRole.Padding) return;
+
+            ListSortDirection direction;
+
+            if (headerClicked != _lastHeaderClicked)
+            {
+                direction = ListSortDirection.Ascending;
+            }
+            else
+            {
+                direction = _lastDirection == ListSortDirection.Ascending ?
+                    ListSortDirection.Descending : ListSortDirection.Ascending;
+            }
+
+            var sortBy = "";
+            var header = headerClicked.Column.Header as string ?? string.Empty;
+
+            // Map display columns to their sortable properties
+            switch (header)
+            {
+                case "Next Review":
+                    sortBy = "NextReviewDate";
+                    break;
+                default:
+                    var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
+                    sortBy = columnBinding?.Path.Path ?? header;
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(sortBy))
+            {
+                Sort(sortBy, direction);
+            }
+
+            if (direction == ListSortDirection.Ascending)
+            {
+                headerClicked.Column.HeaderTemplate = Resources["HeaderTemplateArrowUp"] as DataTemplate;
+            }
+            else
+            {
+                headerClicked.Column.HeaderTemplate = Resources["HeaderTemplateArrowDown"] as DataTemplate;
+            }
+
+            // Remove arrow from previously sorted header
+            if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+            {
+                _lastHeaderClicked.Column.HeaderTemplate = null;
+            }
+
+            _lastHeaderClicked = headerClicked;
+            _lastDirection = direction;
+        }
+
+        private void Sort(string sortBy, ListSortDirection direction)
+        {
+            var dataView = CollectionViewSource.GetDefaultView(View_ListLearnedWords.Items);
+            dataView.SortDescriptions.Clear();
+            
+            var sd = new SortDescription(sortBy, direction);
+            dataView.SortDescriptions.Add(sd);
+            dataView.Refresh();
         }
 
         private async Task LoadDictionariesAsync()
@@ -43,11 +112,25 @@ namespace VocabularyReminder
             var selectedDictionary = DictionaryFilter.SelectedItem as ComboBoxItem;
             int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : 0;
 
-            var VocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent, dictionaryId);
+            var vocabularyList = await DataAccess.GetListLearndedAsync(isRead, searchContent, dictionaryId);
             View_ListLearnedWords.Items.Clear();
 
-            foreach (var _item in VocabularyList)
-                View_ListLearnedWords.Items.Add(_item);
+            foreach (var item in vocabularyList)
+            {
+                // Add IsDueForReview property
+                var dueForReview = SpacedRepetitionService.IsDueForReview(item);
+                item.IsDueForReview = dueForReview;
+                View_ListLearnedWords.Items.Add(item);
+            }
+
+            // Restore sorting if there was a previous sort
+            if (_lastHeaderClicked != null)
+            {
+                var columnBinding = _lastHeaderClicked.Column.DisplayMemberBinding as Binding;
+                var sortBy = columnBinding?.Path.Path ?? 
+                            (_lastHeaderClicked.Column.Header as string ?? string.Empty);
+                Sort(sortBy, _lastDirection);
+            }
         }
 
         private async void Frm_LearnedWords_Activated(object sender, EventArgs e)
@@ -74,6 +157,51 @@ namespace VocabularyReminder
         private async void DictionaryFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             await ReloadAsync();
+        }
+
+        private async void BtnReviewAgain_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessReview(sender, 1);
+        }
+
+        private async void BtnReviewHard_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessReview(sender, 2);
+        }
+
+        private async void BtnReviewGood_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessReview(sender, 3);
+        }
+
+        private async void BtnReviewEasy_Click(object sender, RoutedEventArgs e)
+        {
+            await ProcessReview(sender, 4);
+        }
+
+        private async Task ProcessReview(object sender, int quality)
+        {
+            var button = sender as Button;
+            if (button?.DataContext is Vocabulary vocabulary)
+            {
+                SpacedRepetitionService.ProcessReview(vocabulary, quality);
+                
+                using (var context = new VocaDbContext())
+                {
+                    var dbVocab = await context.Vocabularies.FindAsync(vocabulary.Id);
+                    if (dbVocab != null)
+                    {
+                        dbVocab.NextReviewDate = vocabulary.NextReviewDate;
+                        dbVocab.Interval = vocabulary.Interval;
+                        dbVocab.ReviewCount = vocabulary.ReviewCount;
+                        dbVocab.EaseFactor = vocabulary.EaseFactor;
+                        dbVocab.LapseCount = vocabulary.LapseCount;
+                        await context.SaveChangesAsync();
+                    }
+                }
+                
+                await ReloadAsync();
+            }
         }
 
         private static string EscapeCsvField(string field)

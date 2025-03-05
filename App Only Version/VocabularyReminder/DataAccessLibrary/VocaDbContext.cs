@@ -1,5 +1,6 @@
-﻿﻿﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
@@ -57,8 +58,31 @@ namespace VocabularyReminder.DataAccessLibrary
     }
 
     [Table("Vocabulary")]
-    public class Vocabulary
+    public class Vocabulary : INotifyPropertyChanged
     {
+        private bool _isDueForReview;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        [NotMapped]
+        public bool IsDueForReview
+        {
+            get => _isDueForReview;
+            set
+            {
+                if (_isDueForReview != value)
+                {
+                    _isDueForReview = value;
+                    OnPropertyChanged(nameof(IsDueForReview));
+                }
+            }
+        }
+
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -103,7 +127,27 @@ namespace VocabularyReminder.DataAccessLibrary
         public long? ViewedDate { get; set; }  // Unix timestamp in seconds
         public long? LearnedDate { get; set; }  // Unix timestamp in seconds
         public long? CreatedDate { get; set; }  // Unix timestamp in seconds
-        public long? NextReviewDate { get; set; }  // Unix timestamp when card is due for review
+
+        private long? _nextReviewDate;
+        public long? NextReviewDate
+        {
+            get => _nextReviewDate;
+            set
+            {
+                if (_nextReviewDate != value)
+                {
+                    _nextReviewDate = value;
+                    NextReviewDateDisplay = _nextReviewDate.HasValue
+                        ? DateTimeOffset.FromUnixTimeSeconds(_nextReviewDate.Value).LocalDateTime.ToString("yyyy-MM-dd HH:mm")
+                        : "";
+                    OnPropertyChanged(nameof(NextReviewDate));
+                    OnPropertyChanged(nameof(NextReviewDateDisplay));
+                }
+            }
+        }
+
+        [NotMapped]
+        public string NextReviewDateDisplay { get; private set; }
         public double? EaseFactor { get; set; } = 2.5;  // Starting ease factor
         public int? Interval { get; set; } = 0;  // Current interval in days
         public int? ReviewCount { get; set; } = 0;  // Number of reviews

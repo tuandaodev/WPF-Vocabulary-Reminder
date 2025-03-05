@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VocabularyReminder"
+        xmlns:sys="clr-namespace:System.Windows.Data;assembly=PresentationFramework"
         mc:Ignorable="d"
         Title="Learned Words" 
         Height="600" Width="900" 
@@ -11,6 +12,20 @@
         WindowStartupLocation="CenterScreen"
         Activated="Frm_LearnedWords_Activated">
     <Window.Resources>
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+                <Path DockPanel.Dock="Right" Margin="5,0,0,0"
+                      StrokeThickness="1" Fill="#FF666666" Data="M 5,5 L 10,10 L 0,10 Z"/>
+            </DockPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel>
+                <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+                <Path DockPanel.Dock="Right" Margin="5,0,0,0"
+                      StrokeThickness="1" Fill="#FF666666" Data="M 0,5 L 10,5 L 5,10 Z"/>
+            </DockPanel>
+        </DataTemplate>
         <Style TargetType="ComboBox">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Width" Value="150"/>
@@ -23,12 +38,23 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="5,0"/>
         </Style>
-        <Style TargetType="Button">
+        <Style x:Key="DefaultButton" TargetType="Button">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Width" Value="80"/>
             <Setter Property="Padding" Value="10,0"/>
             <Setter Property="Background" Value="#007ACC"/>
             <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style x:Key="ReviewButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.9"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
     </Window.Resources>
     
@@ -61,10 +87,12 @@
                 
                 <Button x:Name="BtnSearch"
                         Content="Search"
+                        Style="{StaticResource DefaultButton}"
                         Click="Btn_OnFilter_Click"/>
                         
                 <Button x:Name="BtnBackupLearned"
                         Content="Backup"
+                        Style="{StaticResource DefaultButton}"
                         Margin="10,0,0,0"
                         Click="Btn_BackupLearned_Click"/>
             </StackPanel>
@@ -76,7 +104,14 @@
                   BorderThickness="1"
                   BorderBrush="#DDDDDD">
             <ListView.View>
-                <GridView>
+                <GridView AllowsColumnReorder="True">
+                    <GridView.ColumnHeaderContainerStyle>
+                        <Style TargetType="GridViewColumnHeader">
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                            <Setter Property="Padding" Value="5,0"/>
+                            <EventSetter Event="Click" Handler="GridViewColumnHeaderClickedHandler"/>
+                        </Style>
+                    </GridView.ColumnHeaderContainerStyle>
                     <GridViewColumn Header="ID" 
                                   DisplayMemberBinding="{Binding Id}"
                                   Width="50"/>
@@ -92,9 +127,49 @@
                     <GridViewColumn Header="IPA (UK)" 
                                   DisplayMemberBinding="{Binding Ipa2}"
                                   Width="120"/>
-                    <GridViewColumn Header="Translation" 
+                    <GridViewColumn Header="Translation"
                                   DisplayMemberBinding="{Binding Translate}"
-                                  Width="Auto"/>
+                                  Width="200"/>
+                    <GridViewColumn Header="Next Review"
+                                  Width="120">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding NextReviewDateDisplay}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Interval"
+                                  DisplayMemberBinding="{Binding Interval}"
+                                  Width="70"/>
+                    <GridViewColumn Header="Reviews"
+                                  DisplayMemberBinding="{Binding ReviewCount}"
+                                  Width="70"/>
+                    <GridViewColumn Header="Review"
+                                  Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal"
+                                          Visibility="{Binding IsDueForReview, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Button Content="Again"
+                                            Style="{StaticResource ReviewButton}"
+                                            Background="#FF4444"
+                                            Click="BtnReviewAgain_Click"/>
+                                    <Button Content="Hard"
+                                            Style="{StaticResource ReviewButton}"
+                                            Background="#FF8800"
+                                            Click="BtnReviewHard_Click"/>
+                                    <Button Content="Good"
+                                            Style="{StaticResource ReviewButton}"
+                                            Background="#44BB44"
+                                            Click="BtnReviewGood_Click"/>
+                                    <Button Content="Easy"
+                                            Style="{StaticResource ReviewButton}"
+                                            Background="#00AA88"
+                                            Click="BtnReviewEasy_Click"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
             <ListView.ItemContainerStyle>

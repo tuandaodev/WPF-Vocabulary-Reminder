@@ -327,24 +327,12 @@
                         Margin="5,0"
                         FontSize="14"
                         Click="Btn_PlaySound2_Click"/>
-                <Button x:Name="Btn_Delete"
-                        ToolTip="Delete (PRINTSCREEN)"
-                        Content="✖"
-                        Margin="5,0"
-                        FontSize="14"
-                        Click="Btn_Delete_Click"/>
                 <Button x:Name="Btn_Next"
                         ToolTip="Next (SCROLL)"
                         Content="➔"
                         Margin="5,0"
                         FontSize="14"
                         Click="Btn_Next_Click"/>
-                <Button x:Name="Btn_NextAndDelete"
-                        ToolTip="Next and Delete (PAUSE)"
-                        Content="➔✖"
-                        Margin="5,0,0,0"
-                        FontSize="14"
-                        Click="Btn_NextAndDelete_Click"/>
             </UniformGrid>
                 </StackPanel>
             </ScrollViewer>

@@ -81,7 +81,7 @@ namespace VocabularyReminder
 
                             if (!string.IsNullOrEmpty(_mp3Url))
                             {
-                                _ = Task.Run(() => Mp3.PlayFile(_mp3Url));
+                                _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
                             }
                         }
                         break;
@@ -110,7 +110,7 @@ namespace VocabularyReminder
                               VocabularyToast.ShowToastByVocabularyItem(_item);
                               if (App.isAutoPlaySounds)
                               {
-                                  await Mp3.PlayFile(_item);
+                                  await Mp3Service.PlayFileAsync(_item);
                               }
                               _item = null;
                           });
@@ -149,7 +149,7 @@ namespace VocabularyReminder
                         VocabularyToast.ShowToastByVocabularyItem(_item);
                         if (App.isAutoPlaySounds)
                         {
-                            _ = Task.Run(() => Mp3.PlayFile(_item));
+                            _ = Task.Run(() => Mp3Service.PlayFileAsync(_item));
                         }
                         _item = null;
                         break;

@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿using FAI.Core.Utilities.Linq;
+﻿using FAI.Core.Utilities.Linq;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -299,6 +299,33 @@ namespace VocabularyReminder.DataAccessLibrary
             using (var context = new VocaDbContext())
             {
                 return await context.Vocabularies.Where(e => string.IsNullOrEmpty(e.Related)).ToListAsync();
+            }
+        }
+
+        public static async Task<List<Vocabulary>> GetVocabulariesDueForReviewAsync(int dictionaryId = 0)
+        {
+            using (var context = new VocaDbContext())
+            {
+                var query = context.Vocabularies.AsQueryable();
+                long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                // Apply dictionary filter if specified
+                if (dictionaryId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
+                }
+
+                // Get cards that:
+                // 1. Have a next review date that's due (less than or equal to current time)
+                // 2. Have been started in the SRS system (have an interval)
+                // 3. Are not marked as learned (status = 1)
+                return await query
+                    .Where(v => v.NextReviewDate <= currentTime
+                           && v.Interval != null
+                           && v.Status == 1)
+                    .OrderBy(v => v.NextReviewDate)
+                    .ToListAsync();
             }
         }
 

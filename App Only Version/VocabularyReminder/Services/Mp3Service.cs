@@ -7,20 +7,20 @@ using Windows.Media.SpeechSynthesis;
 
 namespace DesktopNotifications.Services
 {
-    public class Mp3
+    public class Mp3Service
     {
         public static WMPLib.WindowsMediaPlayer Player;
         public static SpeechSynthesizer SpeechSynthesizer;
 
-        public static async Task PlayFile(Vocabulary item)
+        public static async Task PlayFileAsync(Vocabulary item)
         {
             if (item == null || item.Id == 0)
                 return;
 
-            await PlayFile(item.PlayURL2);
+            await PlayFileAsync(item.PlayURL2);
         }
 
-        public static async Task PlayFile(String url)
+        public static async Task PlayFileAsync(String url)
         {
             if (Player == null)
             {
@@ -30,12 +30,12 @@ namespace DesktopNotifications.Services
             Player.PlayStateChange += new WMPLib._WMPOCXEvents_PlayStateChangeEventHandler(Player_PlayStateChange);
             Player.MediaError += new WMPLib._WMPOCXEvents_MediaErrorEventHandler(Player_MediaError);
             //Player.URL = url;
-            Player.URL = await DownloadMp3ToDisk(url);
+            Player.URL = await DownloadMp3ToDiskAsync(url);
             Player.settings.volume = 80;
             Player.controls.play();
         }
 
-        public static async Task<string> DownloadMp3ToDisk(string Mp3Url)
+        public static async Task<string> DownloadMp3ToDiskAsync(string Mp3Url)
         {
             try
             {
@@ -86,14 +86,14 @@ namespace DesktopNotifications.Services
                 {
                     Task.Factory.StartNew(async () =>
                     {
-                        await DownloadMp3ToDisk(_item.PlayURL);
+                        await DownloadMp3ToDiskAsync(_item.PlayURL);
                     });
                 }
                 if (!String.IsNullOrEmpty(_item.PlayURL2))
                 {
                     Task.Factory.StartNew(async () =>
                     {
-                        await DownloadMp3ToDisk(_item.PlayURL2);
+                        await DownloadMp3ToDiskAsync(_item.PlayURL2);
                     });
                 }
             });
@@ -104,11 +104,11 @@ namespace DesktopNotifications.Services
         {
             if (!String.IsNullOrEmpty(_item.PlayURL))
             {
-                await DownloadMp3ToDisk(_item.PlayURL);
+                await DownloadMp3ToDiskAsync(_item.PlayURL);
             }
             if (!String.IsNullOrEmpty(_item.PlayURL2))
             {
-                await DownloadMp3ToDisk(_item.PlayURL2);
+                await DownloadMp3ToDiskAsync(_item.PlayURL2);
             }
         }
     }

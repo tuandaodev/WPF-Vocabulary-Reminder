@@ -131,7 +131,7 @@ namespace VocabularyReminder
                             break;
                         case HOTKEY_ID + 6:
                             App.LastReaction = DateTime.Now;
-                            _ = BackgroundService.NextVocabulary();
+                            _ = BackgroundService.NextVocabularyAsync();
                             handled = true;
                             break;
                         case HOTKEY_ID + 7:
@@ -698,7 +698,7 @@ namespace VocabularyReminder
             {
                 _ = Task.Run(async () =>
                 {
-                    await Mp3.PlayFile(vocabulary);
+                    await Mp3Service.PlayFileAsync(vocabulary);
                     await DataAccess.UpdateViewDateAsync(vocabulary?.Id ?? 0);
                 });
             }
@@ -786,7 +786,7 @@ namespace VocabularyReminder
                 parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * CoreMultipleThread;    
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
-                    Mp3.preloadMp3MultipleAsync(_item).Wait();
+                    Mp3Service.preloadMp3MultipleAsync(_item).Wait();
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
 
@@ -802,8 +802,8 @@ namespace VocabularyReminder
         private async void Btn_Import_Auto_Click(object sender, RoutedEventArgs e)
         {
             Status_UpdateMessage("Downloading 3000 common words....");
-            var ImportService = new Import();
-            await ImportService.ImportDemo3000Words();
+            var ImportService = new ImportBackupDataService();
+            await ImportService.ImportDemo3000WordsAsync();
             Reload_Stats();
             Status_UpdateMessage("Downloaded 3000 common words success.");
             MessageBox.Show("Downloaded 3000 common words success.");
@@ -910,7 +910,7 @@ namespace VocabularyReminder
 
         private void Btn_Backup_Click(object sender, RoutedEventArgs e)
         {
-            var ImportService = new Import();
+            var ImportService = new ImportBackupDataService();
             var backupName = ImportService.Backup();
 
             MessageBox.Show($"Backup completed: {backupName}.");

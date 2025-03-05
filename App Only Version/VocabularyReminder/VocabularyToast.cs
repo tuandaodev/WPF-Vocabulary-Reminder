@@ -56,11 +56,11 @@ namespace VocabularyReminder
             }
             else
             {
-                Mp3.preloadMp3FileSingle(_item);
+                Mp3Service.preloadMp3FileSingle(_item);
                 content = GetToastContent(_item);
             }
 
-            Mp3.preloadMp3FileSingle(_item);
+            Mp3Service.preloadMp3FileSingle(_item);
             //content = await getToastContent(_item);
 
             XmlDocument xmlDoc = new XmlDocument();

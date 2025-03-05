@@ -1,4 +1,4 @@
-﻿﻿using DesktopNotifications.Services;
+﻿using DesktopNotifications.Services;
 using System;
 using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
@@ -27,7 +27,7 @@ namespace VocabularyReminder.Services
 
                 if (!String.IsNullOrEmpty(_mp3Url))
                 {
-                    _ = Task.Run(() => Mp3.PlayFile(_mp3Url));
+                    _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
                 }
             }
         }
@@ -38,33 +38,60 @@ namespace VocabularyReminder.Services
             VocabularyDisplay.Hide();
         }
 
-        public static async Task NextVocabulary()
+        public static async Task NextVocabularyAsync()
         {
             BackgroundService.HideToast();
-            Vocabulary _item;
-            if (App.isRandomWords)
+            Vocabulary _item = null;
+
+            // First, try to get vocabularies due for review
+            var dueVocabs = await SpacedRepetitionService.LoadVocabulariesForReview(App.GlobalDicId);
+            if (dueVocabs != null && dueVocabs.Count > 0)
             {
-                _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
-            }
-            else
-            {
-                _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                // If random mode is on, pick a random vocabulary from due items
+                if (App.isRandomWords)
+                {
+                    Random rnd = new Random();
+                    _item = dueVocabs[rnd.Next(dueVocabs.Count)];
+                }
+                else
+                {
+                    // Take the first due item (oldest review date)
+                    _item = dueVocabs[0];
+                }
             }
 
-            if (_item == null || _item.Id == 0)
+            // If no due vocabularies, fall back to normal behavior
+            if (_item == null)
             {
-                _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
+                if (App.isRandomWords)
+                {
+                    _item = await DataAccess.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                }
+                else
+                {
+                    _item = await DataAccess.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+                }
+
+                if (_item == null || _item.Id == 0)
+                {
+                    _item = await DataAccess.GetFirstVocabularyAsync(App.GlobalDicId);
+                }
             }
-            App.GlobalWordId = _item != null ? _item.Id : 0;
-            VocabularyDisplay.ShowVocabulary(_item);
-            if (App.isAutoPlaySounds)
+
+            if (_item != null)
             {
-                await Mp3.PlayFile(_item);
+                App.GlobalWordId = _item.Id;
+                VocabularyDisplay.ShowVocabulary(_item);
+                if (App.isAutoPlaySounds)
+                    await Mp3Service.PlayFileAsync(_item);
 
                 _item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
                 await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             }
-            _item = null;
+            else
+            {
+                App.GlobalWordId = 0;
+            }
         }
 
         public static async Task DeleteVocabularyAsync()
@@ -94,12 +121,11 @@ namespace VocabularyReminder.Services
             }
             App.GlobalWordId = _item != null ? _item.Id : 0;
             VocabularyDisplay.ShowVocabulary(_item);
+            await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
             if (App.isAutoPlaySounds)
             {
-                await Mp3.PlayFile(_item);
-                await DataAccess.UpdateViewDateAsync(App.GlobalWordId);
+                await Mp3Service.PlayFileAsync(_item);
             }
-                              
             _item = null;
         }
 

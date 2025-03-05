@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Utils;
 
@@ -17,6 +21,47 @@ namespace VocabularyReminder.Services
         private const int EASY_INTERVAL = 4;        // 4 days
         private const int MINIMUM_INTERVAL = 1;     // 1 day
         private static readonly int[] LEARNING_STEPS = { 1, 10 };  // Minutes: 1min, 10min
+
+        public static async Task<List<Vocabulary>> LoadVocabulariesForReview(int dictionaryId = 0)
+        {
+            using (var context = new VocaDbContext())
+            {
+                var query = context.Vocabularies.AsQueryable();
+
+                // Apply dictionary filter if specified
+                if (dictionaryId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
+                }
+
+                // Get cards that:
+                // 1. Have a next review date that's due (less than or equal to current time)
+                // 2. Have been started in the SRS system (have an interval)
+                // 3. Are not marked as learned (status = 1)
+                var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                var dueVocabularies = await query
+                    .Where(v => v.NextReviewDate <= currentTime
+                           && v.Interval != null
+                           && v.Status == 1)
+                    .OrderBy(v => v.NextReviewDate)
+                    .ToListAsync();
+
+                return dueVocabularies;
+            }
+        }
+
+        public static bool IsDueForReview(Vocabulary vocabulary)
+        {
+            if (vocabulary == null)
+                return false;
+
+            if (vocabulary.NextReviewDate == null || vocabulary.Interval == null)
+                return true;
+
+            var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            return vocabulary.NextReviewDate <= currentTime && vocabulary.Status == 1;
+        }
 
         public static void ProcessReview(Vocabulary vocabulary, int quality)
         {
