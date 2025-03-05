@@ -1,19 +1,17 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Animation;
 using VocabularyReminder.DataAccessLibrary;
 using VocabularyReminder.Services;
 
 namespace VocabularyReminder
 {
-    /// <summary>
-    /// Interaction logic for VocaPopup.xaml
-    /// </summary>
     public partial class VocaPopup : Window
     {
         private static IPA _ipaService;
         private Vocabulary _vocabulary { get; set; }
-
         private System.Windows.Forms.Timer autoCloseTimer;
 
         public VocaPopup()
@@ -30,22 +28,65 @@ namespace VocabularyReminder
                 this.Top = workArea.Bottom - this.ActualHeight - 20;  // 40px margin from bottom
                 
                 // Add subtle fade-in animation after positioning
-                    var fadeIn = new System.Windows.Media.Animation.DoubleAnimation
-                    {
-                        From = 0,
-                        To = 0.95,
-                        Duration = TimeSpan.FromMilliseconds(200)
-                    };
-                    this.BeginAnimation(Window.OpacityProperty, fadeIn);
+                var fadeIn = new DoubleAnimation
+                {
+                    From = 0,
+                    To = 0.95,
+                    Duration = TimeSpan.FromMilliseconds(200)
                 };
+                this.BeginAnimation(Window.OpacityProperty, fadeIn);
+            };
 
-                // Initialize auto-close timer
-                autoCloseTimer = new System.Windows.Forms.Timer();
+            // Initialize auto-close timer
+            autoCloseTimer = new System.Windows.Forms.Timer();
             autoCloseTimer.Tick += delegate {
                 this.Close();
             };
             autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
             autoCloseTimer.Start();
+        }
+
+        private void UpdateSrsInfo()
+        {
+            if (_vocabulary == null) return;
+
+            if (_vocabulary.NextReviewDate.HasValue)
+            {
+                var nextReview = DateTimeOffset.FromUnixTimeSeconds(_vocabulary.NextReviewDate.Value);
+                Label_NextReview.Text = nextReview.LocalDateTime.ToString("g");
+            }
+            else
+            {
+                Label_NextReview.Text = "Not scheduled";
+            }
+
+            Label_Interval.Text = _vocabulary.Interval.HasValue && _vocabulary.Interval.Value > 0
+                ? $"{_vocabulary.Interval.Value} days"
+                : "New";
+        }
+
+        private async void ProcessReview(int quality)
+        {
+            if (_vocabulary == null) return;
+
+            SpacedRepetitionService.ProcessReview(_vocabulary, quality);
+
+            // Update the database
+            using (var db = new VocaDbContext())
+            {
+                var vocab = db.Vocabularies.Find(_vocabulary.Id);
+                if (vocab != null)
+                {
+                    vocab.NextReviewDate = _vocabulary.NextReviewDate;
+                    vocab.EaseFactor = _vocabulary.EaseFactor;
+                    vocab.Interval = _vocabulary.Interval;
+                    vocab.ReviewCount = _vocabulary.ReviewCount;
+                    vocab.LapseCount = _vocabulary.LapseCount;
+                    await db.SaveChangesAsync();
+                }
+            }
+
+            UpdateSrsInfo();
         }
 
         private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -89,6 +130,26 @@ namespace VocabularyReminder
         {
             await BackgroundService.NextAndDeleteVocabulary();
             this.Close();
+        }
+
+        private void Btn_Again_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessReview(1);
+        }
+
+        private void Btn_Hard_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessReview(2);
+        }
+
+        private void Btn_Good_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessReview(3);
+        }
+
+        private void Btn_Easy_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessReview(4);
         }
 
         private async void Btn_TranslateExample_Click(object sender, RoutedEventArgs e)
@@ -277,6 +338,9 @@ namespace VocabularyReminder
             // Disable play buttons if their corresponding URLs are empty/null
             this.Btn_PlaySound1.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL2);
             this.Btn_PlaySound2.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL);
+
+            // Update SRS information
+            UpdateSrsInfo();
         }
     }
 }

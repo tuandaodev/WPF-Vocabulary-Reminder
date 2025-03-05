@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿﻿﻿﻿﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -103,6 +103,11 @@ namespace VocabularyReminder.DataAccessLibrary
         public long? ViewedDate { get; set; }  // Unix timestamp in seconds
         public long? LearnedDate { get; set; }  // Unix timestamp in seconds
         public long? CreatedDate { get; set; }  // Unix timestamp in seconds
+        public long? NextReviewDate { get; set; }  // Unix timestamp when card is due for review
+        public double? EaseFactor { get; set; } = 2.5;  // Starting ease factor
+        public int? Interval { get; set; } = 0;  // Current interval in days
+        public int? ReviewCount { get; set; } = 0;  // Number of reviews
+        public int? LapseCount { get; set; } = 0;  // Number of times card went from learned to unlearned
 
         public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }
