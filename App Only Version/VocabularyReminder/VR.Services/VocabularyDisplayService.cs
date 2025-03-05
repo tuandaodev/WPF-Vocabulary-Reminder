@@ -11,11 +11,7 @@ namespace VR.Services
         public static void ShowVocabulary(Vocabulary vocabulary)
         {
             if (vocabulary == null) return;
-
-            if (App.isUseCustomPopup)
-            {
-                ShowCustomPopup(vocabulary);
-            }
+            ShowCustomPopup(vocabulary);
             App.isShowPopup = true;
         }
 
@@ -36,17 +32,14 @@ namespace VR.Services
 
         public static void Hide()
         {
-            if (App.isUseCustomPopup)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (currentPopup != null)
                 {
-                    if (currentPopup != null)
-                    {
-                        currentPopup.Close();
-                        currentPopup = null;
-                    }
-                });
-            }
+                    currentPopup.Close();
+                    currentPopup = null;
+                }
+            });
             App.isShowPopup = false;
         }
     }

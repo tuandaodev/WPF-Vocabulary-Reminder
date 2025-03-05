@@ -168,8 +168,6 @@ namespace VR
             this.Inp_RandomOption.Unchecked += Settings_Changed;
             this.Inp_AutoPlayOption.Checked += Settings_Changed;
             this.Inp_AutoPlayOption.Unchecked += Settings_Changed;
-            this.Inp_UseCustomPopup.Checked += Settings_Changed;
-            this.Inp_UseCustomPopup.Unchecked += Settings_Changed;
             this.Inp_TimeRepeat.TextChanged += Settings_Changed;
 
             Load_Dictionaries();
@@ -212,14 +210,9 @@ namespace VR
                                 {
                                     Inp_TimeRepeat.Text = ((JsonElement)settings["timeRepeat"]).GetInt32().ToString();
                                 }
-                                if (settings.ContainsKey("isUseCustomPopup"))
-                                {
-                                    Inp_UseCustomPopup.IsChecked = ((JsonElement)settings["isUseCustomPopup"]).GetBoolean();
-                                }
 
                                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
-                                App.isUseCustomPopup = Inp_UseCustomPopup.IsChecked.GetValueOrDefault();
                                 
                                 return;
                             }
@@ -626,7 +619,6 @@ namespace VR
                 App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
-                App.isUseCustomPopup = Inp_UseCustomPopup.IsChecked.GetValueOrDefault();
 
                 Btn_StartLearning.Content = "Stop Learning";
                 // Init value
@@ -850,7 +842,6 @@ namespace VR
             settings["lastDictionaryId"] = Inp_GlobalDictionaryId.SelectedValue;
             settings["isRandomWords"] = Inp_RandomOption.IsChecked;
             settings["isAutoPlaySounds"] = Inp_AutoPlayOption.IsChecked;
-            settings["isUseCustomPopup"] = Inp_UseCustomPopup.IsChecked;
             settings["timeRepeat"] = int.Parse(Inp_TimeRepeat.Text);
 
             // Save settings
