@@ -6,50 +6,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VR.Services;
-using VR.Utils;
 using VR.Domain.Models;
+using VR.Utils;
 
 namespace VR.Services
 {
-    public class ExtendedWordDataDto
-    {
-        public string ID { get; set; }
-        public string Source { get; set; }
-        public string Level { get; set; }
-        public string Type { get; set; }
-        public List<DefinitionDto> Definitions { get; set; } = new List<DefinitionDto>();
-        public List<IdiomDataDto> Idioms { get; set; }
-        public string Ipa { get; set; }
-        public string Ipa2 { get; set; }
-        public string Audio { get; set; }
-        public string Audio2 { get; set; }
-    }
-
-    public class DefinitionDto
-    {
-        public string PartOfSpeech { get; set; }
-        public string Level { get; set; }
-        public string Definition { get; set; }
-        public List<ExampleDto> Examples { get; set; }
-        public string Topic { get; set; }
-    }
-
-    public class ExampleDto {
-        public string Struct { get; set; }
-        public string Example { get; set; }
-    }
-
-    public class IdiomDataDto
-    {
-        public string Phrase { get; set; }
-        public string Level { get; set; }
-        public string Definition { get; set; }
-        public List<string> Examples { get; set; }
-        public List<string> Labels { get; set; }
-    }
-
-    class TranslateService
+    public class TranslateService
     {
         const string xpath_translate = "//span[@class='trans dtrans']";
         const string xpath_ipa = "//span[@class='ipa dipa']";
@@ -165,7 +127,7 @@ namespace VR.Services
                 string htmlContent = await content.ReadAsStringAsync();
                 document.LoadHtml(htmlContent);
 
-                var extendedData = new ExtendedWordDataDto
+                var extendedData = new ExtendedWordData
                 {
                     Source = "OF"
                 };

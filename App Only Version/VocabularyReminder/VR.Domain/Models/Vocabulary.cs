@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -40,7 +41,26 @@ namespace VR.Domain.Models
         [MaxLength(2048)]
         public string Word { get; set; }
 
-        public string Data { get; set; }
+
+        private string _data;
+        public string Data
+        {
+            get => _data;
+            set
+            {
+                if (_data != value)
+                {
+                    _data = value;
+                    JsonData = JsonConvert.DeserializeObject<ExtendedWordData>(_data);
+                    OnPropertyChanged(nameof(Data));
+                    OnPropertyChanged(nameof(JsonData));
+                }
+            }
+        }
+
+        [NotMapped]
+        public ExtendedWordData JsonData {  get; private set; }
+
 
         [MaxLength(100)]
         public string Type { get; set; }
@@ -105,4 +125,41 @@ namespace VR.Domain.Models
         public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }
 
+    public class ExtendedWordData
+    {
+        public string ID { get; set; }
+        public string Source { get; set; }
+        public string Level { get; set; }
+        public string Type { get; set; }
+        public List<DefinitionDto> Definitions { get; set; } = new List<DefinitionDto>();
+        public List<IdiomDataDto> Idioms { get; set; }
+        public string Ipa { get; set; }
+        public string Ipa2 { get; set; }
+        public string Audio { get; set; }
+        public string Audio2 { get; set; }
+    }
+
+    public class DefinitionDto
+    {
+        public string PartOfSpeech { get; set; }
+        public string Level { get; set; }
+        public string Definition { get; set; }
+        public List<ExampleDto> Examples { get; set; }
+        public string Topic { get; set; }
+    }
+
+    public class ExampleDto
+    {
+        public string Struct { get; set; }
+        public string Example { get; set; }
+    }
+
+    public class IdiomDataDto
+    {
+        public string Phrase { get; set; }
+        public string Level { get; set; }
+        public string Definition { get; set; }
+        public List<string> Examples { get; set; }
+        public List<string> Labels { get; set; }
+    }
 }
