@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
 using VR.Utils;
 
@@ -116,6 +117,21 @@ namespace VR.Services
             }
         }
 
+        /// <param name="wordId">Example: bank_2</param>
+        /// <returns></returns>
+        public static async Task<bool> HasMeaningAsync(string wordId)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                string _wordUrl = Helper.GetOxfordWordUrl(wordId);
+                HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
+                HttpContent content = response.Content;
+                HtmlDocument document = new HtmlDocument();
+                string htmlContent = await content.ReadAsStringAsync();
+                return htmlContent.Contains("top-container") && !htmlContent.Contains("Word not found in the dictionary");
+            }
+        }
+
         public static async Task GetWordDefineInformationAsync(Vocabulary item)
         {
             using (HttpClient httpClient = new HttpClient())
@@ -125,11 +141,17 @@ namespace VR.Services
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();
                 string htmlContent = await content.ReadAsStringAsync();
+                if (htmlContent.Contains("Word not found in the dictionary"))
+                {
+                    Console.WriteLine($"{item.Word} - not found in the dictionary");
+                    return;
+                }
+
                 document.LoadHtml(htmlContent);
 
-                var extendedData = new ExtendedWordData
+                var extendedData = new ExtendedWordDataModel
                 {
-                    Source = "OF"
+                    Source = SourceVocabulary.Oxford.GetDescription()
                 };
                 // Get word type from pos span
                 var posSpan = document.DocumentNode.SelectSingleNode("//span[@class='pos']");
@@ -160,6 +182,8 @@ namespace VR.Services
                 if (urlParts.Length > 0)
                 {
                     extendedData.ID = urlParts[urlParts.Length - 1];
+                    if (!string.IsNullOrEmpty(extendedData.ID))
+                        item.WordId = extendedData.ID;
                 }
 
                 // Get IPA and audio information
@@ -194,15 +218,13 @@ namespace VR.Services
                         {
                             foreach (var sense in directSenses)
                             {
-                                var definition = new DefinitionDto();
+                                var definition = new DefinitionDataModel();
                                 definition.PartOfSpeech = null; // No part of speech for direct senses
 
                                 // Get CEFR level
                                 var cefr = sense.GetAttributeValue("cefr", null);
                                 if (!string.IsNullOrEmpty(cefr))
-                                {
                                     definition.Level = cefr.ToUpper();
-                                }
 
                                 // Get definition text
                                 var defNode = sense.SelectSingleNode(".//span[@class='def']");
@@ -214,13 +236,13 @@ namespace VR.Services
                                 {
                                     foreach (var ul in examplesUl)
                                     {
-                                        var examples = new List<ExampleDto>();
+                                        var examples = new List<ExampleDataModel>();
                                         var items = ul.SelectNodes(".//li");
                                         if (items != null)
                                         {
                                             foreach (var li in items)
                                             {
-                                                var example = new ExampleDto();
+                                                var example = new ExampleDataModel();
                                                 var structNode = li.SelectSingleNode(".//span[@class='cf']");
                                                 example.Struct = structNode?.InnerText?.Trim() ?? null;
                                                 var exampleNode = li.SelectSingleNode(".//span[@class='x']");
@@ -233,7 +255,7 @@ namespace VR.Services
                                         }
 
                                         if (definition.Examples == null)
-                                            definition.Examples = new List<ExampleDto>();
+                                            definition.Examples = new List<ExampleDataModel>();
 
                                         definition.Examples.AddRange(examples);
                                     }
@@ -264,7 +286,7 @@ namespace VR.Services
                                 {
                                     foreach (var sense in senses)
                                     {
-                                        var definition = new DefinitionDto();
+                                        var definition = new DefinitionDataModel();
 
                                         definition.PartOfSpeech = shcutTitle;
 
@@ -285,13 +307,13 @@ namespace VR.Services
                                         {
                                             foreach (var ul in examplesUl)
                                             {
-                                                var examples = new List<ExampleDto>();
+                                                var examples = new List<ExampleDataModel>();
                                                 var exampleItems = ul.SelectNodes(".//li");
                                                 if (exampleItems != null)
                                                 {
                                                     foreach (var exampleItem in exampleItems)
                                                     {
-                                                        var example = new ExampleDto();
+                                                        var example = new ExampleDataModel();
                                                         var structNode = exampleItem.SelectSingleNode(".//span[@class='cf']");
                                                         example.Struct = structNode?.InnerText?.Trim() ?? null;
                                                         var exampleNode = exampleItem.SelectSingleNode(".//span[@class='x']");
@@ -304,7 +326,7 @@ namespace VR.Services
                                                 }
 
                                                 if (definition.Examples == null)
-                                                    definition.Examples = new List<ExampleDto>();
+                                                    definition.Examples = new List<ExampleDataModel>();
 
                                                 definition.Examples.AddRange(examples);
                                             }
@@ -329,7 +351,7 @@ namespace VR.Services
                 {
                     foreach (var sense in singleSense)
                     {
-                        var definition = new DefinitionDto();
+                        var definition = new DefinitionDataModel();
 
                         // Get CEFR level
                         var cefr = sense.GetAttributeValue("cefr", null);
@@ -348,13 +370,13 @@ namespace VR.Services
                         {
                             foreach (var ul in examplesUl)
                             {
-                                var examples = new List<ExampleDto>();
+                                var examples = new List<ExampleDataModel>();
                                 var exampleItems = ul.SelectNodes(".//li");
                                 if (exampleItems != null)
                                 {
                                     foreach (var exampleItem in exampleItems)
                                     {
-                                        var example = new ExampleDto();
+                                        var example = new ExampleDataModel();
                                         var structNode = exampleItem.SelectSingleNode(".//span[@class='cf']");
                                         example.Struct = structNode?.InnerText?.Trim() ?? null;
                                         var exampleNode = exampleItem.SelectSingleNode(".//span[@class='x']");
@@ -367,7 +389,7 @@ namespace VR.Services
                                 }
 
                                 if (definition.Examples == null)
-                                    definition.Examples = new List<ExampleDto>();
+                                    definition.Examples = new List<ExampleDataModel>();
 
                                 definition.Examples.AddRange(examples);
                             }
@@ -393,7 +415,7 @@ namespace VR.Services
                     {
                         foreach (var idiomBlock in idiomBlocks)
                         {
-                            var idiom = new IdiomDataDto();
+                            var idiom = new IdiomDataModel();
 
                             // Get idiom phrase
                             var phraseNode = idiomBlock.SelectSingleNode(".//span[@class='idm']");
@@ -428,7 +450,7 @@ namespace VR.Services
                             if (!string.IsNullOrEmpty(idiom.Phrase) && !string.IsNullOrEmpty(idiom.Definition))
                             {
                                 if (extendedData.Idioms == null)
-                                    extendedData.Idioms = new List<IdiomDataDto>();
+                                    extendedData.Idioms = new List<IdiomDataModel>();
 
                                 extendedData.Idioms.Add(idiom);
                             }
@@ -467,7 +489,6 @@ namespace VR.Services
                 };
                 item.Data = JsonConvert.SerializeObject(extendedData, jsonSettings);
 
-                item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
                 await DataService.UpdateVocabularyAsync(item);
             }
         }

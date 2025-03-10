@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,7 +17,9 @@ namespace VR.Domain.Models
         [MaxLength(2048)]
         public string Word { get; set; }
 
-        //public string Data { get; set; }
+        [Required]
+        [MaxLength(2048)]
+        public string WordId { get; set; }
 
         private string _data;
         public string Data
@@ -27,13 +30,13 @@ namespace VR.Domain.Models
                 if (_data != value)
                 {
                     _data = value;
-                    JsonData = JsonConvert.DeserializeObject<ExtendedWordData>(_data);
+                    JsonData = JsonConvert.DeserializeObject<ExtendedWordDataModel>(_data);
                 }
             }
         }
 
         [NotMapped]
-        public ExtendedWordData JsonData { get; private set; }
+        public ExtendedWordDataModel JsonData { get; private set; }
 
 
         [MaxLength(100)]
@@ -79,41 +82,47 @@ namespace VR.Domain.Models
         public virtual ICollection<Dictionary> Dictionaries { get; set; }
     }
 
-    public class ExtendedWordData
+    public class ExtendedWordDataModel
     {
         public string ID { get; set; }
         public string Source { get; set; }
         public string Level { get; set; }
         public string Type { get; set; }
-        public List<DefinitionDto> Definitions { get; set; } = new List<DefinitionDto>();
-        public List<IdiomDataDto> Idioms { get; set; }
+        public List<DefinitionDataModel> Definitions { get; set; } = new List<DefinitionDataModel>();
+        public List<IdiomDataModel> Idioms { get; set; }
         public string Ipa { get; set; }
         public string Ipa2 { get; set; }
         public string Audio { get; set; }
         public string Audio2 { get; set; }
     }
 
-    public class DefinitionDto
+    public class DefinitionDataModel
     {
         public string PartOfSpeech { get; set; }
         public string Level { get; set; }
         public string Definition { get; set; }
-        public List<ExampleDto> Examples { get; set; }
+        public List<ExampleDataModel> Examples { get; set; }
         public string Topic { get; set; }
     }
 
-    public class ExampleDto
+    public class ExampleDataModel
     {
         public string Struct { get; set; }
         public string Example { get; set; }
     }
 
-    public class IdiomDataDto
+    public class IdiomDataModel
     {
         public string Phrase { get; set; }
         public string Level { get; set; }
         public string Definition { get; set; }
         public List<string> Examples { get; set; }
         public List<string> Labels { get; set; }
+    }
+
+    public enum SourceVocabulary
+    {
+        [Description("OF")]
+        Oxford,
     }
 }

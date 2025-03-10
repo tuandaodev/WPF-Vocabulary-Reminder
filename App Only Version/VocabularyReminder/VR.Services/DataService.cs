@@ -78,7 +78,13 @@ namespace VR.Services
             }
         }
 
-        public static async Task<int> AddVocabularyAsync(string inputText)
+        /// <summary>
+        /// Add new empty vocabulary to process
+        /// </summary>
+        /// <param name="inputText"></param>
+        /// <param name="wordId">To distinguish between meanings</param>
+        /// <returns></returns>
+        public static async Task<int> AddVocabularyAsync(string inputText, string wordId = null)
         {
             if (String.IsNullOrEmpty(inputText)) return 0;
             using (var context = new VocaDbContext())
@@ -87,6 +93,9 @@ namespace VR.Services
                 {
                     Word = inputText.Trim()
                 };
+                if (!string.IsNullOrEmpty(wordId))
+                    voca.WordId = wordId;
+
                 context.Vocabularies.Add(voca);
                 await context.SaveChangesAsync();
                 return voca.Id;
@@ -342,6 +351,22 @@ namespace VR.Services
             using (var context = new VocaDbContext())
             {
                 return await context.Vocabularies.Where(e => e.Ipa == null || e.Translate == string.Empty).ToListAsync();
+            }
+        }
+
+        public static async Task<int> GetDictionaryIdByVocabularyIdAsync(int vocabularyId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                return await context.VocabularyMappings.Where(e => e.VocabularyId == vocabularyId).Select(x => x.DictionaryId).FirstOrDefaultAsync();
+            }
+        }
+
+        public static async Task<Vocabulary> GetVocabularyByWordIdAsync(string wordId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                return await context.Vocabularies.Where(e => e.WordId == wordId).FirstOrDefaultAsync();
             }
         }
 

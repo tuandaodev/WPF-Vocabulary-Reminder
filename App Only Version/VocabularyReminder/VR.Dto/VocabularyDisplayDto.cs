@@ -17,11 +17,11 @@ namespace VR.Dto
                 if (_data != value)
                 {
                     _data = value;
-                    JsonData = JsonConvert.DeserializeObject<ExtendedWordData>(_data);
+                    JsonData = JsonConvert.DeserializeObject<ExtendedWordDataModel>(_data);
                 }
             }
         }
-        public ExtendedWordData JsonData { get; private set; }
+        public ExtendedWordDataModel JsonData { get; private set; }
         public string Type { get; set; }
         public string Ipa { get; set; }
         public string Ipa2 { get; set; }

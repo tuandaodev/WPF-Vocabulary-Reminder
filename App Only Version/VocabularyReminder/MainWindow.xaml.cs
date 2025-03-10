@@ -507,9 +507,56 @@ namespace VR
 
                 ParallelOptions parallelOptions = new ParallelOptions();
                 parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
+
+                parallelOptions.MaxDegreeOfParallelism = 1;
+
+                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
                 {
-                    TranslateService.GetWordDefineInformationAsync(_item).Wait();
+                    await TranslateService.GetWordDefineInformationAsync(_item);
+
+                    // Process to get more meanings of this word
+                    if (string.IsNullOrEmpty(_item.WordId)) return;
+
+                    // start with current wordId
+                    string currentWordId = _item.WordId;
+                    int currentId = 0;
+
+                    var parts = currentWordId.Split('_');
+                    if (parts.Length == 2) int.TryParse(parts[1], out currentId);
+
+                    if (currentId == 0) return;
+                    while (true)
+                    {
+                        currentId++;
+                        currentWordId = $"{_item.Word}_{currentId}";
+
+                        try
+                        {
+                            var existDB = await DataService.GetVocabularyByWordIdAsync(currentWordId);
+                            if (existDB != null)
+                                break;
+
+                            var hasNextMeaning = await TranslateService.HasMeaningAsync(currentWordId);
+                            if (!hasNextMeaning)
+                                break;
+
+                            // Generate next WordId and add vocabulary
+                            var newVocaId = await DataService.AddVocabularyAsync(_item.Word, currentWordId);
+                            if (newVocaId > 0)
+                            {
+                                // Map to dictionary if successful
+                                var dicId = await DataService.GetDictionaryIdByVocabularyIdAsync(_item.Id);
+                                if (dicId > 0)
+                                    await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.Error.WriteLine(ex.Message);
+                            break;
+                        }
+                    }
+
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
@@ -977,19 +1024,21 @@ namespace VR
             window.Show();
         }
 
-        private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
+        private void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
         {
-            var voca = await DataService.GetVocabularyByWordAsync("bank");
-            await TranslateService.GetWordDefineInformationAsync(voca);
-            Console.WriteLine(voca);
+            ProcessBackgroundGetWordDefineInformation();
 
-            voca = await DataService.GetVocabularyByWordAsync("translate");
-            await TranslateService.GetWordDefineInformationAsync(voca);
-            Console.WriteLine(voca);
+            //var voca = await DataService.GetVocabularyByWordAsync("bank");
+            //await TranslateService.GetWordDefineInformationAsync(voca);
+            //Console.WriteLine(voca);
 
-            voca = await DataService.GetVocabularyByWordAsync("study");
-            await TranslateService.GetWordDefineInformationAsync(voca);
-            Console.WriteLine(voca);
+            //voca = await DataService.GetVocabularyByWordAsync("translate");
+            //await TranslateService.GetWordDefineInformationAsync(voca);
+            //Console.WriteLine(voca);
+
+            //voca = await DataService.GetVocabularyByWordAsync("study");
+            //await TranslateService.GetWordDefineInformationAsync(voca);
+            //Console.WriteLine(voca);
         }
     }
 
