@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,20 +8,6 @@ namespace VR.Domain.Models
     [Table("Vocabulary")]
     public class Vocabulary
     {
-        private bool _isDueForReview;
-        [NotMapped]
-        public bool IsDueForReview
-        {
-            get => _isDueForReview;
-            set
-            {
-                if (_isDueForReview != value)
-                {
-                    _isDueForReview = value;
-                }
-            }
-        }
-
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -31,6 +16,7 @@ namespace VR.Domain.Models
         [MaxLength(2048)]
         public string Word { get; set; }
 
+        //public string Data { get; set; }
 
         private string _data;
         public string Data
@@ -47,7 +33,7 @@ namespace VR.Domain.Models
         }
 
         [NotMapped]
-        public ExtendedWordData JsonData {  get; private set; }
+        public ExtendedWordData JsonData { get; private set; }
 
 
         [MaxLength(100)]
@@ -84,25 +70,7 @@ namespace VR.Domain.Models
         public long? ViewedDate { get; set; }  // Unix timestamp in seconds
         public long? LearnedDate { get; set; }  // Unix timestamp in seconds
         public long? CreatedDate { get; set; }  // Unix timestamp in seconds
-
-        private long? _nextReviewDate;
-        public long? NextReviewDate
-        {
-            get => _nextReviewDate;
-            set
-            {
-                if (_nextReviewDate != value)
-                {
-                    _nextReviewDate = value;
-                    NextReviewDateDisplay = _nextReviewDate.HasValue
-                        ? DateTimeOffset.FromUnixTimeSeconds(_nextReviewDate.Value).LocalDateTime.ToString("yyyy-MM-dd HH:mm")
-                        : "";
-                }
-            }
-        }
-
-        [NotMapped]
-        public string NextReviewDateDisplay { get; private set; }
+        public long? NextReviewDate { get; set; }
         public double? EaseFactor { get; set; } = 2.5;  // Starting ease factor
         public int? Interval { get; set; } = 0;  // Current interval in days
         public int? ReviewCount { get; set; } = 0;  // Number of reviews

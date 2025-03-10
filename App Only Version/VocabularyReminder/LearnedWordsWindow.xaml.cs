@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using VR.Domain;
 using VR.Domain.Models;
+using VR.Dto;
 using VR.Infrastructure;
 using VR.Services;
 
@@ -21,6 +22,7 @@ namespace VR
         public LearnedWordsWindow()
         {
             InitializeComponent();
+            MyMapper.Initialize();
             LoadDictionariesAsync().ConfigureAwait(false);
         }
 
@@ -115,9 +117,10 @@ namespace VR
             int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : 0;
 
             var vocabularyList = await DataService.GetListLearndedAsync(isRead, searchContent, dictionaryId);
+            var mapVocabularyList = vocabularyList.Select(x => MyMapper.Mapper.Map<VocabularyDisplayDto>(x)).ToList();
             View_ListLearnedWords.Items.Clear();
 
-            foreach (var item in vocabularyList)
+            foreach (var item in mapVocabularyList)
             {
                 // Add IsDueForReview property
                 var dueForReview = SpacedRepetitionService.IsDueForReview(item);

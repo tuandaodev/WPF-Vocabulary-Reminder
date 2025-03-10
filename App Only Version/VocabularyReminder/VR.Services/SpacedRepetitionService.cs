@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using VR.Utils;
 using VR.Domain;
 using VR.Domain.Models;
+using VR.Dto;
+using VR.Utils;
 
 namespace VR.Services
 {
@@ -50,7 +51,7 @@ namespace VR.Services
             }
         }
 
-        public static bool IsDueForReview(Vocabulary vocabulary)
+        public static bool IsDueForReview(VocabularyDisplayDto vocabulary)
         {
             if (vocabulary == null)
                 return false;

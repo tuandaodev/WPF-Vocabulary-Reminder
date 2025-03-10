@@ -12,7 +12,7 @@ namespace VR
         protected override void OnExit(ExitEventArgs e)
         {
             // Clear cached data when application exits
-            Services.CacheService.Clear();
+            CacheService.Clear();
             base.OnExit(e);
         }
 
