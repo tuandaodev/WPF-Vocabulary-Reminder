@@ -1,24 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VR.Domain.Models
 {
     [Table("Vocabulary")]
-    public class Vocabulary : INotifyPropertyChanged
+    public class Vocabulary
     {
         private bool _isDueForReview;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         [NotMapped]
         public bool IsDueForReview
         {
@@ -28,7 +19,6 @@ namespace VR.Domain.Models
                 if (_isDueForReview != value)
                 {
                     _isDueForReview = value;
-                    OnPropertyChanged(nameof(IsDueForReview));
                 }
             }
         }
@@ -52,8 +42,6 @@ namespace VR.Domain.Models
                 {
                     _data = value;
                     JsonData = JsonConvert.DeserializeObject<ExtendedWordData>(_data);
-                    OnPropertyChanged(nameof(Data));
-                    OnPropertyChanged(nameof(JsonData));
                 }
             }
         }
@@ -109,8 +97,6 @@ namespace VR.Domain.Models
                     NextReviewDateDisplay = _nextReviewDate.HasValue
                         ? DateTimeOffset.FromUnixTimeSeconds(_nextReviewDate.Value).LocalDateTime.ToString("yyyy-MM-dd HH:mm")
                         : "";
-                    OnPropertyChanged(nameof(NextReviewDate));
-                    OnPropertyChanged(nameof(NextReviewDateDisplay));
                 }
             }
         }
