@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="VR.Services\BackgroundService.cs" />
     <Compile Include="VR.Services\CacheService.cs" />
+    <Compile Include="VR.Services\SyncVocaService.cs" />
     <Compile Include="VR.Utils\EnumExtensions.cs" />
     <Compile Include="VR.Utils\Helper.cs" />
     <Compile Include="VR.Services\ImportBackupDataService.cs" />

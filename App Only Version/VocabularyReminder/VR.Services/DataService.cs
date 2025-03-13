@@ -172,6 +172,12 @@ namespace VR.Services
             }
         }
 
+        public static async Task<List<Vocabulary>> GetVocabularyByIdsAsync(List<int> ids)
+        {
+            using (var context = new VocaDbContext())
+                return await context.Vocabularies.Where(e => ids.Contains(e.Id)).ToListAsync();
+        }
+
         public static async Task<Vocabulary> GetNextVocabularyAsync(int dicId, int Id)
         {
             using (var context = new VocaDbContext())

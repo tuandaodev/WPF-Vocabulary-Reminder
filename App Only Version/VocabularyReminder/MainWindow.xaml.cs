@@ -392,31 +392,31 @@ namespace VR
         private async Task BackgroundCrawl()
         {
             Status_UpdateMessage("Start Crawling...");
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Status_UpdateMessage("[1/4] Start Getting Translate...");
-                ProcessBackgroundTranslate();
+                await ProcessBackgroundTranslate().ConfigureAwait(true);
                 Status_UpdateMessage("[1/4] Finished Getting Translate.");
             });   // wait to process all
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Status_UpdateMessage("[2/4] Start Getting Vocabulary Information: Define, Example, Ipa...");
-                ProcessBackgroundGetWordDefineInformation();
+                await ProcessBackgroundGetWordDefineInformation().ConfigureAwait(true);
                 Status_UpdateMessage("[2/4] Finished Getting Vocabulary Information: Define, Example, Ipa.");
             });   // wait to process all
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Status_UpdateMessage("[3/4] Start Getting Related Words...");
-                ProcessBackgroundGetRelatedWords();
+                await ProcessBackgroundGetRelatedWords().ConfigureAwait(true);
                 Status_UpdateMessage("[3/4] Finished Getting Related Words.");
             });   // wait to process all
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 Status_UpdateMessage("[4/4] Start Getting from local dictionary for unprocess Words...");
-                ProcessBackgroundUnprocessWords();
+                await ProcessBackgroundUnprocessWords().ConfigureAwait(true);
                 Status_UpdateMessage("[4/4] Finished Getting from local dictionary for unprocess Words.");
             });   // wait to process all
 
@@ -462,32 +462,36 @@ namespace VR
         }
 
 
-        public async void ProcessBackgroundTranslate()
+        public async Task ProcessBackgroundTranslate()
         {
             try
             {
-                var ListVocabulary = await DataService.GetListVocabularyToTranslateAsync();
+                var listVocabulary = await DataService.GetListVocabularyToTranslateAsync().ConfigureAwait(true);
 
-                int TotalItems = ListVocabulary.Count;
-                int Count = 0;
+                int totalItems = listVocabulary.Count;
+                int count = 0;
 
-                var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+                var pluralizationService = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
+                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
+                Parallel.ForEach(listVocabulary, parallelOptions, async _item =>
                 {
-                    var voca = await TranslateService.GetVocabularyTranslateAsync(_item);
+                    var trimmedWord = _item.Word.Trim(" ()".ToCharArray());
+                    if (_item.Word != trimmedWord)
+                        _item.Word = trimmedWord;
+
+                    var voca = await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
                     if (string.IsNullOrEmpty(voca.Translate))
                     {
-                        if (service.IsPlural(_item.Word))
+                        if (pluralizationService.IsPlural(_item.Word))
                         {
-                            _item.Word = service.Singularize(_item.Word);
-                            await TranslateService.GetVocabularyTranslateAsync(_item);
+                            _item.Word = pluralizationService.Singularize(_item.Word);
+                            await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
                         }
                     }
 
-                    Status_UpdateProgressBar(++Count, TotalItems);
+                    Status_UpdateProgressBar(++count, totalItems);
                 });
             }
             catch (Exception ex)
@@ -496,67 +500,21 @@ namespace VR
             }
         }
 
-        public async void ProcessBackgroundGetWordDefineInformation()
+        public async Task ProcessBackgroundGetWordDefineInformation()
         {
             try
             {
-                var ListVocabulary = await DataService.GetListVocabularyToGetDefineExampleMp3URLAsync();
+                var ListVocabulary = await DataService.GetListVocabularyToGetDefineExampleMp3URLAsync().ConfigureAwait(true);
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-
-                parallelOptions.MaxDegreeOfParallelism = 1;
+                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
 
                 Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
                 {
-                    await TranslateService.GetWordDefineInformationAsync(_item);
-
-                    // Process to get more meanings of this word
-                    if (string.IsNullOrEmpty(_item.WordId)) return;
-
-                    // start with current wordId
-                    string currentWordId = _item.WordId;
-                    int currentId = 0;
-
-                    var parts = currentWordId.Split('_');
-                    if (parts.Length == 2) int.TryParse(parts[1], out currentId);
-
-                    if (currentId == 0) return;
-                    while (true)
-                    {
-                        currentId++;
-                        currentWordId = $"{_item.Word}_{currentId}";
-
-                        try
-                        {
-                            var existDB = await DataService.GetVocabularyByWordIdAsync(currentWordId);
-                            if (existDB != null)
-                                break;
-
-                            var hasNextMeaning = await TranslateService.HasMeaningAsync(currentWordId);
-                            if (!hasNextMeaning)
-                                break;
-
-                            // Generate next WordId and add vocabulary
-                            var newVocaId = await DataService.AddVocabularyAsync(_item.Word, currentWordId);
-                            if (newVocaId > 0)
-                            {
-                                // Map to dictionary if successful
-                                var dicId = await DataService.GetDictionaryIdByVocabularyIdAsync(_item.Id);
-                                if (dicId > 0)
-                                    await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.Error.WriteLine(ex.Message);
-                            break;
-                        }
-                    }
-
+                    await SyncVocaService.SyncVocabularyAsync(_item).ConfigureAwait(true);
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
@@ -567,20 +525,20 @@ namespace VR
 
         }
 
-        public async void ProcessBackgroundGetRelatedWords()
+        public async Task ProcessBackgroundGetRelatedWords()
         {
             try
             {
-                var ListVocabulary = await DataService.GetListVocabularyToGetRelatedWordsAsync();
+                var ListVocabulary = await DataService.GetListVocabularyToGetRelatedWordsAsync().ConfigureAwait(true);
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Environment.ProcessorCount * CoreMultipleThread;
-                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
+                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
+                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
                 {
-                    TranslateService.GetRelatedWord(_item).Wait();
+                    await TranslateService.GetRelatedWord(_item).ConfigureAwait(true);
                     Status_UpdateProgressBar(++Count, TotalItems);
                 });
             }
@@ -590,15 +548,15 @@ namespace VR
             }
         }
 
-        public async void ProcessBackgroundUnprocessWords()
+        public async Task ProcessBackgroundUnprocessWords()
         {
             try
             {
-                var listVocabulary = await DataService.GetUnprocessVocabulariesAsync();
+                var listVocabulary = await DataService.GetUnprocessVocabulariesAsync().ConfigureAwait(true);
                 if (!listVocabulary.Any())
                     return;
 
-                var evDic = await DataService.GetEVVocabulariesAsync();
+                var evDic = await DataService.GetEVVocabulariesAsync().ConfigureAwait(true);
 
                 int TotalItems = listVocabulary.Count;
                 int Count = 0;
@@ -620,8 +578,8 @@ namespace VR
                     if (exist != null)
                     {
                         if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
-                        if (string.IsNullOrEmpty(item.Translate)) item.Ipa = exist.Description;
-                        await DataService.UpdateVocabularyAsync(item);
+                        if (string.IsNullOrEmpty(item.Translate)) item.Translate = exist.Description;
+                        await DataService.UpdateVocabularyAsync(item).ConfigureAwait(true);
                     }
 
                     Status_UpdateProgressBar(++Count, TotalItems);
@@ -823,7 +781,7 @@ namespace VR
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = (int)Environment.ProcessorCount * CoreMultipleThread;    
+                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     Mp3Service.preloadMp3MultipleAsync(_item).Wait();
@@ -841,12 +799,14 @@ namespace VR
 
         private async void Btn_Import_Auto_Click(object sender, RoutedEventArgs e)
         {
-            Status_UpdateMessage("Downloading 3000 common words....");
-            var ImportService = new ImportBackupDataService();
-            await ImportService.ImportDemo3000WordsAsync();
-            Reload_Stats();
-            Status_UpdateMessage("Downloaded 3000 common words success.");
-            MessageBox.Show("Downloaded 3000 common words success.");
+            throw new ApplicationException("Database is out of date");
+
+            //Status_UpdateMessage("Downloading 3000 common words....");
+            //var ImportService = new ImportBackupDataService();
+            //await ImportService.ImportDemo3000WordsAsync();
+            //Reload_Stats();
+            //Status_UpdateMessage("Downloaded 3000 common words success.");
+            //MessageBox.Show("Downloaded 3000 common words success.");
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1024,9 +984,9 @@ namespace VR
             window.Show();
         }
 
-        private void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
+        private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
         {
-            ProcessBackgroundGetWordDefineInformation();
+            await ProcessBackgroundGetWordDefineInformation().ConfigureAwait(true);
 
             //var voca = await DataService.GetVocabularyByWordAsync("bank");
             //await TranslateService.GetWordDefineInformationAsync(voca);

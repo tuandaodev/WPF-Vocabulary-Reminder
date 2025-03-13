@@ -15,15 +15,15 @@ namespace VR.Services
     public class TranslateService
     {
         const string xpath_translate = "//span[@class='trans dtrans']";
-        const string xpath_ipa = "//span[@class='ipa dipa']";
+        //const string xpath_ipa = "//span[@class='ipa dipa']";
         const string xpath_type = "//span[@class='pos dpos']";
-        const string xpath_mp3 = "//span[@class='phonetics']/*";
+        //const string xpath_mp3 = "//span[@class='phonetics']/*";
         public static string relatedAPIUrl = "https://relatedwords.org/api/related?term=";
 
         public static async Task<string> GetGoogleTranslate(string text)
         {
             // Check cache first
-            if (VR.Services.CacheService.TryGetTranslation(text, out string cachedTranslation))
+            if (CacheService.TryGetTranslation(text, out string cachedTranslation))
             {
                 return cachedTranslation;
             }
@@ -60,7 +60,7 @@ namespace VR.Services
             }
         }
 
-        public static async Task<Vocabulary> GetVocabularyTranslateAsync(Vocabulary item)
+        public static async Task<Vocabulary> GetVocabularyVietnameseTranslateAsync(Vocabulary item)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -105,7 +105,7 @@ namespace VR.Services
 
                 if (listTypes.Count > 0)
                 {
-                    item.Type = String.Join(", ", listTypes);
+                    item.Type = String.Join(", ", listTypes.Distinct());
                 }
                 else
                 {

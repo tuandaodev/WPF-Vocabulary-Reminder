@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Animation;
-using System.Linq;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Services;
@@ -104,15 +104,50 @@ namespace VR
             // Update the database
             using (var db = new VocaDbContext())
             {
-                var vocab = db.Vocabularies.Find(_vocabulary.Id);
-                if (vocab != null)
+                try
                 {
-                    vocab.NextReviewDate = _vocabulary.NextReviewDate;
-                    vocab.EaseFactor = _vocabulary.EaseFactor;
-                    vocab.Interval = _vocabulary.Interval;
-                    vocab.ReviewCount = _vocabulary.ReviewCount;
-                    vocab.LapseCount = _vocabulary.LapseCount;
-                    await db.SaveChangesAsync();
+                    var vocab = db.Vocabularies.Find(_vocabulary.Id);
+                    if (vocab != null)
+                    {
+                        // Update SRS fields
+                        vocab.NextReviewDate = _vocabulary.NextReviewDate;
+                        vocab.EaseFactor = _vocabulary.EaseFactor;
+                        vocab.Interval = _vocabulary.Interval;
+                        vocab.ReviewCount = _vocabulary.ReviewCount;
+                        vocab.LapseCount = _vocabulary.LapseCount;
+
+                        // Ensure required fields are preserved
+                        if (string.IsNullOrEmpty(vocab.Word))
+                            vocab.Word = _vocabulary.Word;
+                        if (string.IsNullOrEmpty(vocab.WordId))
+                            vocab.WordId = _vocabulary.WordId;
+                        
+                        try
+                        {
+                            await db.SaveChangesAsync();
+                        }
+                        catch (System.Data.Entity.Validation.DbEntityValidationException ex)
+                        {
+                            string errorMessages = string.Join("\n",
+                                ex.EntityValidationErrors
+                                .SelectMany(x => x.ValidationErrors)
+                                .Select(x => $"Property: {x.PropertyName}, Error: {x.ErrorMessage}"));
+                            
+                            MessageBox.Show($"Validation errors occurred:\n{errorMessages}",
+                                "Validation Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                            throw;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error saving changes: {ex.Message}",
+                        "Database Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    throw;
                 }
             }
 
@@ -285,7 +320,7 @@ namespace VR
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Failed to initialize IPA service: {ex.Message}");
+                        Debug.WriteLine($"Failed to initialize IPA service: {ex.Message}");
                         MessageBox.Show("Failed to load IPA dictionary.", "IPA Service Error",
                             MessageBoxButton.OK, MessageBoxImage.Warning);
                     }
@@ -307,7 +342,7 @@ namespace VR
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"IPA lookup failed for word '{Label_Example.Text}': {ex.Message}");
+                        Debug.WriteLine($"IPA lookup failed for word '{Label_Example.Text}': {ex.Message}");
                         ipa = null;
                     }
 
@@ -335,9 +370,9 @@ namespace VR
             }
         }
 
-        public void SetVocabulary(Vocabulary _item)
+        public void SetVocabulary(Vocabulary item)
         {
-            _vocabulary = _item;
+            _vocabulary = item ?? throw new ArgumentNullException(nameof(item));
             MappingDisplay();
         }
 
@@ -368,8 +403,41 @@ namespace VR
             if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
 
             var currentDef = _vocabulary.JsonData.Definitions[_currentDefinitionIndex];
+            
+            // Update definition and example
             Label_Translate2.Text = currentDef.Definition;
             Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
+            
+            // Update metadata
+            if (!string.IsNullOrEmpty(currentDef.PartOfSpeech))
+            {
+                Label_DefPartOfSpeech.Text = currentDef.PartOfSpeech;
+                Label_DefPartOfSpeech.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Label_DefPartOfSpeech.Visibility = Visibility.Collapsed;
+            }
+
+            if (!string.IsNullOrEmpty(currentDef.Topic))
+            {
+                Label_DefTopic.Text = currentDef.Topic;
+                Label_DefTopic.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Label_DefTopic.Visibility = Visibility.Collapsed;
+            }
+
+            if (!string.IsNullOrEmpty(currentDef.Level))
+            {
+                Label_DefLevel.Text = currentDef.Level;
+                Label_DefLevel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Label_DefLevel.Visibility = Visibility.Collapsed;
+            }
             
             // Update the index display
             Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData.Definitions.Count}";
@@ -384,13 +452,24 @@ namespace VR
         private void MappingDisplay()
         {
             this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
-            
+
             this.Label_IPA.Content = $"{this._vocabulary.Ipa}";
             this.Label_IPA2.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
                 ? "-"
                 : $"{this._vocabulary.Ipa2}";
             
             this.Label_Type.Content = this._vocabulary.Type;
+            
+            // Only show level if it exists
+            if (!string.IsNullOrEmpty(this._vocabulary.JsonData?.Level))
+            {
+                this.Label_Level.Content = this._vocabulary.JsonData.Level;
+                this.Label_Level.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.Label_Level.Visibility = Visibility.Collapsed;
+            }
             this.Label_Translate1.Text = this._vocabulary.Translate;
             
             // Reset definition index

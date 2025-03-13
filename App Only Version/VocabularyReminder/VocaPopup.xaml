@@ -143,6 +143,16 @@
                                 VerticalAlignment="Top"
                                 Foreground="#999999"/>
                         
+                        <Label x:Name="Label_Level"
+                                Grid.Column="2"
+                                Content=""
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Padding="0"
+                                Margin="12,12,0,0"
+                                VerticalAlignment="Top"
+                                Visibility="Collapsed"/>
+                        
                         <Button x:Name="Btn_OpenCambridge"
                                 Grid.Column="3"
                                 Content="🔍 C"
@@ -198,13 +208,36 @@
                        FontSize="18"
                        Margin="0,4,0,8"/>
             
-            <!-- Definitions -->
+            <!-- Definition Section -->
             <DockPanel LastChildFill="True" Margin="0,0,0,12">
+                <!-- Definition Header -->
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8">
-                    <TextBlock Text="DEFINITION" Style="{StaticResource SectionTitle}"/>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="DEFINITION" Style="{StaticResource SectionTitle}" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="Label_DefPartOfSpeech"
+                            Text=""
+                            FontSize="14"
+                            FontStyle="Italic"
+                            Foreground="#999999"
+                            Margin="0,0,8,0"
+                            Visibility="Collapsed"/>
+                        <TextBlock x:Name="Label_DefTopic"
+                            Text=""
+                            FontSize="14"
+                            FontStyle="Italic"
+                            Foreground="#999999"
+                            Margin="0,0,8,0"
+                            Visibility="Collapsed"/>
+                        <TextBlock x:Name="Label_DefLevel"
+                            Text=""
+                            FontSize="14"
+                            FontStyle="Italic"
+                            Foreground="#999999"
+                            Visibility="Collapsed"/>
+                    </StackPanel>
                     <StackPanel DockPanel.Dock="Right"
                                Orientation="Horizontal"
-                               VerticalAlignment="Center"
+                               VerticalAlignment="Top"
                                Margin="0,-4,0,0">
                         <Button x:Name="Btn_PrevDefinition"
                                  Content="◀"
@@ -226,21 +259,22 @@
                     </StackPanel>
                 </DockPanel>
 
+                <!-- Definition and Example Content -->
                 <StackPanel>
                     <TextBlock x:Name="Label_Translate2"
-                               Text="English definition"
-                               TextWrapping="Wrap"
-                               Foreground="#FFFFFF"
-                               FontSize="18"
-                               Margin="0,4,0,12"/>
+                             Text=""
+                             TextWrapping="Wrap"
+                             Foreground="#FFFFFF"
+                             FontSize="18"
+                             Margin="0,4,0,12"/>
                     
                     <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
                     <TextBlock x:Name="Label_Example"
-                               Text="Example usage"
-                               TextWrapping="Wrap"
-                               Foreground="#FFFFFF"
-                               FontSize="16"
-                               Margin="0,4,0,4"/>
+                             Text=""
+                             TextWrapping="Wrap"
+                             Foreground="#FFFFFF"
+                             FontSize="16"
+                             Margin="0,4,0,4"/>
                 </StackPanel>
             </DockPanel>
 

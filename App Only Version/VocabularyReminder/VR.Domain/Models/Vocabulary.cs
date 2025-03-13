@@ -17,7 +17,6 @@ namespace VR.Domain.Models
         [MaxLength(2048)]
         public string Word { get; set; }
 
-        [Required]
         [MaxLength(2048)]
         public string WordId { get; set; }
 
@@ -37,7 +36,6 @@ namespace VR.Domain.Models
 
         [NotMapped]
         public ExtendedWordDataModel JsonData { get; private set; }
-
 
         [MaxLength(100)]
         public string Type { get; set; }
