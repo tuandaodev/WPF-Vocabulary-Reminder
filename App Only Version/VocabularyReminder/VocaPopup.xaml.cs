@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media.Animation;
+using System.Linq;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Services;
@@ -14,6 +15,7 @@ namespace VR
         private static IPAService _ipaService;
         private Vocabulary _vocabulary { get; set; }
         private System.Windows.Forms.Timer autoCloseTimer;
+        private int _currentDefinitionIndex = 0;
 
         public VocaPopup()
         {
@@ -52,6 +54,9 @@ namespace VR
         {
             switch (e.Key)
             {
+                case System.Windows.Input.Key.Escape:
+                    this.Close();
+                    break;
                 case System.Windows.Input.Key.D1:
                 case System.Windows.Input.Key.NumPad1:
                     Btn_Again_Click(null, null);
@@ -336,6 +341,46 @@ namespace VR
             MappingDisplay();
         }
 
+        private void Btn_PrevDefinition_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+
+            _currentDefinitionIndex--;
+            if (_currentDefinitionIndex < 0)
+                _currentDefinitionIndex = _vocabulary.JsonData.Definitions.Count - 1;
+
+            UpdateDefinitionDisplay();
+        }
+
+        private void Btn_NextDefinition_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+
+            _currentDefinitionIndex++;
+            if (_currentDefinitionIndex >= _vocabulary.JsonData.Definitions.Count)
+                _currentDefinitionIndex = 0;
+
+            UpdateDefinitionDisplay();
+        }
+
+        private void UpdateDefinitionDisplay()
+        {
+            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+
+            var currentDef = _vocabulary.JsonData.Definitions[_currentDefinitionIndex];
+            Label_Translate2.Text = currentDef.Definition;
+            Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
+            
+            // Update the index display
+            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData.Definitions.Count}";
+            
+            // Reset translation and phonetics when definition changes
+            Label_ExampleTranslation.Text = string.Empty;
+            Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+            Label_ExamplePhonetic.Text = string.Empty;
+            Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+        }
+
         private void MappingDisplay()
         {
             this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
@@ -346,14 +391,11 @@ namespace VR
                 : $"{this._vocabulary.Ipa2}";
             
             this.Label_Type.Content = this._vocabulary.Type;
-            
             this.Label_Translate1.Text = this._vocabulary.Translate;
-            this.Label_Translate2.Text = this._vocabulary.Define;
-            this.Label_Example.Text = $"{this._vocabulary.Example}";
-            this.Label_ExampleTranslation.Text = string.Empty;
-            this.Label_ExampleTranslation.Visibility = Visibility.Collapsed;
-            this.Label_ExamplePhonetic.Text = string.Empty;
-            this.Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+            
+            // Reset definition index
+            _currentDefinitionIndex = 0;
+            UpdateDefinitionDisplay();
             
             var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
                 ? "None"

@@ -192,26 +192,57 @@
             <!-- Translations -->
             <TextBlock Text="TRANSLATIONS" Style="{StaticResource SectionTitle}"/>
             <TextBlock x:Name="Label_Translate1"
-                      Text="Vietnamese translation"
-                      TextWrapping="Wrap"
-                      Foreground="#FFFFFF"
-                      FontSize="18"
-                      Margin="0,4,0,8"/>
-            <TextBlock x:Name="Label_Translate2"
-                      Text="English definition"
-                      TextWrapping="Wrap"
-                      Foreground="#FFFFFF"
-                      FontSize="18"
-                      Margin="0,4,0,12"/>
+                       Text="Vietnamese translation"
+                       TextWrapping="Wrap"
+                       Foreground="#FFFFFF"
+                       FontSize="18"
+                       Margin="0,4,0,8"/>
+            
+            <!-- Definitions -->
+            <DockPanel LastChildFill="True" Margin="0,0,0,12">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8">
+                    <TextBlock Text="DEFINITION" Style="{StaticResource SectionTitle}"/>
+                    <StackPanel DockPanel.Dock="Right"
+                               Orientation="Horizontal"
+                               VerticalAlignment="Center"
+                               Margin="0,-4,0,0">
+                        <Button x:Name="Btn_PrevDefinition"
+                                 Content="◀"
+                                 Width="24"
+                                 Height="24"
+                                 Margin="0,0,4,0"
+                                 Click="Btn_PrevDefinition_Click"/>
+                        <TextBlock x:Name="Label_DefinitionIndex"
+                                   Text="1/1"
+                                   Foreground="#FFFFFF"
+                                   VerticalAlignment="Center"
+                                   Margin="8,0"/>
+                        <Button x:Name="Btn_NextDefinition"
+                                 Content="▶"
+                                 Width="24"
+                                 Height="24"
+                                 Margin="4,0,0,0"
+                                 Click="Btn_NextDefinition_Click"/>
+                    </StackPanel>
+                </DockPanel>
 
-            <!-- Example -->
-            <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
-            <TextBlock x:Name="Label_Example"
-                      Text="Example usage"
-                      TextWrapping="Wrap"
-                      Foreground="#FFFFFF"
-                      FontSize="16"
-                      Margin="0,4,0,4"/>
+                <StackPanel>
+                    <TextBlock x:Name="Label_Translate2"
+                               Text="English definition"
+                               TextWrapping="Wrap"
+                               Foreground="#FFFFFF"
+                               FontSize="18"
+                               Margin="0,4,0,12"/>
+                    
+                    <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock x:Name="Label_Example"
+                               Text="Example usage"
+                               TextWrapping="Wrap"
+                               Foreground="#FFFFFF"
+                               FontSize="16"
+                               Margin="0,4,0,4"/>
+                </StackPanel>
+            </DockPanel>
 
             <TextBlock x:Name="Label_ExampleTranslation"
                        Text=""
