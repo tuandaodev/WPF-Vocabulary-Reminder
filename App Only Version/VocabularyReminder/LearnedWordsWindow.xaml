@@ -104,6 +104,11 @@
                         Style="{StaticResource DefaultButton}"
                         Margin="10,0,0,0"
                         Click="Btn_BackupLearned_Click"/>
+                <Button x:Name="BtnOpenBackupFolder"
+                        Content="Open Folder"
+                        Style="{StaticResource DefaultButton}"
+                        Margin="10,0,0,0"
+                        Click="Btn_OpenBackupFolder_Click"/>
             </StackPanel>
         </Border>
 

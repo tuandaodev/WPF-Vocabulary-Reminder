@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -225,8 +226,8 @@ namespace VR
         {
             try
             {
-                var learnedWords = await DataService.GetListLearndedAsync(true, null);
-                if (learnedWords == null || !learnedWords.Any())
+                var backupList = await DataService.GetBackupAsync();
+                if (backupList == null || !backupList.Any())
                 {
                     MessageBox.Show("No learned words found to backup.", "Backup", MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
@@ -236,28 +237,59 @@ namespace VR
                 using (var writer = new StreamWriter(backupPath, false, System.Text.Encoding.UTF8))
                 {
                     // Write header
-                    await writer.WriteLineAsync("Word,Type,IPA (US),IPA (UK),Translation");
+                    await writer.WriteLineAsync("Word,WordId,Type,IPA (UK),IPA (US),Translation,Definition,Example,Example2," +
+                                              "Status,ViewedDate,LearnedDate,CreatedDate," +
+                                              "NextReviewDate,EaseFactor,Interval,ReviewCount,LapseCount");
 
                     // Write data
-                    foreach (var word in learnedWords)
+                    foreach (var word in backupList)
                     {
                         var fields = new[]
                         {
                             EscapeCsvField(word.Word),
+                            EscapeCsvField(word.WordId),
                             EscapeCsvField(word.Type),
-                            EscapeCsvField(word.Ipa2),
                             EscapeCsvField(word.Ipa),
-                            EscapeCsvField(word.Translate)
+                            EscapeCsvField(word.Ipa2),
+                            EscapeCsvField(word.Translate),
+                            EscapeCsvField(word.Define),
+                            EscapeCsvField(word.Example),
+                            EscapeCsvField(word.Example2),
+                            //EscapeCsvField(word.PlayURL),
+                            //EscapeCsvField(word.PlayURL2),
+                            //EscapeCsvField(word.Related),
+                            EscapeCsvField(word.Status?.ToString()),
+                            EscapeCsvField(word.ViewedDate?.ToString()),
+                            EscapeCsvField(word.LearnedDate?.ToString()),
+                            EscapeCsvField(word.CreatedDate?.ToString()),
+                            EscapeCsvField(word.NextReviewDate?.ToString()),
+                            EscapeCsvField(word.EaseFactor?.ToString()),
+                            EscapeCsvField(word.Interval?.ToString()),
+                            EscapeCsvField(word.ReviewCount?.ToString()),
+                            EscapeCsvField(word.LapseCount?.ToString())
                         };
                         await writer.WriteLineAsync(string.Join(",", fields));
                     }
                 }
 
-                MessageBox.Show($"Successfully backed up {learnedWords.Count} learned words to:\n{backupPath}", "Backup Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show($"Successfully backed up {backupList.Count} learned words to:\n{backupPath}", "Backup Complete", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error backing up learned words: {ex.Message}", "Backup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Btn_OpenBackupFolder_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string folderPath = ApplicationIO.GetApplicationFolderPath();
+                Process.Start("explorer.exe", folderPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening backup folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

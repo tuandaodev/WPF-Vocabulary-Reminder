@@ -344,6 +344,18 @@ namespace VR.Services
             }
         }
 
+        public static async Task<List<Vocabulary>> GetBackupAsync()
+        {
+            using (var context = new VocaDbContext())
+            {
+                var query = context.Vocabularies.AsQueryable();
+
+                Expression<Func<Vocabulary, bool>> exp = x => true;
+                exp = exp.And(e => e.Status == 0 || e.NextReviewDate.HasValue || e.Interval.HasValue || e.ReviewCount.HasValue || e.LapseCount.HasValue || e.EaseFactor.HasValue);
+                return await query.Where(exp).ToListAsync();
+            }
+        }
+
         public static async Task<Vocabulary> GetVocabularyByWordAsync(string word)
         {
             using (var context = new VocaDbContext())
