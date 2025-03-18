@@ -61,5 +61,10 @@ namespace VR.Infrastructure
         {
             return Path.Combine(GetApplicationFolderPath(), "settings.json");
         }
+
+        public static string GetInitDBScript()
+        {
+            return Path.Combine(SelfData, "InitializeDatabase.sql");
+        }
     }
 }

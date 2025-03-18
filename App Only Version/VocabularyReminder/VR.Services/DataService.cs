@@ -1,5 +1,4 @@
 ﻿using FAI.Core.Utilities.Linq;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -34,47 +33,31 @@ namespace VR.Services
                 file.Close();
             }
 
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbFilePath}"))
+            using (var context = new VocaDbContext())
             {
-                db.Open();
-                String tableCommand = @"CREATE TABLE IF NOT EXISTS Dictionary (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    Name NVARCHAR(2048) NULL, 
-                    Description NVARCHAR(2048) NULL, 
-                    Status INTEGER NULL DEFAULT 0)";
-                SqliteCommand createTable = new SqliteCommand(tableCommand, db);
-                createTable.ExecuteReader();
-                createTable.Dispose();
+                // Execute initialization script from application resources
+                string scriptPath = ApplicationIO.GetInitDBScript();
+                if (!File.Exists(scriptPath))
+                {
+                    throw new FileNotFoundException("Database initialization script not found", scriptPath);
+                }
 
-                tableCommand = @"CREATE TABLE IF NOT EXISTS Vocabulary (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Word NVARCHAR(2048) NOT NULL, 
-                    Type NVARCHAR(100) NULL, 
-                    Ipa NVARCHAR(100) NULL, 
-                    Ipa2 NVARCHAR(100) NULL, 
-                    Translate NVARCHAR(2048) NULL, 
-                    Define NVARCHAR(2048) NULL, 
-                    Example NVARCHAR(2048) NULL, 
-                    Example2 NVARCHAR(2048) NULL, 
-                    PlayURL NVARCHAR(2048) NULL, 
-                    PlayURL2 NVARCHAR(2048) NULL, 
-                    Related NVARCHAR(2048) NULL, 
-                    Status INTEGER NULL DEFAULT 1 )";
-                createTable = new SqliteCommand(tableCommand, db);
-                createTable.ExecuteReader();
-                createTable.Dispose();
+                // Create database
+                context.Database.CreateIfNotExists();
 
-                tableCommand = @"CREATE TABLE IF NOT EXISTS VocabularyMappings (
-	                    DictionaryId INTEGER,
-	                    VocabularyId INTEGER,
-	                    PRIMARY KEY (DictionaryId, VocabularyId)
-                    )";
-                createTable = new SqliteCommand(tableCommand, db);
-                createTable.ExecuteReader();
-                createTable.Dispose();
+                // Enable foreign keys
+                context.Database.ExecuteSqlCommand("PRAGMA foreign_keys = ON");
 
-                db.Close();
-                db.Dispose();
+                string[] commands = File.ReadAllText(scriptPath)
+                    .Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string command in commands)
+                {
+                    if (!string.IsNullOrWhiteSpace(command))
+                    {
+                        context.Database.ExecuteSqlCommand(command);
+                    }
+                }
             }
         }
 
@@ -216,41 +199,36 @@ namespace VR.Services
 
         public static StatDtos GetStats(int dictionaryId = 0)
         {
-            string dbpath = ApplicationIO.GetDatabasePath();
-            StatDtos _Stats = new StatDtos();
-            using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+            try
             {
-                string cmd = @" SELECT
-                                (SELECT COUNT(*) FROM Vocabulary) as Total,
-                                (SELECT COUNT(*) FROM Vocabulary WHERE Status = 0) as Remembered,
-                                (SELECT COUNT(*) FROM Vocabulary v
-                                INNER JOIN VocabularyMappings vm ON v.Id = vm.VocabularyId
-                                WHERE vm.DictionaryId = @dicId AND v.Status = 0) as DictionaryLearned,
-                                (SELECT COUNT(*) FROM Vocabulary v
-                                INNER JOIN VocabularyMappings vm ON v.Id = vm.VocabularyId
-                                WHERE vm.DictionaryId = @dicId AND v.Status = 1) as DictionaryNotLearned
-                                FROM Vocabulary LIMIT 1";
-
-                db.Open();
-                SqliteCommand selectCommand = new SqliteCommand(cmd, db);
-                selectCommand.Parameters.AddWithValue("@dicId", dictionaryId);
-                SqliteDataReader query = selectCommand.ExecuteReader();
-
-                
-                while (query.Read())
+                using (var context = new VocaDbContext())
                 {
-                    _Stats.Total = int.Parse(query.GetString(0));
-                    _Stats.Remembered = int.Parse(query.GetString(1));
-                    _Stats.DictionaryLearned = int.Parse(query.GetString(2));
-                    _Stats.DictionaryNotLearned = int.Parse(query.GetString(3));
-                }
+                    var stats = new StatDtos
+                    {
+                        Total = context.Vocabularies.Count(),
+                        Remembered = context.Vocabularies.Count(v => v.Status == 0)
+                    };
 
-                selectCommand.Dispose();
-                query.Close();
-                db.Close();
-                db.Dispose();
+                    if (dictionaryId > 0)
+                    {
+                        stats.DictionaryLearned = context.VocabularyMappings
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 0);
+
+                        stats.DictionaryNotLearned = context.VocabularyMappings
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1);
+                    }
+
+                    return stats;
+                }
             }
-            return _Stats;
+            catch (Exception) { }
+
+            return new StatDtos {
+                Total = 0,
+                Remembered = 0,
+                DictionaryLearned = 0,
+                DictionaryNotLearned = 0
+            };
         }
 
         public static async Task<List<Dictionary>> GetDictionariesAsync()

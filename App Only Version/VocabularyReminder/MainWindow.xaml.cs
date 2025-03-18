@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Design.PluralizationServices;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
 using VR.Infrastructure;
@@ -222,7 +224,7 @@ namespace VR
                 }
                 
                 // Default to last dictionary if no saved setting
-                this.Inp_GlobalDictionaryId.SelectedIndex = dictionaries.Max(e => e.Id) - 1;
+                this.Inp_GlobalDictionaryId.SelectedIndex = dictionaries.Any() ? dictionaries.Max(e => e.Id) - 1 : 0;
             });
         }
 
@@ -423,33 +425,41 @@ namespace VR
             Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
         }
 
-        private void Btn_ProcessDeleteData_Click(object sender, RoutedEventArgs e)
+        private async void Btn_ProcessDeleteData_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 Status_UpdateMessage("Start Deleting...");
 
-                var directoryMp3 = Directory.CreateDirectory(ApplicationIO.GetApplicationFolderPath());
-                foreach (var d in directoryMp3.EnumerateDirectories())
+                // Delete MP3 and Images folders
+                var appFolder = Directory.CreateDirectory(ApplicationIO.GetApplicationFolderPath());
+                foreach (var d in appFolder.EnumerateDirectories())
                 {
                     d.Delete(true);
                 }
+                Status_UpdateMessage("Deleted MP3 and Images Folders");
 
-                Status_UpdateMessage("Deleted Mp3 and Images Folder");
-
-                if (File.Exists(ApplicationIO.GetDatabasePath()))
+                // Delete and recreate database
+                using (var context = new VocaDbContext())
                 {
-                    File.Delete(ApplicationIO.GetDatabasePath());
+                    // Drop all tables
+                    await context.Database.ExecuteSqlCommandAsync("DROP TABLE IF EXISTS VocabularyMappings");
+                    await context.Database.ExecuteSqlCommandAsync("DROP TABLE IF EXISTS Vocabulary");
+                    await context.Database.ExecuteSqlCommandAsync("DROP TABLE IF EXISTS Dictionary");
+                    
+                    // Remove the database file
+                    if (File.Exists(ApplicationIO.GetDatabasePath()))
+                    {
+                        context.Database.Connection.Close();
+                        File.Delete(ApplicationIO.GetDatabasePath());
+                    }
                 }
 
-                if (!File.Exists(ApplicationIO.GetDatabasePath()))
-                {
-                    var file = File.Create(ApplicationIO.GetDatabasePath());
-                    file.Close();
-                }
+                // Initialize new database
                 DataService.InitializeDatabase();
                 App.GlobalWordId = 0;
-                Status_UpdateMessage("Deleted Mp3, Images and Database Success.");
+
+                Status_UpdateMessage("Deleted MP3, Images, and Database Successfully.");
                 MessageBox.Show("Delete Data Completed.");
                 Reload_Stats();
             }
