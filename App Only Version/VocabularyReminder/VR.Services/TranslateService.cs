@@ -136,7 +136,7 @@ namespace VR.Services
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string _wordUrl = Helper.GetOxfordWordUrl(item.Word);
+                string _wordUrl = Helper.GetOxfordWordUrl(!string.IsNullOrEmpty(item.WordId) ? item.WordId : item.Word);
                 HttpResponseMessage response = await httpClient.GetAsync(_wordUrl);
                 HttpContent content = response.Content;
                 HtmlDocument document = new HtmlDocument();

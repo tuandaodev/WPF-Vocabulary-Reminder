@@ -289,7 +289,7 @@ namespace VR
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = Helper.GetOxfordWordUrl(_vocabulary.Word),
+                        FileName = Helper.GetOxfordWordUrl(!string.IsNullOrEmpty(_vocabulary.WordId) ? _vocabulary.WordId : _vocabulary.Word),
                         UseShellExecute = true
                     });
                 }

@@ -418,12 +418,12 @@ namespace VR
                 Status_UpdateMessage("[3/4] Finished Getting Related Words.");
             });   // wait to process all
 
-            await Task.Run(async () =>
-            {
-                Status_UpdateMessage("[4/4] Start Getting from local dictionary for unprocess Words...");
-                await ProcessBackgroundUnprocessWords().ConfigureAwait(true);
-                Status_UpdateMessage("[4/4] Finished Getting from local dictionary for unprocess Words.");
-            });   // wait to process all
+            //await Task.Run(async () =>
+            //{
+            //    Status_UpdateMessage("[4/4] Start Getting from local dictionary for unprocess Words...");
+            //    await ProcessBackgroundUnprocessWords().ConfigureAwait(true);
+            //    Status_UpdateMessage("[4/4] Finished Getting from local dictionary for unprocess Words.");
+            //});   // wait to process all
 
             Status_UpdateMessage("All of Crawling Finished. Enjoy the Learning Journey Now!.");
         }
@@ -570,48 +570,48 @@ namespace VR
             }
         }
 
-        public async Task ProcessBackgroundUnprocessWords()
-        {
-            try
-            {
-                var listVocabulary = await DataService.GetUnprocessVocabulariesAsync().ConfigureAwait(true);
-                if (!listVocabulary.Any())
-                    return;
+        //public async Task ProcessBackgroundUnprocessWords()
+        //{
+        //    try
+        //    {
+        //        var listVocabulary = await DataService.GetUnprocessVocabulariesAsync().ConfigureAwait(true);
+        //        if (!listVocabulary.Any())
+        //            return;
 
-                var evDic = await DataService.GetEVVocabulariesAsync().ConfigureAwait(true);
+        //        var evDic = await DataService.GetEVVocabulariesAsync().ConfigureAwait(true);
 
-                int TotalItems = listVocabulary.Count;
-                int Count = 0;
+        //        int TotalItems = listVocabulary.Count;
+        //        int Count = 0;
 
-                var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
+        //        var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
 
-                foreach (var item in listVocabulary)
-                {
-                    var exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
-                    if (exist == null)
-                    {
-                        if (service.IsPlural(item.Word))
-                        {
-                            item.Word = service.Singularize(item.Word);
-                            exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
-                        }
-                    }
+        //        foreach (var item in listVocabulary)
+        //        {
+        //            var exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
+        //            if (exist == null)
+        //            {
+        //                if (service.IsPlural(item.Word))
+        //                {
+        //                    item.Word = service.Singularize(item.Word);
+        //                    exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
+        //                }
+        //            }
 
-                    if (exist != null)
-                    {
-                        if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
-                        if (string.IsNullOrEmpty(item.Translate)) item.Translate = exist.Description;
-                        await DataService.UpdateVocabularyAsync(item).ConfigureAwait(true);
-                    }
+        //            if (exist != null)
+        //            {
+        //                if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
+        //                if (string.IsNullOrEmpty(item.Translate)) item.Translate = exist.Description;
+        //                await DataService.UpdateVocabularyAsync(item).ConfigureAwait(true);
+        //            }
 
-                    Status_UpdateProgressBar(++Count, TotalItems);
-                }
-            }
-            catch (Exception ex)
-            {
-                Status_UpdateMessage("Crawling: Process Background Unprocess words Fail: " + ex.Message);
-            }
-        }
+        //            Status_UpdateProgressBar(++Count, TotalItems);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Status_UpdateMessage("Crawling: Process Background Unprocess words Fail: " + ex.Message);
+        //    }
+        //}
 
         private void Reload_Stats()
         {
