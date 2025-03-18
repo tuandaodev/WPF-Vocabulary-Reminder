@@ -180,14 +180,15 @@ namespace VR
             await BackgroundService.ActionPlay(2);
         }
 
-        private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
-        {
-            await BackgroundService.DeleteVocabularyAsync();
-            this.Close();
-        }
+        //private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
+        //{
+        //    await BackgroundService.DeleteVocabularyAsync();
+        //    this.Close();
+        //}
 
         private async void Btn_Next_Click(object sender, RoutedEventArgs e)
         {
+            _easyClickCount = 0;
             await BackgroundService.NextVocabularyAsync();
             this.Close();
         }
@@ -213,7 +214,7 @@ namespace VR
             ProcessReview(3);
         }
 
-        private void Btn_Easy_Click(object sender, RoutedEventArgs e)
+        private async void Btn_Easy_Click(object sender, RoutedEventArgs e)
         {
             _easyClickCount++;
             ProcessReview(4);
@@ -221,6 +222,8 @@ namespace VR
             // Check conditions for auto-close
             if (_easyClickCount >= 4)
             {
+                _easyClickCount = 0;
+                await BackgroundService.NextVocabularyAsync();
                 this.Close();
                 return;
             }
