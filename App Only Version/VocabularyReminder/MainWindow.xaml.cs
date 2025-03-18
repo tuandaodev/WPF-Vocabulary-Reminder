@@ -34,7 +34,7 @@ namespace VR
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         private const int HOTKEY_ID = 9000;
-
+        private const int MAX_TASKS = 4;
         enum KeyModifier
         {
             None = 0,
@@ -362,15 +362,18 @@ namespace VR
                     {
                         MaxDegreeOfParallelism = 1
                     };
-                    Parallel.ForEach(newWords, parallelOptions, async _item =>
+                    Parallel.ForEach(newWords, parallelOptions, _item =>
                     {
-                        var newVocaId = await DataService.AddVocabularyAsync(_item);
-                        if (newVocaId > 0)
+                        Task.Run(async () =>
                         {
-                            await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
-                            CountSuccess++;
-                        }
-                        Status_UpdateProgressBar(++Count, TotalWords);
+                            var newVocaId = await DataService.AddVocabularyAsync(_item);
+                            if (newVocaId > 0)
+                            {
+                                await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
+                                CountSuccess++;
+                            }
+                            Status_UpdateProgressBar(++Count, TotalWords);
+                        }).Wait();
                     });
 
                     BackgroundCrawl().Wait();
@@ -484,24 +487,27 @@ namespace VR
                 var pluralizationService = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
-                Parallel.ForEach(listVocabulary, parallelOptions, async _item =>
+                parallelOptions.MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount * CoreMultipleThread, MAX_TASKS);
+                Parallel.ForEach(listVocabulary, parallelOptions, _item =>
                 {
-                    var trimmedWord = _item.Word.Trim(" ()".ToCharArray());
-                    if (_item.Word != trimmedWord)
-                        _item.Word = trimmedWord;
-
-                    var voca = await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
-                    if (string.IsNullOrEmpty(voca.Translate))
+                    Task.Run(async () =>
                     {
-                        if (pluralizationService.IsPlural(_item.Word))
-                        {
-                            _item.Word = pluralizationService.Singularize(_item.Word);
-                            await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
-                        }
-                    }
+                        var trimmedWord = _item.Word.Trim(" ()".ToCharArray());
+                        if (_item.Word != trimmedWord)
+                            _item.Word = trimmedWord;
 
-                    Status_UpdateProgressBar(++count, totalItems);
+                        var voca = await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
+                        if (string.IsNullOrEmpty(voca.Translate))
+                        {
+                            if (pluralizationService.IsPlural(_item.Word))
+                            {
+                                _item.Word = pluralizationService.Singularize(_item.Word);
+                                await TranslateService.GetVocabularyVietnameseTranslateAsync(_item).ConfigureAwait(true);
+                            }
+                        }
+
+                        Status_UpdateProgressBar(++count, totalItems);
+                    }).Wait();
                 });
             }
             catch (Exception ex)
@@ -520,12 +526,15 @@ namespace VR
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
+                parallelOptions.MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount * CoreMultipleThread, MAX_TASKS);
 
-                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
+                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
-                    await SyncVocaService.SyncVocabularyAsync(_item).ConfigureAwait(true);
-                    Status_UpdateProgressBar(++Count, TotalItems);
+                    Task.Run(async () =>
+                    {
+                        await SyncVocaService.SyncVocabularyAsync(_item).ConfigureAwait(true);
+                        Status_UpdateProgressBar(++Count, TotalItems);
+                    }).Wait();
                 });
             }
             catch (Exception ex)
@@ -545,11 +554,14 @@ namespace VR
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
-                Parallel.ForEach(ListVocabulary, parallelOptions, async _item =>
+                parallelOptions.MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount * CoreMultipleThread, MAX_TASKS);
+                Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
-                    await TranslateService.GetRelatedWord(_item).ConfigureAwait(true);
-                    Status_UpdateProgressBar(++Count, TotalItems);
+                    Task.Run(async () =>
+                    {
+                        await TranslateService.GetRelatedWord(_item).ConfigureAwait(true);
+                        Status_UpdateProgressBar(++Count, TotalItems);
+                    });
                 });
             }
             catch (Exception ex)
@@ -791,7 +803,7 @@ namespace VR
                 int Count = 0;
 
                 ParallelOptions parallelOptions = new ParallelOptions();
-                parallelOptions.MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount * CoreMultipleThread, 4);
+                parallelOptions.MaxDegreeOfParallelism = Math.Min(Environment.ProcessorCount * CoreMultipleThread, MAX_TASKS);
                 Parallel.ForEach(ListVocabulary, parallelOptions, _item =>
                 {
                     Mp3Service.preloadMp3MultipleAsync(_item).Wait();
