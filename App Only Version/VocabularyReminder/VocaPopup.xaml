@@ -59,7 +59,7 @@
         </Style>
     </Window.Resources>
     
-    <Border Padding="20" Background="#1E1E1E" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave">
+    <Border Padding="20" Background="#1E1E1E" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" MouseDown="Border_MouseDown">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -213,26 +213,25 @@
                 <!-- Definition Header -->
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="DEFINITION" Style="{StaticResource SectionTitle}" Margin="0,0,8,0"/>
+                        <TextBlock Text="DEF" Style="{StaticResource SectionTitle}" Margin="0,4,16,0"/>
                         <TextBlock x:Name="Label_DefPartOfSpeech"
                             Text=""
                             FontSize="14"
                             FontStyle="Italic"
                             Foreground="#999999"
-                            Margin="0,0,8,0"
+                            Margin="0,0,16,0"
                             Visibility="Collapsed"/>
                         <TextBlock x:Name="Label_DefTopic"
                             Text=""
-                            FontSize="14"
-                            FontStyle="Italic"
-                            Foreground="#999999"
-                            Margin="0,0,8,0"
+                            FontSize="17"
+                            Foreground="#FFFFFF"
+                            Margin="0,0,16,0"
                             Visibility="Collapsed"/>
                         <TextBlock x:Name="Label_DefLevel"
                             Text=""
-                            FontSize="14"
+                            FontSize="16"
                             FontStyle="Italic"
-                            Foreground="#999999"
+                            Foreground="#FFFFFF"
                             Visibility="Collapsed"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Right"

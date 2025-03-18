@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using VR.Domain;
 using VR.Domain.Models;
@@ -100,6 +102,8 @@ namespace VR
         {
             if (_vocabulary == null) return;
 
+            App.LastReaction = new DateTime();
+
             SpacedRepetitionService.ProcessReview(_vocabulary, quality);
 
             // Update the database
@@ -188,8 +192,14 @@ namespace VR
 
         private async void Btn_Next_Click(object sender, RoutedEventArgs e)
         {
+            await NextVocabularyAsync();
+        }
+
+        private async Task NextVocabularyAsync()
+        {
             _easyClickCount = 0;
             await BackgroundService.NextVocabularyAsync();
+            App.LastReaction = new DateTime();
             this.Close();
         }
 
@@ -216,15 +226,18 @@ namespace VR
 
         private async void Btn_Easy_Click(object sender, RoutedEventArgs e)
         {
+            await ProcessEasyButtonAsync();
+        }
+
+        private async Task ProcessEasyButtonAsync()
+        {
             _easyClickCount++;
             ProcessReview(4);
 
             // Check conditions for auto-close
             if (_easyClickCount >= 4)
             {
-                _easyClickCount = 0;
-                await BackgroundService.NextVocabularyAsync();
-                this.Close();
+                await NextVocabularyAsync();
                 return;
             }
 
@@ -511,6 +524,21 @@ namespace VR
 
             // Update SRS information
             UpdateSrsInfo();
+        }
+
+        private async void Border_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            switch (e.ChangedButton)
+            {
+                case MouseButton.XButton1://Back button
+                    await BackgroundService.ActionPlay(2);
+                    break;
+                case MouseButton.XButton2://forward button
+                    await NextVocabularyAsync();
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
