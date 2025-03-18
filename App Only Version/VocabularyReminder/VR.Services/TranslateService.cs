@@ -47,7 +47,7 @@ namespace VR.Services
                         if (translatedText != null)
                         {
                             // Cache the successful translation
-                            VR.Services.CacheService.CacheTranslation(text, translatedText);
+                            CacheService.CacheTranslation(text, translatedText);
                             return translatedText;
                         }
                     }

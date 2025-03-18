@@ -13,6 +13,7 @@ namespace VR
     public partial class VocaPopup : Window
     {
         private static IPAService _ipaService;
+        private static int _easyClickCount = 0;
         private Vocabulary _vocabulary { get; set; }
         private System.Windows.Forms.Timer autoCloseTimer;
         private int _currentDefinitionIndex = 0;
@@ -191,11 +192,11 @@ namespace VR
             this.Close();
         }
 
-        private async void Btn_NextAndDelete_Click(object sender, RoutedEventArgs e)
-        {
-            await BackgroundService.NextAndDeleteVocabulary();
-            this.Close();
-        }
+        //private async void Btn_NextAndDelete_Click(object sender, RoutedEventArgs e)
+        //{
+        //    await BackgroundService.NextAndDeleteVocabulary();
+        //    this.Close();
+        //}
 
         private void Btn_Again_Click(object sender, RoutedEventArgs e)
         {
@@ -214,7 +215,27 @@ namespace VR
 
         private void Btn_Easy_Click(object sender, RoutedEventArgs e)
         {
+            _easyClickCount++;
             ProcessReview(4);
+
+            // Check conditions for auto-close
+            if (_easyClickCount >= 4)
+            {
+                this.Close();
+                return;
+            }
+
+            // Check if next review is > 10 days
+            if (_vocabulary.NextReviewDate.HasValue)
+            {
+                var nextReview = DateTimeOffset.FromUnixTimeSeconds(_vocabulary.NextReviewDate.Value);
+                var daysUntilReview = (nextReview - DateTimeOffset.Now).TotalDays;
+                if (daysUntilReview > 20)
+                {
+                    this.Close();
+                    return;
+                }
+            }
         }
 
         private async void Btn_TranslateExample_Click(object sender, RoutedEventArgs e)
@@ -453,10 +474,10 @@ namespace VR
         {
             this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
 
-            this.Label_IPA.Content = $"{this._vocabulary.Ipa}";
+            this.Label_IPA.Content = $"/{this._vocabulary.Ipa}/";
             this.Label_IPA2.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
                 ? "-"
-                : $"{this._vocabulary.Ipa2}";
+                : $"/{this._vocabulary.Ipa2}/";
             
             this.Label_Type.Content = this._vocabulary.Type;
             

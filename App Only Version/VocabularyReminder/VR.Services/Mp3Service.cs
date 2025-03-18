@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
 using VR.Infrastructure;
 using Windows.Media.SpeechSynthesis;
@@ -18,7 +19,14 @@ namespace VR.Services
             if (item == null || item.Id == 0)
                 return;
 
-            await PlayFileAsync(item.PlayURL2);
+            string _mp3Url = item.PlayURL2;
+            if (item.JsonData.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+                _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
+
+            if (!String.IsNullOrEmpty(_mp3Url))
+                _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
+
+            await PlayFileAsync(_mp3Url);
         }
 
         public static async Task PlayFileAsync(String url)

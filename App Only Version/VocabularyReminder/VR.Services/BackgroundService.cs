@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
 using VR.Utils;
 
@@ -14,20 +15,16 @@ namespace VR.Services
             {
                 string _mp3Url;
                 _item = await DataService.GetVocabularyByIdAsync(App.GlobalWordId);
-                //VocabularyToast.showToastByVocabularyItem(_item);
                 if (playId == 2)
-                {
                     _mp3Url = _item.PlayURL;
-                }
                 else
-                {
                     _mp3Url = _item.PlayURL2;
-                }
+
+                if (_item.JsonData.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+                    _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
 
                 if (!String.IsNullOrEmpty(_mp3Url))
-                {
                     _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
-                }
             }
         }
 
@@ -99,34 +96,34 @@ namespace VR.Services
             VocabularyDisplayService.Hide();
         }
 
-        public static async Task NextAndDeleteVocabulary()
-        {
-            BackgroundService.HideToast();
-            await DataService.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
+        //public static async Task NextAndDeleteVocabulary()
+        //{
+        //    BackgroundService.HideToast();
+        //    await DataService.UpdateStatusAsync(App.GlobalWordId, 0);  // skip this word
 
-            Vocabulary _item;
-            if (App.isRandomWords)
-            {
-                _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
-            }
-            else
-            {
-                _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
-            }
+        //    Vocabulary _item;
+        //    if (App.isRandomWords)
+        //    {
+        //        _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+        //    }
+        //    else
+        //    {
+        //        _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
+        //    }
 
-            if (_item == null || _item.Id == 0)
-            {
-                _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
-            }
-            App.GlobalWordId = _item != null ? _item.Id : 0;
-            VocabularyDisplayService.ShowVocabulary(_item);
-            await DataService.UpdateViewDateAsync(App.GlobalWordId);
-            if (App.isAutoPlaySounds)
-            {
-                await Mp3Service.PlayFileAsync(_item);
-            }
-            _item = null;
-        }
+        //    if (_item == null || _item.Id == 0)
+        //    {
+        //        _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
+        //    }
+        //    App.GlobalWordId = _item != null ? _item.Id : 0;
+        //    VocabularyDisplayService.ShowVocabulary(_item);
+        //    await DataService.UpdateViewDateAsync(App.GlobalWordId);
+        //    if (App.isAutoPlaySounds)
+        //    {
+        //        await Mp3Service.PlayFileAsync(_item);
+        //    }
+        //    _item = null;
+        //}
 
         public static async Task ShowCurrentToast()
         {

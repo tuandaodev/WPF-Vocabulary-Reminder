@@ -137,11 +137,11 @@ namespace VR
                             _ = BackgroundService.NextVocabularyAsync();
                             handled = true;
                             break;
-                        case HOTKEY_ID + 7:
-                            App.LastReaction = DateTime.Now;
-                            _ = BackgroundService.NextAndDeleteVocabulary();
-                            handled = true;
-                            break;
+                        //case HOTKEY_ID + 7:
+                        //    App.LastReaction = DateTime.Now;
+                        //    _ = BackgroundService.NextAndDeleteVocabulary();
+                        //    handled = true;
+                        //    break;
                     }
                     break;
             }
