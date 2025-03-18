@@ -672,7 +672,12 @@ namespace VR
                           }
 
                           if ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
-                              continue;
+                            continue;
+
+                          if (App.isShowPopup) {
+                            App.LastReaction = DateTime.Now;
+                            continue;
+                          }
 
                           //VocabularyToast.ClearApplicationToast();
                           VocabularyDisplayService.Hide();
