@@ -141,10 +141,16 @@
                       Margin="0,0,15,0"/>
             
             <CheckBox x:Name="Inp_AutoPlayOption"
-                       Content="Auto Play Sounds"
-                       IsChecked="True"
-                       VerticalAlignment="Center"
-                       Margin="0,0,15,0"/>
+                        Content="Auto Play Sounds"
+                        IsChecked="True"
+                        VerticalAlignment="Center"
+                        Margin="0,0,15,0"/>
+            
+            <CheckBox x:Name="Inp_ShowNextOnEasyOption"
+                        Content="Show Next Words on Easy"
+                        IsChecked="True"
+                        VerticalAlignment="Center"
+                        Margin="0,0,15,0"/>
             
         </StackPanel>
 

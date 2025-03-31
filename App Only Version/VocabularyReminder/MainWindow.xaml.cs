@@ -170,6 +170,8 @@ namespace VR
             this.Inp_RandomOption.Unchecked += Settings_Changed;
             this.Inp_AutoPlayOption.Checked += Settings_Changed;
             this.Inp_AutoPlayOption.Unchecked += Settings_Changed;
+            this.Inp_ShowNextOnEasyOption.Checked += Settings_Changed;
+            this.Inp_ShowNextOnEasyOption.Unchecked += Settings_Changed;
             this.Inp_TimeRepeat.TextChanged += Settings_Changed;
 
             Load_Dictionaries();
@@ -215,6 +217,12 @@ namespace VR
 
                                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+
+                                if (settings.ContainsKey("showNextOnEasy"))
+                                {
+                                    Inp_ShowNextOnEasyOption.IsChecked = ((JsonElement)settings["showNextOnEasy"]).GetBoolean();
+                                    App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
+                                }
                                 
                                 return;
                             }
@@ -646,6 +654,7 @@ namespace VR
                 App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+                App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
 
                 Btn_StartLearning.Content = "Stop Learning";
                 // Init value
@@ -674,14 +683,9 @@ namespace VR
                           if ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
                             continue;
 
-                          if (App.isShowPopup) {
-                            App.LastReaction = DateTime.Now;
-                            continue;
-                          }
-
                           //VocabularyToast.ClearApplicationToast();
                           VocabularyDisplayService.Hide();
-                          await LoadVocabulary();
+                          await BackgroundService.NextVocabularyAsync(_vocabularies);
 
                           if (_CancelToken.IsCancellationRequested)
                           {
@@ -711,71 +715,6 @@ namespace VR
             _TokenSource.Cancel();
             UnRegisterHotKeys();
             Console.WriteLine("Stop and active Cancel Token");
-        }
-
-        public async Task LoadVocabulary()
-        {
-            Vocabulary _item = null;
-            var vocabulary = await GetVocabulary(_item);
-            VocabularyDisplayService.ShowVocabulary(vocabulary);
-            //VocabularyToast.ShowToastByVocabularyItem(vocabulary);
-            if (App.isAutoPlaySounds)
-            {
-                _ = Task.Run(async () =>
-                {
-                    await Mp3Service.PlayFileAsync(vocabulary);
-                    await DataService.UpdateViewDateAsync(vocabulary?.Id ?? 0);
-                });
-            }
-
-            App.GlobalWordId = vocabulary?.Id ?? 0;
-        }
-
-        private async Task<Vocabulary> GetVocabulary(Vocabulary _item = null)
-        {
-            if (_vocabularies.Any())
-                return GetVocabularyFromExistList(_item);
-            else
-                return await GetVocabularyFromDatabase(_item);
-        }
-
-        private async Task<Vocabulary> GetVocabularyFromDatabase(Vocabulary _item = null)
-        {
-            if (_item != null) return _item;
-            if (App.isRandomWords)
-                _item = await DataService.GetRandomVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
-            else
-                _item = await DataService.GetNextVocabularyAsync(App.GlobalDicId, App.GlobalWordId);
-
-            if (_item == null || _item.Id == 0)
-                _item = await DataService.GetFirstVocabularyAsync(App.GlobalDicId);
-
-            return _item;
-        }
-
-        private Vocabulary GetVocabularyFromExistList(Vocabulary _item = null)
-        {
-            if (_item != null) return _item;
-            if (App.isRandomWords)
-            {
-                var random = new Random();
-                var index = random.Next(_vocabularies.Count);
-                _item = _vocabularies.ElementAt(index);
-            }
-            else
-            {
-                var index = _vocabularies.IndexOf(_item);
-                index += 1;
-                if (index >= _vocabularies.Count) index = 0;
-                _item = _vocabularies.ElementAt(index);
-            }
-
-            if (_item == null || _item.Id == 0)
-            {
-                _item = _vocabularies.FirstOrDefault();
-            }
-
-            return _item;
         }
 
         private void Inp_TimeRepeat_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -876,6 +815,7 @@ namespace VR
             settings["lastDictionaryId"] = Inp_GlobalDictionaryId.SelectedValue;
             settings["isRandomWords"] = Inp_RandomOption.IsChecked;
             settings["isAutoPlaySounds"] = Inp_AutoPlayOption.IsChecked;
+            settings["showNextOnEasy"] = Inp_ShowNextOnEasyOption.IsChecked;
             settings["timeRepeat"] = int.Parse(Inp_TimeRepeat.Text);
 
             // Save settings

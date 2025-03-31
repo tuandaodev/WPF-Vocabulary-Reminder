@@ -206,16 +206,16 @@ namespace VR.Services
                     var stats = new StatDtos
                     {
                         Total = context.Vocabularies.Count(),
-                        Remembered = context.Vocabularies.Count(v => v.Status == 0)
+                        Remembered = context.Vocabularies.Count(v => v.ReviewCount > 0)
                     };
 
                     if (dictionaryId > 0)
                     {
                         stats.DictionaryLearned = context.VocabularyMappings
-                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 0);
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.ReviewCount == 0);
 
                         stats.DictionaryNotLearned = context.VocabularyMappings
-                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1);
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.ReviewCount > 0);
                     }
 
                     return stats;

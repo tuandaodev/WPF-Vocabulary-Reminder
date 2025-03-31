@@ -102,7 +102,7 @@ namespace VR
         {
             if (_vocabulary == null) return;
 
-            App.LastReaction = new DateTime();
+            App.LastReaction = DateTime.Now;
 
             SpacedRepetitionService.ProcessReview(_vocabulary, quality);
 
@@ -199,7 +199,7 @@ namespace VR
         {
             _easyClickCount = 0;
             await BackgroundService.NextVocabularyAsync();
-            App.LastReaction = new DateTime();
+            App.LastReaction = DateTime.Now;
             this.Close();
         }
 
@@ -235,9 +235,16 @@ namespace VR
             ProcessReview(4);
 
             // Check conditions for auto-close
-            if (_easyClickCount >= 4)
+            if (_easyClickCount >= 3)
             {
-                await NextVocabularyAsync();
+                if (App.showNextOnEasy)
+                {
+                    await NextVocabularyAsync();
+                }
+                else
+                {
+                    this.Close();
+                }
                 return;
             }
 

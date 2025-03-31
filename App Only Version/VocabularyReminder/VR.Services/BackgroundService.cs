@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
@@ -34,25 +36,31 @@ namespace VR.Services
             VocabularyDisplayService.Hide();
         }
 
-        public static async Task NextVocabularyAsync()
+        public static async Task NextVocabularyAsync(List<Vocabulary> vocabularies = null)
         {
             BackgroundService.HideToast();
             Vocabulary _item = null;
 
+            if (vocabularies != null && vocabularies.Any())
+                _item = GetVocabularyFromExistList(vocabularies, App.GlobalWordId);
+
             // First, try to get vocabularies due for review
-            var dueVocabs = await SpacedRepetitionService.LoadVocabulariesForReview(App.GlobalDicId);
-            if (dueVocabs != null && dueVocabs.Count > 0)
+            if (_item == null)
             {
-                // If random mode is on, pick a random vocabulary from due items
-                if (App.isRandomWords)
+                var dueVocabs = await SpacedRepetitionService.LoadVocabulariesForReview(App.GlobalDicId);
+                if (dueVocabs != null && dueVocabs.Count > 0)
                 {
-                    Random rnd = new Random();
-                    _item = dueVocabs[rnd.Next(dueVocabs.Count)];
-                }
-                else
-                {
-                    // Take the first due item (oldest review date)
-                    _item = dueVocabs[0];
+                    // If random mode is on, pick a random vocabulary from due items
+                    if (App.isRandomWords)
+                    {
+                        Random rnd = new Random();
+                        _item = dueVocabs[rnd.Next(dueVocabs.Count)];
+                    }
+                    else
+                    {
+                        // Take the first due item (oldest review date)
+                        _item = dueVocabs[0];
+                    }
                 }
             }
 
@@ -88,6 +96,32 @@ namespace VR.Services
             {
                 App.GlobalWordId = 0;
             }
+        }
+
+        private static Vocabulary GetVocabularyFromExistList(List<Vocabulary> _vocabularies, int currentVocabularyId)
+        {
+            Vocabulary _item;
+
+            if (App.isRandomWords)
+            {
+                var random = new Random();
+                var index = random.Next(_vocabularies.Count);
+                _item = _vocabularies.ElementAt(index);
+            }
+            else
+            {
+                var index = _vocabularies.FindIndex(e => e.Id == currentVocabularyId);
+                index += 1;
+                if (index >= _vocabularies.Count) index = 0;
+                _item = _vocabularies.ElementAt(index);
+            }
+
+            if (_item == null || _item.Id == 0)
+            {
+                _item = _vocabularies.FirstOrDefault();
+            }
+
+            return _item;
         }
 
         public static async Task DeleteVocabularyAsync()
