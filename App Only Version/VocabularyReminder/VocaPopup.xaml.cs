@@ -25,13 +25,16 @@ namespace VR
 
         public VocaPopup()
         {
+            _easyClickCount = 0;
+
             InitializeComponent();
 
             this.WindowStartupLocation = WindowStartupLocation.Manual;
             this.Topmost = true;
             this.Opacity = 0;
             this.KeyDown += VocaPopup_KeyDown;
-            
+            this.PreviewKeyDown += VocaPopup_KeyPreviewDown;
+
             this.Loaded += (s, e) => {
                 var workArea = System.Windows.SystemParameters.WorkArea;
                 this.Left = workArea.Right - this.ActualWidth - 20;  // 20px margin from right
@@ -79,6 +82,19 @@ namespace VR
             this.Close();
         }
 
+        private void VocaPopup_KeyPreviewDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.Left:
+                    Btn_PrevDefinition_Click(null, null);
+                    break;
+                case Key.Right:
+                    Btn_NextDefinition_Click(null, null);
+                    break;
+            }
+        }
+
         private void VocaPopup_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch (e.Key)
@@ -105,11 +121,8 @@ namespace VR
                 case Key.Oem3:
                     Btn_ReadExample_Click(null, null);
                     break;
-                case Key.Left:
-                    Btn_PrevDefinition_Click(null, null);
-                    break;
-                case Key.Right:
-                    Btn_NextDefinition_Click(null, null);
+                case Key.Delete:
+                    Btn_Delete_Click(null, null);
                     break;
             }
         }
@@ -219,11 +232,11 @@ namespace VR
             await BackgroundService.ActionPlay(2);
         }
 
-        //private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
-        //{
-        //    await BackgroundService.DeleteVocabularyAsync();
-        //    this.ClosePopup();
-        //}
+        private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            await BackgroundService.DeleteVocabularyAsync();
+            this.ClosePopup();
+        }
 
         private async void Btn_Next_Click(object sender, RoutedEventArgs e)
         {
@@ -270,7 +283,7 @@ namespace VR
             ProcessReview(4);
 
             // Check conditions for auto-close
-            if (_easyClickCount >= 3)
+            if (_easyClickCount >= 4)
             {
                 if (App.showNextOnEasy)
                 {

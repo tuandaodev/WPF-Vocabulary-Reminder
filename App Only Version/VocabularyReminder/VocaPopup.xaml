@@ -397,6 +397,12 @@
                         Margin="5,0"
                         FontSize="14"
                         Click="Btn_Next_Click"/>
+                <Button x:Name="Btn_Delete"
+                        ToolTip="Delete Word"
+                        Content="🗑"
+                        Margin="5,0,0,0"
+                        FontSize="14"
+                        Click="Btn_Delete_Click"/>
             </UniformGrid>
                 </StackPanel>
             </ScrollViewer>
