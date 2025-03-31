@@ -127,11 +127,11 @@ namespace VR
                             _ = BackgroundService.ActionPlay(2);
                             handled = true;
                             break;
-                        case HOTKEY_ID + 5:
-                            App.LastReaction = DateTime.Now;
-                            _ = BackgroundService.DeleteVocabularyAsync();
-                            handled = true;
-                            break;
+                        //case HOTKEY_ID + 5:
+                        //    App.LastReaction = DateTime.Now;
+                        //    _ = BackgroundService.DeleteVocabularyAsync();
+                        //    handled = true;
+                        //    break;
                         case HOTKEY_ID + 6:
                             App.LastReaction = DateTime.Now;
                             _ = BackgroundService.NextVocabularyAsync();

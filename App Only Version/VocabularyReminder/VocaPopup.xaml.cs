@@ -12,6 +12,9 @@ using VR.Utils;
 
 namespace VR
 {
+    /// <summary>
+    /// Interaction logic for VocaPopup.xaml
+    /// </summary>
     public partial class VocaPopup : Window
     {
         private static IPAService _ipaService;
@@ -47,37 +50,66 @@ namespace VR
             // Initialize auto-close timer
             autoCloseTimer = new System.Windows.Forms.Timer();
             autoCloseTimer.Tick += delegate {
+
+                // Add subtle fade-in animation after positioning
+                var fadeIn = new DoubleAnimation
+                {
+                    From = 0.95,
+                    To = 0,
+                    Duration = TimeSpan.FromMilliseconds(500)
+                };
+                this.BeginAnimation(Window.OpacityProperty, fadeIn);
+
                 this.Close();
             };
             autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
             autoCloseTimer.Start();
         }
 
+        private void ClosePopup()
+        {
+            // Add subtle fade-in animation after positioning
+            var fadeIn = new DoubleAnimation
+            {
+                From = 0.95,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(500)
+            };
+            this.BeginAnimation(Window.OpacityProperty, fadeIn);
+            this.Close();
+        }
+
         private void VocaPopup_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             switch (e.Key)
             {
-                case System.Windows.Input.Key.Escape:
-                    this.Close();
+                case Key.Escape:
+                    this.ClosePopup();
                     break;
-                case System.Windows.Input.Key.D1:
-                case System.Windows.Input.Key.NumPad1:
+                case Key.D1:
+                case Key.NumPad1:
                     Btn_Again_Click(null, null);
                     break;
-                case System.Windows.Input.Key.D2:
-                case System.Windows.Input.Key.NumPad2:
+                case Key.D2:
+                case Key.NumPad2:
                     Btn_Hard_Click(null, null);
                     break;
-                case System.Windows.Input.Key.D3:
-                case System.Windows.Input.Key.NumPad3:
+                case Key.D3:
+                case Key.NumPad3:
                     Btn_Good_Click(null, null);
                     break;
-                case System.Windows.Input.Key.D4:
-                case System.Windows.Input.Key.NumPad4:
+                case Key.D4:
+                case Key.NumPad4:
                     Btn_Easy_Click(null, null);
                     break;
-                case System.Windows.Input.Key.Oem3:
+                case Key.Oem3:
                     Btn_ReadExample_Click(null, null);
+                    break;
+                case Key.Left:
+                    Btn_PrevDefinition_Click(null, null);
+                    break;
+                case Key.Right:
+                    Btn_NextDefinition_Click(null, null);
                     break;
             }
         }
@@ -174,7 +206,7 @@ namespace VR
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            this.ClosePopup();
         }
 
         private async void Btn_PlaySound1_Click(object sender, RoutedEventArgs e)
@@ -190,7 +222,7 @@ namespace VR
         //private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
         //{
         //    await BackgroundService.DeleteVocabularyAsync();
-        //    this.Close();
+        //    this.ClosePopup();
         //}
 
         private async void Btn_Next_Click(object sender, RoutedEventArgs e)
@@ -203,7 +235,7 @@ namespace VR
             _easyClickCount = 0;
             await BackgroundService.NextVocabularyAsync();
             App.LastReaction = DateTime.Now;
-            this.Close();
+            this.ClosePopup();
         }
 
         //private async void Btn_NextAndDelete_Click(object sender, RoutedEventArgs e)
@@ -246,7 +278,7 @@ namespace VR
                 }
                 else
                 {
-                    this.Close();
+                    this.ClosePopup();
                 }
                 return;
             }
@@ -258,7 +290,7 @@ namespace VR
                 var daysUntilReview = (nextReview - DateTimeOffset.Now).TotalDays;
                 if (daysUntilReview > 20)
                 {
-                    this.Close();
+                    this.ClosePopup();
                     return;
                 }
             }

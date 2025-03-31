@@ -188,22 +188,13 @@ namespace VR
         private async Task ProcessReview(object sender, int quality)
         {
             var button = sender as Button;
-            if (button?.DataContext is Vocabulary vocabulary)
+            if (button?.DataContext is VocabularyDisplayDto vocaInfo)
             {
-                SpacedRepetitionService.ProcessReview(vocabulary, quality);
-                
-                using (var context = new VocaDbContext())
+                var vocabulary = await DataService.GetVocabularyByIdAsync(vocaInfo.Id);
+                if (vocabulary != null)
                 {
-                    var dbVocab = await context.Vocabularies.FindAsync(vocabulary.Id);
-                    if (dbVocab != null)
-                    {
-                        dbVocab.NextReviewDate = vocabulary.NextReviewDate;
-                        dbVocab.Interval = vocabulary.Interval;
-                        dbVocab.ReviewCount = vocabulary.ReviewCount;
-                        dbVocab.EaseFactor = vocabulary.EaseFactor;
-                        dbVocab.LapseCount = vocabulary.LapseCount;
-                        await context.SaveChangesAsync();
-                    }
+                    SpacedRepetitionService.ProcessReview(vocabulary, quality);
+                    await DataService.UpdateVocabularyAsync(vocabulary);
                 }
                 
                 await ReloadAsync();
