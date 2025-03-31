@@ -76,6 +76,9 @@ namespace VR
                 case System.Windows.Input.Key.NumPad4:
                     Btn_Easy_Click(null, null);
                     break;
+                case System.Windows.Input.Key.Oem3:
+                    Btn_ReadExample_Click(null, null);
+                    break;
             }
         }
 
@@ -265,21 +268,7 @@ namespace VR
         {
             try
             {
-                if (!string.IsNullOrEmpty(Label_Example.Text))
-                {
-                    Btn_TranslateExample.IsEnabled = false;
-                    var translation = await TranslateService.GetGoogleTranslate(Label_Example.Text);
-                    if (!string.IsNullOrEmpty(translation) && translation != Label_Example.Text)
-                    {
-                        Label_ExampleTranslation.Text = translation;
-                        Label_ExampleTranslation.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        Label_ExampleTranslation.Visibility = Visibility.Collapsed;
-                    }
-                    Btn_TranslateExample.IsEnabled = true;
-                }
+                await GetTranslateAsync();
             }
             catch (Exception ex)
             {
@@ -289,14 +278,31 @@ namespace VR
             }
         }
 
+        private async Task GetTranslateAsync()
+        {
+            if (!string.IsNullOrEmpty(Label_Example.Text))
+            {
+                Btn_TranslateExample.IsEnabled = false;
+                var translation = await TranslateService.GetGoogleTranslate(Label_Example.Text);
+                if (!string.IsNullOrEmpty(translation) && translation != Label_Example.Text)
+                {
+                    Label_ExampleTranslation.Text = translation;
+                    Label_ExampleTranslation.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+                }
+                Btn_TranslateExample.IsEnabled = true;
+            }
+        }
+
         private async void Btn_ReadExample_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (!string.IsNullOrEmpty(Label_Example.Text))
-                {
-                    await TextToSpeechService.SpeakTextAsync(Label_Example.Text);
-                }
+                _ = TextToSpeechService.SpeakTextAsync(Label_Example.Text);
+                _ = GetTranslateAsync();
             }
             catch (Exception ex)
             {

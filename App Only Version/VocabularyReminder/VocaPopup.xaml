@@ -177,10 +177,10 @@
                             <Label Content="IPA US"
                                    FontSize="10"
                                    Padding="0"
-                                   Foreground="#666666"/>
+                                   Foreground="#fff"/>
                             <Label x:Name="Label_IPA"
                                    Content="IPA"
-                                   FontSize="16"
+                                   FontSize="18"
                                    Padding="0"
                                    Margin="0,0,24,0"/>
                         </StackPanel>
@@ -188,10 +188,10 @@
                             <Label Content="IPA UK"
                                    FontSize="10"
                                    Padding="0"
-                                   Foreground="#666666"/>
+                                   Foreground="#fff"/>
                             <Label x:Name="Label_IPA2"
                                    Content="IPA 2"
-                                   FontSize="16"
+                                   FontSize="18"
                                    Padding="0"
                                    Margin="0,0,24,0"/>
                         </StackPanel>
@@ -297,18 +297,18 @@
             
             <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                 <Button x:Name="Btn_ReadExample"
-                        Content="Read Example"
+                        Content="Read"
                         HorizontalAlignment="Left"
                         Width="120"
                         Click="Btn_ReadExample_Click"/>
                 <Button x:Name="Btn_TranslateExample"
-                        Content="Translate Example"
+                        Content="Translate"
                         HorizontalAlignment="Left"
                         Width="120"
                         Margin="8,0,0,0"
                         Click="Btn_TranslateExample_Click"/>
                 <Button x:Name="Btn_GetExamplePhonetics"
-                          Content="Get Phonetics"
+                          Content="Phonetics"
                           HorizontalAlignment="Left"
                           Width="120"
                           Margin="8,0,0,0"

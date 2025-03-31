@@ -12,6 +12,7 @@ namespace VR.Services
 
         public static async Task SpeakTextAsync(string text)
         {
+            if (string.IsNullOrEmpty(text)) return;
             try
             {
                 byte[] audioBytes;
@@ -62,13 +63,16 @@ namespace VR.Services
                 player.Source = MediaSource.CreateFromUri(new Uri(tempFile));
                 player.Play();
 
-                // Delete temp file after a delay
-                await Task.Delay(10000); // Wait 10 seconds
-                try
+                _ = Task.Run(async () =>
                 {
-                    System.IO.File.Delete(tempFile);
-                }
-                catch { /* Ignore deletion errors */ }
+                    // Delete temp file after a delay
+                    await Task.Delay(10000); // Wait 10 seconds
+                    try
+                    {
+                        System.IO.File.Delete(tempFile);
+                    }
+                    catch { /* Ignore deletion errors */ }
+                });
 
             }
             catch (Exception ex)
