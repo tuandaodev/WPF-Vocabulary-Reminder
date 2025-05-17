@@ -282,20 +282,6 @@ namespace VR
             _easyClickCount++;
             ProcessReview(4);
 
-            // Check conditions for auto-close
-            if (_easyClickCount >= 4)
-            {
-                if (App.showNextOnEasy)
-                {
-                    await NextVocabularyAsync();
-                }
-                else
-                {
-                    this.ClosePopup();
-                }
-                return;
-            }
-
             // Check if next review is > 10 days
             if (_vocabulary.NextReviewDate.HasValue)
             {
@@ -303,7 +289,15 @@ namespace VR
                 var daysUntilReview = (nextReview - DateTimeOffset.Now).TotalDays;
                 if (daysUntilReview > 20)
                 {
-                    this.ClosePopup();
+                    // Check conditions for auto-close
+                    if (App.showNextOnEasy)
+                    {
+                        await NextVocabularyAsync();
+                    }
+                    else
+                    {
+                        ClosePopup();
+                    }
                     return;
                 }
             }
