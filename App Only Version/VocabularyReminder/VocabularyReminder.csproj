@@ -64,10 +64,10 @@
     <ApplicationIcon>voca-reminder.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>BAA80415C3F1FF1C9D0B97525C11737A96C42DAC</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1E8E9F390E1626D98C94113FA51A4DE2B5E2719D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>VocabularyReminder_6_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>VocabularyReminder_5_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -204,6 +204,7 @@
     <None Include="VocabularyReminder_2_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_3_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_4_TemporaryKey.pfx" />
+    <None Include="VocabularyReminder_5_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_6_TemporaryKey.pfx" />
     <None Include="VocabularyReminder_TemporaryKey.pfx" />
   </ItemGroup>
