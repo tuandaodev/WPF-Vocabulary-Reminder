@@ -86,6 +86,7 @@ namespace VR.Services
             else
             {
                 App.GlobalWordId = 0;
+                System.Windows.MessageBox.Show("No vocabulary found.", "Information", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
             }
         }
 

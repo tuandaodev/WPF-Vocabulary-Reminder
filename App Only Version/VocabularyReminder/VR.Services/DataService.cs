@@ -230,10 +230,10 @@ namespace VR.Services
                     if (dictionaryId > 0)
                     {
                         stats.DictionaryLearned = context.VocabularyMappings
-                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.ReviewCount > 0);
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1 && vm.Vocabulary.ReviewCount > 0);
 
                         stats.DictionaryNotLearned = context.VocabularyMappings
-                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.ReviewCount == 0);
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1 && vm.Vocabulary.ReviewCount == null);
                     }
 
                     return stats;
