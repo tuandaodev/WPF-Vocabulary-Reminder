@@ -571,8 +571,8 @@ namespace VR
             this.Label_Same.Text = relatedWords;
 
             // Disable play buttons if their corresponding URLs are empty/null
-            this.Btn_PlaySound1.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL2);
-            this.Btn_PlaySound2.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL);
+            //this.Btn_PlaySound1.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL2);
+            //this.Btn_PlaySound2.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL);
 
             // Update SRS information
             UpdateSrsInfo();

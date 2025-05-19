@@ -20,17 +20,21 @@ namespace VR.Services
                 return;
 
             string _mp3Url = item.PlayURL2;
-            if (item.JsonData.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+            if (item?.JsonData?.Source == SourceVocabulary.Oxford.GetDescription() 
+                && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+            {
                 _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
+            }
 
-            if (!String.IsNullOrEmpty(_mp3Url))
+            if (!string.IsNullOrEmpty(_mp3Url))
                 _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
 
             await PlayFileAsync(_mp3Url);
         }
 
-        public static async Task PlayFileAsync(String url)
+        public static async Task PlayFileAsync(string url)
         {
+            if (string.IsNullOrEmpty(url)) return;
             if (Player == null)
             {
                 Player = new WMPLib.WindowsMediaPlayer();
@@ -41,11 +45,14 @@ namespace VR.Services
             //Player.URL = url;
             Player.URL = await DownloadMp3ToDiskAsync(url);
             Player.settings.volume = 80;
-            Player.controls.play();
+            if (!string.IsNullOrEmpty(Player.URL))
+                Player.controls.play();
         }
 
         public static async Task<string> DownloadMp3ToDiskAsync(string Mp3Url)
         {
+            if (string.IsNullOrEmpty(Mp3Url)) return string.Empty;
+
             try
             {
                 var directory = Directory.CreateDirectory(ApplicationIO.GetMp3Folder());
@@ -69,7 +76,9 @@ namespace VR.Services
 
                 return mp3Path;
             }
-            catch { return ""; }
+            catch { 
+                return string.Empty;
+            }
         }
 
 

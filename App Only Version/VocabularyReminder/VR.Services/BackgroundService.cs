@@ -22,11 +22,13 @@ namespace VR.Services
                 else
                     _mp3Url = _item.PlayURL2;
 
-                if (_item.JsonData.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+                if (_item?.JsonData?.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
                     _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
 
                 if (!String.IsNullOrEmpty(_mp3Url))
                     _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
+                else
+                    _ = Task.Run(() => TextToSpeechService.SpeakTextAsync(_item.Word));
             }
         }
 
