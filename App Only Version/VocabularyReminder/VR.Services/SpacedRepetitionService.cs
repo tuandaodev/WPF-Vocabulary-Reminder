@@ -24,7 +24,7 @@ namespace VR.Services
         private const int REVIEW_LAPSE_DELAY = 20;  // Minutes to wait after a review card lapses
         private static readonly int[] LEARNING_STEPS = { 2, 10 };  // Minutes: 1min, 10min
 
-        public static async Task<List<Vocabulary>> LoadVocabulariesForReview(int dictionaryId = 0)
+        public static async Task<Vocabulary> LoadVocabulariesForReview(int dictionaryId = 0)
         {
             using (var context = new VocaDbContext())
             {
@@ -37,19 +37,17 @@ namespace VR.Services
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
                 }
 
-                // Get cards that:
-                // 1. Have a next review date that's due (less than or equal to current time)
-                // 2. Have been started in the SRS system (have an interval)
-                // 3. Are not marked as learned (status = 1)
+                // Get the most overdue card that:
+                // 1. Has a next review date that's due (less than or equal to current time)
+                // 2. Has been started in the SRS system (has an interval)
+                // 3. Is not marked as learned (status = 1)
                 var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                var dueVocabularies = await query
+                return await query
                     .Where(v => v.NextReviewDate <= currentTime
                            && v.Interval != null
                            && v.Status == 1)
                     .OrderBy(v => v.NextReviewDate)
-                    .ToListAsync();
-
-                return dueVocabularies;
+                    .FirstOrDefaultAsync();
             }
         }
 

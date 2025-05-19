@@ -177,9 +177,18 @@ namespace VR.Services
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.VocabularyMappings
-                    .Where(e => e.DictionaryId == dicId && e.VocabularyId != Id && e.Vocabulary.Status == 1)
-                    .Select(x => x.Vocabulary)
+                var query = context.Vocabularies.AsQueryable();
+                // Apply dictionary filter if specified
+                if (dicId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
+                }
+
+                var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                return CurrentVocabulary = await query
+                    .Where(v => v.Id != Id && v.NextReviewDate <= currentTime
+                           && v.Interval != null && v.Status == 1)
                     .OrderBy(e => Guid.NewGuid())
                     .FirstOrDefaultAsync();
             }
@@ -189,10 +198,19 @@ namespace VR.Services
         {
             using (var context = new VocaDbContext())
             {
-                return CurrentVocabulary = await context.VocabularyMappings
-                    .Where(e => e.DictionaryId == dicId && e.Vocabulary.Status == 1)
-                    .OrderBy(e => e.VocabularyId)
-                    .Select(x => x.Vocabulary)
+                var query = context.Vocabularies.AsQueryable();
+                // Apply dictionary filter if specified
+                if (dicId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
+                }
+
+                var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                return CurrentVocabulary = await query
+                    .Where(v => v.NextReviewDate <= currentTime
+                           && v.Interval != null && v.Status == 1)
+                    .OrderBy(e => e.Id)
                     .FirstOrDefaultAsync();
             }
         }
