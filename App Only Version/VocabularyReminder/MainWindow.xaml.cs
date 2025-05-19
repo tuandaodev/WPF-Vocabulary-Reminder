@@ -16,6 +16,7 @@ using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
 using VR.Infrastructure;
+using VR;
 using VR.Services;
 
 namespace VR
@@ -965,6 +966,43 @@ private async void Btn_BackupToGoogleDrive_Click(object sender, RoutedEventArgs 
             {
                 Status_UpdateMessage("Backup to Google Drive failed: " + ex.Message);
                 MessageBox.Show("Backup to Google Drive failed: " + ex.Message);
+            }
+        }
+private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Status_UpdateMessage("Listing backup files on Google Drive...");
+                var backupService = new ImportBackupDataService();
+                var files = await backupService.ListBackupFilesOnGoogleDriveAsync();
+
+                if (files == null || files.Count == 0)
+                {
+                    MessageBox.Show("No backup files found on Google Drive.");
+                    return;
+                }
+
+                // Use WPF dialog for file selection
+                var selectWindow = new SelectBackupFileWindow(files);
+                selectWindow.Owner = this;
+                if (selectWindow.ShowDialog() != true || selectWindow.SelectedFile == null)
+                {
+                    Status_UpdateMessage("Restore cancelled.");
+                    return;
+                }
+                var selectedFile = selectWindow.SelectedFile;
+                string tempPath = Path.Combine(Path.GetTempPath(), selectedFile.Name);
+
+                Status_UpdateMessage("Downloading and restoring backup...");
+                await backupService.RestoreFromGoogleDriveAsync(selectedFile.Id, tempPath);
+
+                Status_UpdateMessage("Restore from Google Drive completed.");
+                MessageBox.Show("Restore from Google Drive completed. Please restart the application for changes to take effect.");
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage("Restore from Google Drive failed: " + ex.Message);
+                MessageBox.Show("Restore from Google Drive failed: " + ex.Message);
             }
         }
 

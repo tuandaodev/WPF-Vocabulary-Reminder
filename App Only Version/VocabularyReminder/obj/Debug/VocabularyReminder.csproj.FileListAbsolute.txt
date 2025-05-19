@@ -153,3 +153,5 @@ C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyR
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Core.pdb
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Drive.v3.dll
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Drive.v3.pdb
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.baml
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.g.cs
