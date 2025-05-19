@@ -282,7 +282,7 @@ namespace VR
             _easyClickCount++;
             ProcessReview(4);
 
-            // Check if next review is > 10 days
+            // Check if next review is > 20 days
             if (_vocabulary.NextReviewDate.HasValue)
             {
                 var nextReview = DateTimeOffset.FromUnixTimeSeconds(_vocabulary.NextReviewDate.Value);

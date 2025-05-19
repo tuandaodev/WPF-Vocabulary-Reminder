@@ -187,8 +187,8 @@ namespace VR.Services
 
                 var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 return CurrentVocabulary = await query
-                    .Where(v => v.Id != Id && v.NextReviewDate <= currentTime
-                           && v.Interval != null && v.Status == 1)
+                    .Where(v => v.Id != Id && v.Status == 1
+                        && (v.NextReviewDate == null || v.Interval == null))
                     .OrderBy(e => Guid.NewGuid())
                     .FirstOrDefaultAsync();
             }
@@ -208,8 +208,8 @@ namespace VR.Services
 
                 var currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 return CurrentVocabulary = await query
-                    .Where(v => v.NextReviewDate <= currentTime
-                           && v.Interval != null && v.Status == 1)
+                    .Where(v => v.Status == 1
+                        && (v.NextReviewDate == null || v.Interval == null))
                     .OrderBy(e => e.Id)
                     .FirstOrDefaultAsync();
             }
@@ -231,9 +231,9 @@ namespace VR.Services
                     {
                         stats.DictionaryLearned = context.VocabularyMappings
                             .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1 && vm.Vocabulary.ReviewCount > 0);
-
-                        stats.DictionaryNotLearned = context.VocabularyMappings
-                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1 && vm.Vocabulary.ReviewCount == null);
+                        var totalInDic = context.VocabularyMappings
+                            .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1);
+                        stats.DictionaryNotLearned = totalInDic - stats.DictionaryLearned;
                     }
 
                     return stats;
