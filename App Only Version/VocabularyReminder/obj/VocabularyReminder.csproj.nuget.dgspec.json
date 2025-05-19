@@ -47,6 +47,14 @@
               "target": "Package",
               "version": "[6.5.1, )"
             },
+            "Google.Apis.Auth": {
+              "target": "Package",
+              "version": "[1.69.0, )"
+            },
+            "Google.Apis.Drive.v3": {
+              "target": "Package",
+              "version": "[1.69.0.3778, )"
+            },
             "HtmlAgilityPack": {
               "target": "Package",
               "version": "[1.11.18, )"

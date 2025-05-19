@@ -189,6 +189,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Data\client_secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Data\dictionary.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -212,6 +215,8 @@
     <PackageReference Include="EntityFramework">
       <Version>6.5.1</Version>
     </PackageReference>
+    <PackageReference Include="Google.Apis.Auth" Version="1.69.0" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.69.0.3778" />
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.11.18</Version>
     </PackageReference>

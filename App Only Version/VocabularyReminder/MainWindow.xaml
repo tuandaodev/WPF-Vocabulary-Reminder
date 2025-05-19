@@ -118,6 +118,10 @@
             <Button x:Name="Btn_ProcessDeleteData"
                     Content="Delete All Data"
                     Click="Btn_ProcessDeleteData_Click"/>
+<Button x:Name="Btn_BackupToGoogleDrive"
+                    Content="Backup To Google Drive"
+                    Click="Btn_BackupToGoogleDrive_Click"
+                    Margin="0,0,0,10"/>
         </StackPanel>
 
         <!-- Bottom Controls -->

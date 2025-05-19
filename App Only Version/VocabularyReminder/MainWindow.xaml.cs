@@ -950,6 +950,23 @@ namespace VR
             window.Closed += (s, args) => Load_Dictionaries();
             window.Show();
         }
+private async void Btn_BackupToGoogleDrive_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Status_UpdateMessage("Backing up to Google Drive...");
+                var backupService = new ImportBackupDataService();
+                var backupFileName = backupService.Backup();
+                await backupService.BackupToGoogleDriveAsync(System.IO.Path.Combine("Data", backupFileName));
+                Status_UpdateMessage("Backup to Google Drive completed.");
+                MessageBox.Show("Backup to Google Drive completed.");
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage("Backup to Google Drive failed: " + ex.Message);
+                MessageBox.Show("Backup to Google Drive failed: " + ex.Message);
+            }
+        }
 
         private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
         {
