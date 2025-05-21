@@ -684,13 +684,12 @@ namespace VR
                           if ((DateTime.Now - App.LastReaction).TotalMilliseconds < TimeRepeat)
                             continue;
 
-                          if (!_CancelToken.IsCancellationRequested)
-                          {
-                              VocabularyDisplayService.Hide();
-                              await BackgroundService.NextVocabularyAsync(_vocabularies);
+                          if (_CancelToken.IsCancellationRequested)
                               break;
-                          }
-                          Thread.Sleep(TimeRepeat);
+
+                          VocabularyDisplayService.Hide();
+                          await BackgroundService.NextVocabularyAsync(_vocabularies);
+                          await Task.Delay(TimeRepeat, _CancelToken);
                       }
                   }, _CancelToken);
 
