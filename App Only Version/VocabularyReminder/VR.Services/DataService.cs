@@ -223,8 +223,8 @@ namespace VR.Services
                 {
                     var stats = new StatDtos
                     {
-                        Total = context.Vocabularies.Count(),
-                        Remembered = context.Vocabularies.Count(v => v.ReviewCount > 0)
+                        Total = context.Vocabularies.Where(e => e.Status == 1).Count(),
+                        Remembered = context.Vocabularies.Count(v => v.Status == 1 && v.ReviewCount > 0)
                     };
 
                     if (dictionaryId > 0)
@@ -234,6 +234,10 @@ namespace VR.Services
                         var totalInDic = context.VocabularyMappings
                             .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1);
                         stats.DictionaryNotLearned = totalInDic - stats.DictionaryLearned;
+                    } else
+                    {
+                        stats.DictionaryLearned = stats.Remembered;
+                        stats.DictionaryNotLearned = stats.Total - stats.DictionaryLearned;
                     }
 
                     return stats;

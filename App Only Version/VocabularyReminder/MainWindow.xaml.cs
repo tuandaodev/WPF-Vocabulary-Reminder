@@ -12,11 +12,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using VocabularyReminder.VR.Consts;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
 using VR.Infrastructure;
-using VR;
 using VR.Services;
 
 namespace VR
@@ -177,6 +177,16 @@ namespace VR
 
             Load_Dictionaries();
             Status_Reset();
+            UpdateGoogleButtonsVisibility();
+        }
+
+        private void UpdateGoogleButtonsVisibility()
+        {
+            var backupService = new ImportBackupDataService();
+            var isLoggedIn = backupService.IsLoggedIn();
+            
+            Btn_RestoreFromGoogleDrive.Visibility = isLoggedIn ? Visibility.Visible : Visibility.Collapsed;
+            Btn_LogoutGoogle.Visibility = isLoggedIn ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Load_Dictionaries()
@@ -184,7 +194,15 @@ namespace VR
             Dispatcher.Invoke(() =>
             {
                 List<Dictionary> dictionaries = DataService.GetDictionariesAsync().Result;
-                this.Inp_GlobalDictionaryId.ItemsSource = dictionaries;
+                
+                // Add "All" option at the beginning
+                var allDictionaries = new List<Dictionary>
+                {
+                    new Dictionary { Id = (int)DictionaryConsts.Default, Name = "All", Description = "All Dictionaries" }
+                };
+                allDictionaries.AddRange(dictionaries);
+                
+                this.Inp_GlobalDictionaryId.ItemsSource = allDictionaries;
                 
                 string settingsPath = ApplicationIO.GetSettingsPath();
                 if (File.Exists(settingsPath))
@@ -192,41 +210,41 @@ namespace VR
                     try
                     {
                         var json = File.ReadAllText(settingsPath);
-                        var settings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(json);
+                        var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(json);
                         
                         // Load dictionary ID
                         if (settings.ContainsKey("lastDictionaryId"))
                         {
                             int lastId = ((JsonElement)settings["lastDictionaryId"]).GetInt32();
                             if (dictionaries.Any(d => d.Id == lastId))
+                                Inp_GlobalDictionaryId.SelectedValue = lastId;
+                            else
+                                Inp_GlobalDictionaryId.SelectedValue = (int)DictionaryConsts.Default;
+
+                            // Load other settings
+                            if (settings.ContainsKey("isRandomWords"))
                             {
-                                this.Inp_GlobalDictionaryId.SelectedValue = lastId;
-                                
-                                // Load other settings
-                                if (settings.ContainsKey("isRandomWords"))
-                                {
-                                    Inp_RandomOption.IsChecked = ((JsonElement)settings["isRandomWords"]).GetBoolean();
-                                }
-                                if (settings.ContainsKey("isAutoPlaySounds"))
-                                {
-                                    Inp_AutoPlayOption.IsChecked = ((JsonElement)settings["isAutoPlaySounds"]).GetBoolean();
-                                }
-                                if (settings.ContainsKey("timeRepeat"))
-                                {
-                                    Inp_TimeRepeat.Text = ((JsonElement)settings["timeRepeat"]).GetInt32().ToString();
-                                }
-
-                                App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
-                                App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
-
-                                if (settings.ContainsKey("showNextOnEasy"))
-                                {
-                                    Inp_ShowNextOnEasyOption.IsChecked = ((JsonElement)settings["showNextOnEasy"]).GetBoolean();
-                                    App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
-                                }
-                                
-                                return;
+                                Inp_RandomOption.IsChecked = ((JsonElement)settings["isRandomWords"]).GetBoolean();
                             }
+                            if (settings.ContainsKey("isAutoPlaySounds"))
+                            {
+                                Inp_AutoPlayOption.IsChecked = ((JsonElement)settings["isAutoPlaySounds"]).GetBoolean();
+                            }
+                            if (settings.ContainsKey("timeRepeat"))
+                            {
+                                Inp_TimeRepeat.Text = ((JsonElement)settings["timeRepeat"]).GetInt32().ToString();
+                            }
+
+                            App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
+                            App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
+
+                            if (settings.ContainsKey("showNextOnEasy"))
+                            {
+                                Inp_ShowNextOnEasyOption.IsChecked = ((JsonElement)settings["showNextOnEasy"]).GetBoolean();
+                                App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
+                            }
+
+                            return;
                         }
                     }
                     catch { }
@@ -953,6 +971,7 @@ private async void Btn_BackupToGoogleDrive_Click(object sender, RoutedEventArgs 
                 var backupService = new ImportBackupDataService();
                 var backupFileName = backupService.Backup();
                 await backupService.BackupToGoogleDriveAsync(System.IO.Path.Combine("Data", backupFileName));
+                UpdateGoogleButtonsVisibility();
                 Status_UpdateMessage("Backup to Google Drive completed.");
                 MessageBox.Show("Backup to Google Drive completed.");
             }
@@ -1024,6 +1043,7 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
                 Status_UpdateMessage("Logging out from Google Drive...");
                 var backupService = new ImportBackupDataService();
                 backupService.LogoutGoogle();
+                UpdateGoogleButtonsVisibility();
                 Status_UpdateMessage("Successfully logged out from Google Drive");
                 MessageBox.Show("Successfully logged out from Google Drive.");
             }

@@ -171,5 +171,14 @@ namespace VR.Services
                 Directory.Delete(credPath, true);
             }
         }
+
+        /// <summary>
+        /// Checks if user is currently logged in to Google Drive
+        /// </summary>
+        public bool IsLoggedIn()
+        {
+            string credPath = Path.Combine(Environment.CurrentDirectory, "token.json");
+            return Directory.Exists(credPath);
+        }
     }
 }
