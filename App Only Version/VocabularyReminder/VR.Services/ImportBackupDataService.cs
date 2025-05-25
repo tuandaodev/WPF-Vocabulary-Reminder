@@ -160,5 +160,16 @@ namespace VR.Services
                 System.IO.File.Delete(dbPath);
             System.IO.File.Copy(localRestorePath, dbPath);
         }
+        /// <summary>
+        /// Logs out from Google Drive by removing the stored credentials.
+        /// </summary>
+        public void LogoutGoogle()
+        {
+            string credPath = Path.Combine(Environment.CurrentDirectory, "token.json");
+            if (Directory.Exists(credPath))
+            {
+                Directory.Delete(credPath, true);
+            }
+        }
     }
 }

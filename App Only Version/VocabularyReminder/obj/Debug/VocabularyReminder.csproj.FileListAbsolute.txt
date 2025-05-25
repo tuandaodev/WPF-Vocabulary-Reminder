@@ -155,3 +155,14 @@ C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyR
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Drive.v3.pdb
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.baml
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.g.cs
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Data\client_secrets.json
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.dll
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.pdb
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Auth.dll
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Auth.pdb
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Core.dll
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Core.pdb
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Drive.v3.dll
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\Google.Apis.Drive.v3.pdb
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.baml
+D:\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\SelectBackupFileWindow.g.cs

@@ -130,6 +130,10 @@
                                 Click="Btn_BackupToGoogleDrive_Click"
                                 Margin="0,0,0,10"/>
             
+            <Button x:Name="Btn_LogoutGoogle"
+                                Content="Logout Google Account"
+                                Click="Btn_LogoutGoogle_Click"
+                                Margin="0,0,0,10"/>
             
         </StackPanel>
 

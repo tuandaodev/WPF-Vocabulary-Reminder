@@ -1016,6 +1016,23 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
             //await TranslateService.GetWordDefineInformationAsync(voca);
             //Console.WriteLine(voca);
         }
+
+        private void Btn_LogoutGoogle_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Status_UpdateMessage("Logging out from Google Drive...");
+                var backupService = new ImportBackupDataService();
+                backupService.LogoutGoogle();
+                Status_UpdateMessage("Successfully logged out from Google Drive");
+                MessageBox.Show("Successfully logged out from Google Drive.");
+            }
+            catch (Exception ex)
+            {
+                Status_UpdateMessage($"Logout failed: {ex.Message}");
+                MessageBox.Show($"Failed to logout: {ex.Message}");
+            }
+        }
     }
 
 }
