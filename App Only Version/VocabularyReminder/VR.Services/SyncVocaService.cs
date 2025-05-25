@@ -41,7 +41,7 @@ namespace VR.Services
                         break;
 
                     // Generate next WordId and add vocabulary
-                    var newVocaId = await DataService.AddVocabularyAsync(_item.Word, currentWordId);
+                    var newVocaId = await DataService.AddVocabularyAsync(_item.Word, null, null, currentWordId);
                     if (newVocaId > 0)
                     {
                         newWords.Add(newVocaId);

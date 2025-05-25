@@ -61,20 +61,49 @@ namespace VR.Services
             }
         }
 
+        ///// <summary>
+        ///// Add new empty vocabulary to process
+        ///// </summary>
+        ///// <param name="inputText"></param>
+        ///// <param name="wordId">To distinguish between meanings</param>
+        ///// <returns></returns>
+        //public static async Task<int> AddVocabularyAsync(string inputText, string wordId = null)
+        //{
+        //    if (String.IsNullOrEmpty(inputText)) return 0;
+        //    using (var context = new VocaDbContext())
+        //    {
+        //        var voca = new Vocabulary()
+        //        {
+        //            Word = inputText.Trim()
+        //        };
+        //        if (!string.IsNullOrEmpty(wordId))
+        //            voca.WordId = wordId;
+
+        //        context.Vocabularies.Add(voca);
+        //        await context.SaveChangesAsync();
+        //        return voca.Id;
+        //    }
+        //}
+
         /// <summary>
-        /// Add new empty vocabulary to process
+        /// Add new vocabulary with extended properties (for sentences, translations, etc.)
         /// </summary>
-        /// <param name="inputText"></param>
+        /// <param name="inputText">The word or sentence</param>
+        /// <param name="translation">Translation of the word/sentence</param>
+        /// <param name="type">Type of vocabulary (word, sentence, etc.)</param>
         /// <param name="wordId">To distinguish between meanings</param>
-        /// <returns></returns>
-        public static async Task<int> AddVocabularyAsync(string inputText, string wordId = null)
+        /// <returns>Vocabulary ID if successful, 0 if failed</returns>
+        public static async Task<int> AddVocabularyAsync(string inputText, string translation = null, string type = null, string wordId = null)
         {
             if (String.IsNullOrEmpty(inputText)) return 0;
             using (var context = new VocaDbContext())
             {
                 var voca = new Vocabulary()
                 {
-                    Word = inputText.Trim()
+                    Word = inputText.Trim(),
+                    Type = type ?? "word",
+                    Translate = translation?.Trim(),
+                    CreatedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                 };
                 if (!string.IsNullOrEmpty(wordId))
                     voca.WordId = wordId;
@@ -87,6 +116,7 @@ namespace VR.Services
 
         public static async Task<bool> AddVocabularyMappingAsync(int dicId, int vocaId)
         {
+            if (dicId <= 0 || vocaId <= 0) return false;
             using (var context = new VocaDbContext())
             {
                 var voca = new VocabularyMapping()

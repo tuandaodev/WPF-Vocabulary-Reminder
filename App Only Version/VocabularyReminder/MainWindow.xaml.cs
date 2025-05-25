@@ -159,7 +159,7 @@ namespace VR
 
         const int CoreMultipleThread = 3;
 
-        const string placeHolder = "Enter your vocabulary list here.... \nThen click \"Import\" to auto get content.";
+        const string placeHolder = "Enter your vocabulary list here.... \nThen click \"Import\" to auto get content.\n\nFor sentences with translations, use format:\nEnglish sentence | Vietnamese translation\n\nExample:\nHello world | Xin chào thế giới\nI love programming | Tôi yêu lập trình";
 
         public MainWindow()
         {
@@ -291,6 +291,12 @@ namespace VR
                 return default;
             }
 
+            // Check if input contains sentence format (with | separator)
+            if (ContainsSentenceFormat(tempInp))
+            {
+                return GetSentencesFromInput(tempInp);
+            }
+
             var (dictionary, maxWordLength) = StaticDataAccess.ReadDictionaryCSV(ApplicationIO.GetDictionaryCSV());
 
             tempInp = CleanParagraph(tempInp);
@@ -299,6 +305,56 @@ namespace VR
             ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
 
             return ListWord;
+        }
+
+        // Check if input contains sentence format with pipe separator
+        private bool ContainsSentenceFormat(string input)
+        {
+            var lines = input.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                if (line.Contains("|") && line.Split('|').Length == 2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Extract sentences from input in format "English sentence | Vietnamese translation"
+        private List<string> GetSentencesFromInput(string input)
+        {
+            var sentences = new List<string>();
+            var lines = input.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach (var line in lines)
+            {
+                var trimmedLine = line.Trim();
+                if (string.IsNullOrEmpty(trimmedLine)) continue;
+                
+                if (trimmedLine.Contains("|"))
+                {
+                    var parts = trimmedLine.Split('|');
+                    if (parts.Length == 2)
+                    {
+                        var englishSentence = parts[0].Trim();
+                        var translation = parts[1].Trim();
+                        
+                        if (!string.IsNullOrEmpty(englishSentence) && !string.IsNullOrEmpty(translation))
+                        {
+                            // Store the sentence with a special marker to indicate it has translation
+                            sentences.Add($"SENTENCE:{englishSentence}|{translation}");
+                        }
+                    }
+                }
+                else
+                {
+                    // Regular word without translation
+                    sentences.Add(trimmedLine);
+                }
+            }
+            
+            return sentences;
         }
 
         private string CleanParagraph(string paragraph)
@@ -353,7 +409,20 @@ namespace VR
                 List<string> newWords = new List<string>();
                 foreach (var word in inputWords)
                 {
-                    var _item = await DataService.GetVocabularyByWordAsync(word);
+                    string wordToCheck = word;
+                    
+                    // Extract the actual word/sentence for checking if it's a sentence format
+                    if (word.StartsWith("SENTENCE:"))
+                    {
+                        var sentenceData = word.Substring(9); // Remove "SENTENCE:" prefix
+                        var parts = sentenceData.Split('|');
+                        if (parts.Length == 2)
+                        {
+                            wordToCheck = parts[0].Trim(); // Use the English sentence for checking
+                        }
+                    }
+                    
+                    var _item = await DataService.GetVocabularyByWordAsync(wordToCheck);
                     if (_item != null && _item.Id > 0)
                         existWords.Add(_item);
                     else
@@ -393,7 +462,28 @@ namespace VR
                     {
                         Task.Run(async () =>
                         {
-                            var newVocaId = await DataService.AddVocabularyAsync(_item);
+                            int newVocaId = 0;
+                            
+                            // Check if this is a sentence with translation
+                            if (_item.StartsWith("SENTENCE:"))
+                            {
+                                var sentenceData = _item.Substring(9); // Remove "SENTENCE:" prefix
+                                var parts = sentenceData.Split('|');
+                                if (parts.Length == 2)
+                                {
+                                    var englishSentence = parts[0].Trim();
+                                    var translation = parts[1].Trim();
+                                    
+                                    // Add sentence with translation and type
+                                    newVocaId = await DataService.AddVocabularyAsync(englishSentence, translation, "sentence");
+                                }
+                            }
+                            else
+                            {
+                                // Regular word import
+                                newVocaId = await DataService.AddVocabularyAsync(_item);
+                            }
+                            
                             if (newVocaId > 0)
                             {
                                 await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
@@ -880,7 +970,20 @@ namespace VR
             _vocabularies = new List<Vocabulary>();
             foreach (var word in words)
             {
-                var _item = await DataService.GetVocabularyByWordAsync(word);
+                string wordToCheck = word;
+                
+                // Extract the actual word/sentence for checking if it's a sentence format
+                if (word.StartsWith("SENTENCE:"))
+                {
+                    var sentenceData = word.Substring(9); // Remove "SENTENCE:" prefix
+                    var parts = sentenceData.Split('|');
+                    if (parts.Length == 2)
+                    {
+                        wordToCheck = parts[0].Trim(); // Use the English sentence for checking
+                    }
+                }
+                
+                var _item = await DataService.GetVocabularyByWordAsync(wordToCheck);
                 if (_item != null)
                     _vocabularies.Add(_item);
             }
