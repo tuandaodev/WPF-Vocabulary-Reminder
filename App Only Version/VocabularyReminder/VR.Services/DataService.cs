@@ -269,28 +269,49 @@ namespace VR.Services
             }
         }
 
-        public static async Task<List<Vocabulary>> GetListVocabularyToTranslateAsync()
+        public static async Task<List<Vocabulary>> GetListVocabularyToTranslateAsync(int dicId)
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => string.IsNullOrEmpty(e.Translate)).ToListAsync();
+                var query = context.Vocabularies.AsQueryable();
+                // Apply dictionary filter if specified
+                if (dicId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
+                }
+                return await query.Where(e => string.IsNullOrEmpty(e.Translate)).ToListAsync();
             }
         }
 
 
-        public static async Task<List<Vocabulary>> GetListVocabularyToGetDefineExampleMp3URLAsync()
+        public static async Task<List<Vocabulary>> GetListVocabularyToGetDefineExampleMp3URLAsync(int dicId)
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => e.PlayURL == null || e.Translate == string.Empty).ToListAsync();
+                var query = context.Vocabularies.AsQueryable();
+                // Apply dictionary filter if specified
+                if (dicId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
+                }
+                return await query.Where(e => e.PlayURL == null || e.Translate == string.Empty).ToListAsync();
             }
         }
 
-        public static async Task<List<Vocabulary>> GetListVocabularyToGetRelatedWordsAsync()
+        public static async Task<List<Vocabulary>> GetListVocabularyToGetRelatedWordsAsync(int dicId)
         {
             using (var context = new VocaDbContext())
             {
-                return await context.Vocabularies.Where(e => string.IsNullOrEmpty(e.Related)).ToListAsync();
+                var query = context.Vocabularies.AsQueryable();
+                // Apply dictionary filter if specified
+                if (dicId > 0)
+                {
+                    query = query.Where(v => context.VocabularyMappings
+                        .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
+                }
+                return await query.Where(e => string.IsNullOrEmpty(e.Related)).ToListAsync();
             }
         }
 

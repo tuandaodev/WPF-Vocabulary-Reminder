@@ -6,12 +6,14 @@ namespace VR.Utils
     {
         public static string GetCambridgeWordUrl(string word)
         {
-            return $"https://dictionary.cambridge.org/vi/dictionary/english-vietnamese/{Uri.EscapeDataString(word.ToLower())}";
+            string parseWord = word.Trim().Replace(" ", "-");
+            return $"https://dictionary.cambridge.org/vi/dictionary/english-vietnamese/{Uri.EscapeDataString(parseWord.ToLower())}";
         }
 
         public static string GetOxfordWordUrl(string word)
         {
-            return $"https://www.oxfordlearnersdictionaries.com/definition/english/{Uri.EscapeDataString(word.ToLower())}";
+            string parseWord = word.Trim().Replace(" ", "-");
+            return $"https://www.oxfordlearnersdictionaries.com/definition/english/{Uri.EscapeDataString(parseWord.ToLower())}";
         }
     }
 }

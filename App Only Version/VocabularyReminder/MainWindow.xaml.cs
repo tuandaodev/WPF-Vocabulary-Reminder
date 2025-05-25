@@ -309,7 +309,7 @@ namespace VR
         private List<string> ParseParagraph(string paragraph, HashSet<string> dictionary, int maxWordLength)
         {
             var wordSet = new HashSet<string>();
-            var wordArray = paragraph.Split(new char[] { ' ', ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
+            var wordArray = paragraph.Split(new char[] { ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
             int i = 0;
 
             while (i < wordArray.Length)
@@ -506,7 +506,7 @@ namespace VR
         {
             try
             {
-                var listVocabulary = await DataService.GetListVocabularyToTranslateAsync().ConfigureAwait(true);
+                var listVocabulary = await DataService.GetListVocabularyToTranslateAsync(App.GlobalDicId).ConfigureAwait(true);
 
                 int totalItems = listVocabulary.Count;
                 int count = 0;
@@ -547,7 +547,7 @@ namespace VR
         {
             try
             {
-                var ListVocabulary = await DataService.GetListVocabularyToGetDefineExampleMp3URLAsync().ConfigureAwait(true);
+                var ListVocabulary = await DataService.GetListVocabularyToGetDefineExampleMp3URLAsync(App.GlobalDicId).ConfigureAwait(true);
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -575,7 +575,7 @@ namespace VR
         {
             try
             {
-                var ListVocabulary = await DataService.GetListVocabularyToGetRelatedWordsAsync().ConfigureAwait(true);
+                var ListVocabulary = await DataService.GetListVocabularyToGetRelatedWordsAsync(App.GlobalDicId).ConfigureAwait(true);
 
                 int TotalItems = ListVocabulary.Count;
                 int Count = 0;
@@ -670,7 +670,7 @@ namespace VR
                 RegisterHotKeys();
 
                 IsStarted = true;
-                App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
+                //App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
                 App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
@@ -799,6 +799,7 @@ namespace VR
         private void Inp_GlobalDictionaryId_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (Inp_GlobalDictionaryId.SelectedValue == null) return;
+            App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
             SaveSettings();
             Reload_Stats();
         }
