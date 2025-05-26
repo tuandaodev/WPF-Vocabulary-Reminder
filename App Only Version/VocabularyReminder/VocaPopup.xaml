@@ -115,7 +115,7 @@
                 
                 <StackPanel>
             <!-- Header -->
-            <DockPanel Margin="0,0,0,10">
+            <DockPanel Margin="0,0,0,10" x:Name="SectionWord">
                 <StackPanel DockPanel.Dock="Left">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -209,7 +209,7 @@
                        Margin="0,4,0,8"/>
             
             <!-- Definition Section -->
-            <DockPanel LastChildFill="True" Margin="0,0,0,12">
+            <DockPanel LastChildFill="True" Margin="0,0,0,12" x:Name="SectionDef">
                 <!-- Definition Header -->
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -316,13 +316,15 @@
             </StackPanel>
 
             <!-- Related Words -->
-            <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>
-            <TextBlock x:Name="Label_Same"
-                      Text="Related words"
-                      TextWrapping="Wrap"
-                      Foreground="#FFFFFF"
-                      FontSize="16"
-                      Margin="0,4,0,20"/>
+            <StackPanel x:Name="SectionRelatedWords">
+                <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>
+                <TextBlock x:Name="Label_Same"
+                          Text="Related words"
+                          TextWrapping="Wrap"
+                          Foreground="#FFFFFF"
+                          FontSize="16"
+                          Margin="0,4,0,20"/>
+            </StackPanel>
 
             <!-- SRS Information -->
             <TextBlock Text="REVIEW INFORMATION" Style="{StaticResource SectionTitle}"/>

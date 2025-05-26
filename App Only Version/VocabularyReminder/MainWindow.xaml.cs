@@ -12,7 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
-using VocabularyReminder.VR.Consts;
+using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
@@ -475,7 +475,7 @@ namespace VR
                                     var translation = parts[1].Trim();
                                     
                                     // Add sentence with translation and type
-                                    newVocaId = await DataService.AddVocabularyAsync(englishSentence, translation, "sentence");
+                                    newVocaId = await DataService.AddVocabularyAsync(englishSentence, translation, VocaType.Sentence);
                                 }
                             }
                             else

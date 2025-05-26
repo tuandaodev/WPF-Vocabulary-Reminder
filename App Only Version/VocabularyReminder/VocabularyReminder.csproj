@@ -108,7 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="VR.Consts\VRConsts.cs" />
+    <Compile Include="VR.Common\VRConsts.cs" />
     <Compile Include="VR.Domain\Models\Dictionary.cs" />
     <Compile Include="VR.Domain\Models\VocabularyMapping.cs" />
     <Compile Include="VR.Dto\VocabularyDisplayDto.cs" />

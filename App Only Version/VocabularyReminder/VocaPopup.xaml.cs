@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Services;
@@ -538,16 +539,16 @@ namespace VR
             Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
         }
 
-        private void MappingDisplay()
+        private void MappingDisplayForWord()
         {
             Label_Word.Content = _vocabulary.Word?.ToUpper();
 
             Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
             Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
                 ? "-" : $"/{_vocabulary.Ipa}/";
-            
+
             Label_Type.Content = _vocabulary.Type;
-            
+
             // Only show level if it exists
             if (!string.IsNullOrEmpty(_vocabulary.JsonData?.Level))
             {
@@ -559,6 +560,46 @@ namespace VR
                 Label_Level.Visibility = Visibility.Collapsed;
             }
             Label_Translate1.Text = _vocabulary.Translate;
+        }
+
+        private void MappingDisplayForSentence()
+        {
+            //Label_Word.Content = _vocabulary.Word?.ToUpper();
+
+            //Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
+            //Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
+            //    ? "-" : $"/{_vocabulary.Ipa}/";
+
+            //Label_Type.Content = _vocabulary.Type;
+
+            //// Only show level if it exists
+            //if (!string.IsNullOrEmpty(_vocabulary.JsonData?.Level))
+            //{
+            //    Label_Level.Content = _vocabulary.JsonData.Level;
+            //    Label_Level.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    Label_Level.Visibility = Visibility.Collapsed;
+            //}
+            //Label_Translate1.Text = _vocabulary.Translate;
+
+            SectionWord.Visibility = Visibility.Collapsed;
+            //SectionDef.Visibility = Visibility.Collapsed;
+
+            Label_Translate1.Text = _vocabulary.Translate;
+            Label_Example.Text = _vocabulary.Word;
+        }
+
+        private void MappingDisplay()
+        {
+            if (_vocabulary.Type == VocaType.Sentence)
+            {
+                MappingDisplayForSentence();
+            } else
+            {
+                MappingDisplayForWord();
+            }
             
             // Reset definition index
             _currentDefinitionIndex = 0;
