@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Consts;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
@@ -116,7 +117,10 @@ namespace VR.Services
 
         public static async Task<bool> AddVocabularyMappingAsync(int dicId, int vocaId)
         {
-            if (dicId <= 0 || vocaId <= 0) return false;
+            // Set default dic to "Default"
+            if (dicId < 1)
+                dicId = (int)DictionaryConsts.Default;
+
             using (var context = new VocaDbContext())
             {
                 var voca = new VocabularyMapping()

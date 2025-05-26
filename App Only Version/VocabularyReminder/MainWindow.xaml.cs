@@ -198,7 +198,7 @@ namespace VR
                 // Add "All" option at the beginning
                 var allDictionaries = new List<Dictionary>
                 {
-                    new Dictionary { Id = (int)DictionaryConsts.Default, Name = "All", Description = "All Dictionaries" }
+                    new Dictionary { Id = (int)DictionaryConsts.All, Name = "All", Description = "All Dictionaries" }
                 };
                 allDictionaries.AddRange(dictionaries);
                 
@@ -219,7 +219,7 @@ namespace VR
                             if (dictionaries.Any(d => d.Id == lastId))
                                 Inp_GlobalDictionaryId.SelectedValue = lastId;
                             else
-                                Inp_GlobalDictionaryId.SelectedValue = (int)DictionaryConsts.Default;
+                                Inp_GlobalDictionaryId.SelectedValue = (int)DictionaryConsts.All;
 
                             // Load other settings
                             if (settings.ContainsKey("isRandomWords"))
