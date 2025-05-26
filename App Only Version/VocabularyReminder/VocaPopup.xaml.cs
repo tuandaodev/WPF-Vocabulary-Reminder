@@ -542,8 +542,8 @@ namespace VR
         {
             this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
 
-            this.Label_IPA.Content = $"/{this._vocabulary.Ipa}/";
-            this.Label_IPA2.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
+            this.Label_IPA2.Content = $"/{this._vocabulary.Ipa}/";
+            this.Label_IPA.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
                 ? "-"
                 : $"/{this._vocabulary.Ipa2}/";
             
