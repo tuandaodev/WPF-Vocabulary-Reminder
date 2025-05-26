@@ -540,26 +540,25 @@ namespace VR
 
         private void MappingDisplay()
         {
-            this.Label_Word.Content = this._vocabulary.Word?.ToUpper();
+            Label_Word.Content = _vocabulary.Word?.ToUpper();
 
-            this.Label_IPA2.Content = $"/{this._vocabulary.Ipa}/";
-            this.Label_IPA.Content = string.IsNullOrEmpty(this._vocabulary.Ipa2) || this._vocabulary.Ipa2 == this._vocabulary.Ipa
-                ? "-"
-                : $"/{this._vocabulary.Ipa2}/";
+            Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
+            Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
+                ? "-" : $"/{_vocabulary.Ipa}/";
             
-            this.Label_Type.Content = this._vocabulary.Type;
+            Label_Type.Content = _vocabulary.Type;
             
             // Only show level if it exists
-            if (!string.IsNullOrEmpty(this._vocabulary.JsonData?.Level))
+            if (!string.IsNullOrEmpty(_vocabulary.JsonData?.Level))
             {
-                this.Label_Level.Content = this._vocabulary.JsonData.Level;
-                this.Label_Level.Visibility = Visibility.Visible;
+                Label_Level.Content = _vocabulary.JsonData.Level;
+                Label_Level.Visibility = Visibility.Visible;
             }
             else
             {
-                this.Label_Level.Visibility = Visibility.Collapsed;
+                Label_Level.Visibility = Visibility.Collapsed;
             }
-            this.Label_Translate1.Text = this._vocabulary.Translate;
+            Label_Translate1.Text = _vocabulary.Translate;
             
             // Reset definition index
             _currentDefinitionIndex = 0;
@@ -567,7 +566,7 @@ namespace VR
             
             var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
                 ? "None"
-                : this._vocabulary.Related;
+                : _vocabulary.Related;
             this.Label_Same.Text = relatedWords;
 
             // Disable play buttons if their corresponding URLs are empty/null
