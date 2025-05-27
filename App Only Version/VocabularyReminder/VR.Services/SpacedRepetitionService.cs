@@ -141,7 +141,7 @@ namespace VR.Services
                     
                 case 2: // Hard - Significant difficulty
                     // Anki applies 1.2x the previous interval for "Hard"
-                    int hardInterval = Math.Max(1, (int)Math.Round(vocabulary.Interval.Value * HARD_FACTOR));
+                    int hardInterval = Math.Max(1, (int)Math.Ceiling(vocabulary.Interval.Value * HARD_FACTOR));
                     vocabulary.Interval = hardInterval;
                     vocabulary.NextReviewDate = DateTime.Now.AddDays(hardInterval).ToUnixTimeInSeconds();
                     
@@ -155,7 +155,7 @@ namespace VR.Services
                     vocabulary.EaseFactor = Math.Max(MIN_EASE, goodEF);
                     
                     // Calculate new interval: current interval * EF
-                    int goodInterval = (int)Math.Round(vocabulary.Interval.Value * GOOD_FACTOR);
+                    int goodInterval = (int)Math.Ceiling(vocabulary.Interval.Value * GOOD_FACTOR);
                     vocabulary.Interval = goodInterval;
                     vocabulary.NextReviewDate = DateTime.Now.AddDays(goodInterval).ToUnixTimeInSeconds();
                     break;
@@ -166,7 +166,7 @@ namespace VR.Services
                     vocabulary.EaseFactor = Math.Max(MIN_EASE, easyEF);
                     
                     // Calculate new interval: current interval * larger multiplier
-                    int easyInterval = (int)Math.Round(vocabulary.Interval.Value * EASY_FACTOR);
+                    int easyInterval = (int)Math.Ceiling(vocabulary.Interval.Value * EASY_FACTOR);
                     vocabulary.Interval = easyInterval;
                     vocabulary.NextReviewDate = DateTime.Now.AddDays(easyInterval).ToUnixTimeInSeconds();
                     break;
