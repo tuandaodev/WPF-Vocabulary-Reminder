@@ -623,7 +623,7 @@ namespace VR
             switch (e.ChangedButton)
             {
                 case MouseButton.XButton1://Back button
-                    await BackgroundService.ActionPlay(2);
+                    await BackgroundService.ActionPlay(1);
                     break;
                 case MouseButton.XButton2://forward button
                     await NextVocabularyAsync();
