@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
@@ -102,7 +103,19 @@ namespace VR
             {
                 DictionaryFilter.Items.Add(new ComboBoxItem { Content = dictionary.Name, Tag = dictionary.Id });
             }
-            DictionaryFilter.SelectedIndex = 0;
+            
+            // Set default selection to GlobalDicId
+            var defaultItem = DictionaryFilter.Items.Cast<ComboBoxItem>()
+                .FirstOrDefault(item => (int)item.Tag == App.GlobalDicId);
+            
+            if (defaultItem != null)
+            {
+                DictionaryFilter.SelectedItem = defaultItem;
+            }
+            else
+            {
+                DictionaryFilter.SelectedIndex = 0; // Fallback to "All"
+            }
         }
 
         private async Task ReloadAsync()
@@ -165,39 +178,44 @@ namespace VR
             await ReloadAsync();
         }
 
-        private async void BtnReviewAgain_Click(object sender, RoutedEventArgs e)
-        {
-            await ProcessReview(sender, 1);
-        }
-
-        private async void BtnReviewHard_Click(object sender, RoutedEventArgs e)
-        {
-            await ProcessReview(sender, 2);
-        }
-
-        private async void BtnReviewGood_Click(object sender, RoutedEventArgs e)
-        {
-            await ProcessReview(sender, 3);
-        }
-
-        private async void BtnReviewEasy_Click(object sender, RoutedEventArgs e)
-        {
-            await ProcessReview(sender, 4);
-        }
-
-        private async Task ProcessReview(object sender, int quality)
+        private async void BtnShowVoca_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             if (button?.DataContext is VocabularyDisplayDto vocaInfo)
             {
+                await ShowVocabularyPopup(vocaInfo);
+            }
+        }
+
+        private async void View_ListLearnedWords_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var listView = sender as ListView;
+            if (listView?.SelectedItem is VocabularyDisplayDto vocaInfo)
+            {
+                await ShowVocabularyPopup(vocaInfo);
+            }
+        }
+
+        private async Task ShowVocabularyPopup(VocabularyDisplayDto vocaInfo)
+        {
+            try
+            {
                 var vocabulary = await DataService.GetVocabularyByIdAsync(vocaInfo.Id);
                 if (vocabulary != null)
                 {
-                    SpacedRepetitionService.ProcessReview(vocabulary, quality);
-                    await DataService.UpdateVocabularyAsync(vocabulary);
+                    App.GlobalWordId = vocabulary.Id;
+                    var vocaPopup = new VocaPopup();
+                    vocaPopup.SetVocabulary(vocabulary);
+                    vocaPopup.Show();
                 }
-                
-                await ReloadAsync();
+                else
+                {
+                    MessageBox.Show($"Could not find vocabulary with ID {vocaInfo.Id}.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error showing vocabulary popup: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -281,6 +299,41 @@ namespace VR
             catch (Exception ex)
             {
                 MessageBox.Show($"Error opening backup folder: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private async void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button?.DataContext is VocabularyDisplayDto vocaInfo)
+            {
+                // Show confirmation dialog
+                var result = MessageBox.Show(
+                    $"Are you sure you want to delete the word '{vocaInfo.Word}'?\n\nThis action cannot be undone.",
+                    "Confirm Delete",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        bool success = await DataService.DeleteVocabularyAsync(vocaInfo.Id);
+                        if (success)
+                        {
+                            MessageBox.Show($"Successfully deleted '{vocaInfo.Word}'.", "Delete Successful", MessageBoxButton.OK, MessageBoxImage.Information);
+                            await ReloadAsync();
+                        }
+                        else
+                        {
+                            MessageBox.Show($"Failed to delete '{vocaInfo.Word}'. Please try again.", "Delete Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error deleting word: {ex.Message}", "Delete Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
             }
         }
     }

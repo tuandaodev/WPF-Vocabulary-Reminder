@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Data.Entity.Design.PluralizationServices;
 using System.IO;
 using System.Linq;
@@ -299,9 +298,7 @@ namespace VR
 
             var (dictionary, maxWordLength) = StaticDataAccess.ReadDictionaryCSV(ApplicationIO.GetDictionaryCSV());
 
-            tempInp = CleanParagraph(tempInp);
-
-            var ListWord = ParseParagraph(tempInp, dictionary, maxWordLength);
+            var ListWord = ParseParagraph(tempInp);
             ListWord.RemoveAll(x => string.IsNullOrEmpty(x));
 
             return ListWord;
@@ -357,43 +354,10 @@ namespace VR
             return sentences;
         }
 
-        private string CleanParagraph(string paragraph)
+        private List<string> ParseParagraph(string paragraph)
         {
-            return paragraph.Replace("\r", " ").Replace("\n", " ").Replace("\t", " ").Replace("  ", " ").Trim();
-        }
-
-        private List<string> ParseParagraph(string paragraph, HashSet<string> dictionary, int maxWordLength)
-        {
-            var wordSet = new HashSet<string>();
-            var wordArray = paragraph.Split(new char[] { ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries);
-            int i = 0;
-
-            while (i < wordArray.Length)
-            {
-                bool foundCompound = false;
-                for (int length = maxWordLength; length > 0; length--)
-                {
-                    if (i + length <= wordArray.Length)
-                    {
-                        string word = string.Join(" ", wordArray.Skip(i).Take(length)).ToLower().Trim();
-                        if (dictionary.Contains(word))
-                        {
-                            wordSet.Add(word);
-                            i += length;
-                            foundCompound = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!foundCompound)
-                {
-                    wordSet.Add(wordArray[i].ToLower().Trim());
-                    i++;
-                }
-            }
-
-            return wordSet.ToList();
+            var wordArray = paragraph.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            return wordArray.Distinct().ToList();
         }
 
         private async void Btn_Import_Click(object sender, RoutedEventArgs e)

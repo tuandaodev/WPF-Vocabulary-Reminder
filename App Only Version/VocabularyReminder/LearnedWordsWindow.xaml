@@ -65,6 +65,32 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="DeleteButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Background" Value="#DC3545"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#C82333"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ShowVocaButton" TargetType="Button" BasedOn="{StaticResource DefaultButton}">
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Height" Value="25"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="Margin" Value="2,0"/>
+            <Setter Property="Background" Value="#28a745"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#218838"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     
     <Grid Margin="10">
@@ -113,10 +139,11 @@
         </Border>
 
         <!-- ListView -->
-        <ListView x:Name="View_ListLearnedWords" 
+        <ListView x:Name="View_ListLearnedWords"
                   Grid.Row="1"
                   BorderThickness="1"
-                  BorderBrush="#DDDDDD">
+                  BorderBrush="#DDDDDD"
+                  MouseDoubleClick="View_ListLearnedWords_MouseDoubleClick">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
                     <GridView.ColumnHeaderContainerStyle>
@@ -154,29 +181,18 @@
                     <GridViewColumn Header="Reviews"
                                   DisplayMemberBinding="{Binding ReviewCount}"
                                   Width="70"/>
-                    <GridViewColumn Header="Review"
+                    <GridViewColumn Header="Actions"
                                    Width="Auto"
                                    HeaderContainerStyle="{StaticResource NonSortableHeaderStyle}">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <StackPanel Orientation="Horizontal"
-                                          Visibility="{Binding IsDueForReview, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Button Content="Again"
-                                            Style="{StaticResource ReviewButton}"
-                                            Background="#FF4444"
-                                            Click="BtnReviewAgain_Click"/>
-                                    <Button Content="Hard"
-                                            Style="{StaticResource ReviewButton}"
-                                            Background="#FF8800"
-                                            Click="BtnReviewHard_Click"/>
-                                    <Button Content="Good"
-                                            Style="{StaticResource ReviewButton}"
-                                            Background="#44BB44"
-                                            Click="BtnReviewGood_Click"/>
-                                    <Button Content="Easy"
-                                            Style="{StaticResource ReviewButton}"
-                                            Background="#00AA88"
-                                            Click="BtnReviewEasy_Click"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Show Voca"
+                                            Style="{StaticResource ShowVocaButton}"
+                                            Click="BtnShowVoca_Click"/>
+                                    <Button Content="Delete"
+                                            Style="{StaticResource DeleteButton}"
+                                            Click="BtnDelete_Click"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

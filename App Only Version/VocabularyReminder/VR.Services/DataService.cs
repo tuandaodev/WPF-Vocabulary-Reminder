@@ -472,5 +472,41 @@ namespace VR.Services
                 }
             }
         }
+
+        public static async Task<bool> DeleteVocabularyAsync(int vocabularyId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                try
+                {
+                    // First, remove any vocabulary mappings
+                    var mappings = await context.VocabularyMappings
+                        .Where(vm => vm.VocabularyId == vocabularyId)
+                        .ToListAsync();
+                    
+                    if (mappings.Any())
+                    {
+                        context.VocabularyMappings.RemoveRange(mappings);
+                    }
+
+                    // Then remove the vocabulary itself
+                    var vocabulary = await context.Vocabularies
+                        .FirstOrDefaultAsync(v => v.Id == vocabularyId);
+                    
+                    if (vocabulary != null)
+                    {
+                        context.Vocabularies.Remove(vocabulary);
+                        await context.SaveChangesAsync();
+                        return true;
+                    }
+                    
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
     }
 }

@@ -32,6 +32,7 @@ namespace VR
 
             this.WindowStartupLocation = WindowStartupLocation.Manual;
             this.Topmost = true;
+            this.ShowActivated = false; // Prevent stealing focus from current window
             this.Opacity = 0;
             this.KeyDown += VocaPopup_KeyDown;
             this.PreviewKeyDown += VocaPopup_KeyPreviewDown;

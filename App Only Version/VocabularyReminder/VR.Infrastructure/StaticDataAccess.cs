@@ -22,7 +22,7 @@ namespace VR.Infrastructure
                         {
                             string word = values[0].Trim().ToLower();
                             dictionary.Add(word);
-                            int wordLength = word.Split(' ').Length;
+                            int wordLength = word.Length;
                             if (wordLength > maxWordLength)
                             {
                                 maxWordLength = wordLength;
