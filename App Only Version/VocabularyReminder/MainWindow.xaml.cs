@@ -462,7 +462,9 @@ namespace VR
                     Status_UpdateMessage("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                     Reload_Stats();
                     Dispatcher.Invoke(() => Btn_Import.IsEnabled = true);
-                    MessageBox.Show("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
+
+                    if (TotalWords > 5)
+                        MessageBox.Show("Imported Success " + CountSuccess + "/" + Count + " entered vocabulary.");
                 });
             }
             catch (Exception ex)
