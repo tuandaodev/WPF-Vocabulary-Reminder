@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using VR.Domain.Models;
 
 namespace VR.Dto
@@ -17,11 +18,11 @@ namespace VR.Dto
                 if (_data != value)
                 {
                     _data = value;
-                    JsonData = JsonConvert.DeserializeObject<ExtendedWordDataModel>(_data);
+                    JsonData = JsonConvert.DeserializeObject<List<ExtendedWordDataModel>>(_data);
                 }
             }
         }
-        public ExtendedWordDataModel JsonData { get; private set; }
+        public List<ExtendedWordDataModel> JsonData { get; private set; }
         public string Type { get; set; }
         public string Ipa { get; set; }
         public string Ipa2 { get; set; }

@@ -1010,7 +1010,7 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
 
         private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
         {
-            await ProcessBackgroundGetWordDefineInformation().ConfigureAwait(true);
+            await DataService.MergeDuplicateVocabulariesAsync().ConfigureAwait(true);
 
             //var voca = await DataService.GetVocabularyByWordAsync("bank");
             //await TranslateService.GetWordDefineInformationAsync(voca);

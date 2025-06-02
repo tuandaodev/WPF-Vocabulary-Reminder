@@ -1,4 +1,5 @@
 ﻿using FAI.Core.Utilities.Linq;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -389,9 +390,9 @@ namespace VR.Services
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
                 }
 
-                Expression<Func<Vocabulary, bool>> exp = x => true;
+                Expression<Func<Vocabulary, bool>> exp = x => x.Status == 1;
                 if (isRead.HasValue)
-                    exp = exp.And(e => e.Status == (isRead.Value ? 0 : 1));
+                    exp = exp.And(e => e.NextReviewDate.HasValue);
                 if (!string.IsNullOrEmpty(searchContent))
                     exp = exp.And(e => e.Word.Contains(searchContent.Trim()));
 
@@ -500,5 +501,111 @@ namespace VR.Services
                 }
             }
         }
+
+        /// <summary>
+        /// Data migration function to merge vocabularies with the same Word but different WordId.
+        /// Sets the first vocabulary as primary, merges JSON data from "Data" column, and updates others' Status to -1.
+        /// </summary>
+        /// <returns>Number of vocabularies merged</returns>
+        public static async Task<int> MergeDuplicateVocabulariesAsync()
+        {
+            using (var context = new VocaDbContext())
+            {
+                int mergedCount = 0;
+
+                // Group vocabularies by Word (case-insensitive) where WordId is different
+                var duplicateGroups = await context.Vocabularies
+                    .Where(v => v.Status == 1 && !string.IsNullOrEmpty(v.WordId)) // Only active vocabularies with WordId
+                    .GroupBy(v => v.Word.ToLower())
+                    .Where(g => g.Count() > 1) // Only groups with duplicates
+                    .ToListAsync();
+
+                foreach (var group in duplicateGroups)
+                {
+                    var vocabularies = group.OrderBy(v => v.Id).ToList(); // Order by Id to ensure consistent primary selection
+                    var primaryVocabulary = vocabularies.First(); // First one becomes primary
+                    var duplicates = vocabularies.Skip(1).ToList(); // Rest are duplicates
+
+                    // Merge JSON data from duplicates into primary vocabulary
+                    MergeVocabularyData(primaryVocabulary, duplicates);
+
+                    // Update duplicate vocabularies' status to -1
+                    foreach (var duplicate in duplicates)
+                    {
+                        duplicate.Status = -1;
+                        mergedCount++;
+                    }
+                }
+
+                // Save all changes
+                await context.SaveChangesAsync();
+                return mergedCount;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to merge JSON data from duplicate vocabularies into the primary vocabulary.
+        /// </summary>
+        /// <param name="context">Database context</param>
+        /// <param name="primaryVocabulary">The primary vocabulary to merge data into</param>
+        /// <param name="duplicates">List of duplicate vocabularies to merge data from</param>
+        private static void MergeVocabularyData(Vocabulary primaryVocabulary, List<Vocabulary> duplicates)
+        {
+            try
+            {
+                var mergedJsonData = new List<ExtendedWordDataModel>();
+
+                // Add primary vocabulary's existing JSON data if any
+                if (!string.IsNullOrEmpty(primaryVocabulary.Data))
+                {
+                    var primaryData = JsonConvert.DeserializeObject<List<ExtendedWordDataModel>>(primaryVocabulary.Data);
+                    if (primaryData != null && primaryData.Any())
+                    {
+                        mergedJsonData.AddRange(primaryData);
+                    }
+                }
+
+                // Merge JSON data from all duplicates
+                foreach (var duplicate in duplicates)
+                {
+                    if (!string.IsNullOrEmpty(duplicate.Data))
+                    {
+                        var duplicateData = JsonConvert.DeserializeObject<List<ExtendedWordDataModel>>(duplicate.Data);
+                        if (duplicateData != null && duplicateData.Any())
+                        {
+                            // Add unique data items (avoiding duplicates based on ID or Source)
+                            foreach (var item in duplicateData)
+                            {
+                                var existing = mergedJsonData.FirstOrDefault(x =>
+                                    x.ID == item.ID ||
+                                    (x.Source == item.Source && x.Level == item.Level && x.Type == item.Type));
+                                if (existing == null)
+                                {
+                                    mergedJsonData.Add(item);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Update primary vocabulary's Data field with merged JSON
+                if (mergedJsonData.Any())
+                {
+                    // Store complete data as JSON, ignoring null values
+                    var jsonSettings = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    };
+                    primaryVocabulary.Data = JsonConvert.SerializeObject(mergedJsonData, jsonSettings);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't stop the migration
+                // You might want to add logging here
+                System.Diagnostics.Debug.WriteLine($"Error merging vocabulary data for word '{primaryVocabulary.Word}': {ex.Message}");
+            }
+        }
+
     }
 }

@@ -8,8 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using VR.Domain;
-using VR.Domain.Models;
 using VR.Dto;
 using VR.Infrastructure;
 using VR.Services;
