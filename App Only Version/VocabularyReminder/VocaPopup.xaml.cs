@@ -26,6 +26,7 @@ namespace VR
         private int _currentDefinitionIndex = 0;
         private int _currentJsonDataIndex = 0;
         private int _currentTypeIndex = 0;
+        private int _currentExampleIndex = 0;
         private string[] _typeArray = null;
 
         public VocaPopup()
@@ -93,10 +94,16 @@ namespace VR
             switch (e.Key)
             {
                 case Key.Left:
-                    Btn_PrevDefinition_Click(null, null);
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                        Btn_PrevExample_Click(null, null);
+                    else
+                        Btn_PrevDefinition_Click(null, null);
                     break;
                 case Key.Right:
-                    Btn_NextDefinition_Click(null, null);
+                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                        Btn_NextExample_Click(null, null);
+                    else
+                        Btn_NextDefinition_Click(null, null);
                     break;
             }
         }
@@ -599,6 +606,86 @@ namespace VR
             UpdateTypeHighlighting();
         }
 
+        private void Btn_PrevExample_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0 ||
+                _currentJsonDataIndex >= _vocabulary.JsonData.Count ||
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions == null ||
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count == 0) return;
+
+            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex].Definitions[_currentDefinitionIndex];
+            if (currentDef?.Examples == null || currentDef.Examples.Count == 0) return;
+
+            _currentExampleIndex--;
+            if (_currentExampleIndex < 0)
+                _currentExampleIndex = currentDef.Examples.Count - 1;
+
+            UpdateExampleDisplay();
+        }
+
+        private void Btn_NextExample_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0 ||
+                _currentJsonDataIndex >= _vocabulary.JsonData.Count ||
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions == null ||
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count == 0) return;
+
+            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex].Definitions[_currentDefinitionIndex];
+            if (currentDef?.Examples == null || currentDef.Examples.Count == 0) return;
+
+            _currentExampleIndex++;
+            if (_currentExampleIndex >= currentDef.Examples.Count)
+                _currentExampleIndex = 0;
+
+            UpdateExampleDisplay();
+        }
+
+        private void UpdateExampleDisplay()
+        {
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0 ||
+                _currentJsonDataIndex >= _vocabulary.JsonData.Count ||
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions == null ||
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count == 0) return;
+
+            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex].Definitions[_currentDefinitionIndex];
+            if (currentDef?.Examples == null || currentDef.Examples.Count == 0)
+            {
+                Label_Example.Text = "";
+                Label_ExampleIndex.Text = "0/0";
+                Label_ExampleStruct.Text = "";
+                Label_ExampleStruct.Visibility = Visibility.Collapsed;
+                return;
+            }
+
+            // Update example text and struct
+            if (_currentExampleIndex < currentDef.Examples.Count)
+            {
+                var currentExample = currentDef.Examples[_currentExampleIndex];
+                Label_Example.Text = currentExample?.Example ?? "";
+                
+                // Show struct if available
+                if (!string.IsNullOrEmpty(currentExample?.Struct))
+                {
+                    Label_ExampleStruct.Text = currentExample.Struct;
+                    Label_ExampleStruct.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Label_ExampleStruct.Text = "";
+                    Label_ExampleStruct.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            // Update example index display
+            Label_ExampleIndex.Text = $"{_currentExampleIndex + 1}/{currentDef.Examples.Count}";
+
+            // Reset translation and phonetics when example changes
+            Label_ExampleTranslation.Text = string.Empty;
+            Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+            Label_ExamplePhonetic.Text = string.Empty;
+            Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+        }
+
         private void UpdateDefinitionDisplay()
         {
             if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0 ||
@@ -609,10 +696,13 @@ namespace VR
             var currentJsonData = _vocabulary.JsonData[_currentJsonDataIndex];
             var currentDef = currentJsonData.Definitions[_currentDefinitionIndex];
             
-            // Update definition and example
+            // Update definition
             Label_EngDefination.Text = currentDef.Definition;
-            Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
             Label_DefType.Text = Helper.GetShortFormType(currentJsonData?.Type);
+
+            // Reset example index when definition changes and update example display
+            _currentExampleIndex = 0;
+            UpdateExampleDisplay();
 
             // Update metadata
             if (!string.IsNullOrEmpty(currentDef.PartOfSpeech))

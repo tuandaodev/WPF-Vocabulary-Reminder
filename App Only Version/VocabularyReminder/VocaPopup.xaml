@@ -240,8 +240,9 @@
                                Margin="0,-4,0,0">
                         <Button x:Name="Btn_PrevDefinition"
                                  Content="◀"
-                                 Width="8"
-                                 Height="24"
+                                 Width="40"
+                                 MinWidth="40"
+                                 Height="20"
                                  Margin="0,0,4,0"
                                  Click="Btn_PrevDefinition_Click"/>
                         <TextBlock x:Name="Label_DefinitionIndex"
@@ -251,8 +252,9 @@
                                    Margin="8,0"/>
                         <Button x:Name="Btn_NextDefinition"
                                  Content="▶"
-                                 Width="8"
-                                 Height="24"
+                                 Width="40"
+                                 MinWidth="40"
+                                 Height="20"
                                  Margin="4,0,0,0"
                                  Click="Btn_NextDefinition_Click"/>
                     </StackPanel>
@@ -325,13 +327,55 @@
                              Margin="0,0,0,12"
                              Visibility="Collapsed"/>
                     
-                    <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
-                    <TextBlock x:Name="Label_Example"
-                             Text=""
-                             TextWrapping="Wrap"
-                             Foreground="#FFFFFF"
-                             FontSize="16"
-                             Margin="0,4,0,4"/>
+                    <!-- Example Section with Navigation -->
+                    <DockPanel LastChildFill="True" Margin="0,0,0,0">
+                        <!-- Example Header with Navigation -->
+                        <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8" VerticalAlignment="Center">
+                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
+                                <TextBlock x:Name="Label_ExampleStruct"
+                                         Text=""
+                                         Foreground="#FFB366"
+                                         FontStyle="Italic"
+                                         FontSize="14"
+                                         Margin="8,0,0,0"
+                                         VerticalAlignment="Center"
+                                         Visibility="Collapsed"/>
+                            </StackPanel>
+                            <StackPanel DockPanel.Dock="Right"
+                                       Orientation="Horizontal"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,0,0">
+                                <Button x:Name="Btn_PrevExample"
+                                         Content="◀"
+                                         Width="40"
+                                         MinWidth="40"
+                                         Height="20"
+                                         Margin="0,0,4,0"
+                                         Click="Btn_PrevExample_Click"/>
+                                <TextBlock x:Name="Label_ExampleIndex"
+                                           Text="1/1"
+                                           Foreground="#FFFFFF"
+                                           VerticalAlignment="Center"
+                                           Margin="8,0"/>
+                                <Button x:Name="Btn_NextExample"
+                                         Content="▶"
+                                         Width="40"
+                                         MinWidth="40"
+                                         Height="20"
+                                         Margin="4,0,0,0"
+                                         Click="Btn_NextExample_Click"/>
+                            </StackPanel>
+                        </DockPanel>
+                        
+                        <!-- Example Content -->
+                        <TextBlock x:Name="Label_Example"
+                                 Text=""
+                                 TextWrapping="Wrap"
+                                 Foreground="#FFFFFF"
+                                 FontSize="16"
+                                 Margin="0,4,0,4"/>
+                    </DockPanel>
                 </StackPanel>
             </DockPanel>
 

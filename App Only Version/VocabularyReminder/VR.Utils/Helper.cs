@@ -31,8 +31,8 @@ namespace VR.Utils
 
             switch (lowerType)
             {
-                case "noun": return "N";
-                case "verb": return "V";
+                case "noun": return "Noun";
+                case "verb": return "Verb";
                 case "adjective": return "Adj";
                 case "adverb": return "Adv";
                 case "pronoun": return "Pron";
