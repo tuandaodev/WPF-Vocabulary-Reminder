@@ -153,12 +153,6 @@ namespace VR.Services
             {
                 await request.DownloadAsync(stream);
             }
-
-            // Replace the current database with the downloaded backup
-            string dbPath = ApplicationIO.GetDatabasePath();
-            if (System.IO.File.Exists(dbPath))
-                System.IO.File.Delete(dbPath);
-            System.IO.File.Copy(localRestorePath, dbPath);
         }
         /// <summary>
         /// Logs out from Google Drive by removing the stored credentials.

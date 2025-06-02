@@ -993,10 +993,15 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
                     return;
                 }
                 var selectedFile = selectWindow.SelectedFile;
-                string tempPath = Path.Combine(Path.GetTempPath(), selectedFile.Name);
 
                 Status_UpdateMessage("Downloading and restoring backup...");
-                await backupService.RestoreFromGoogleDriveAsync(selectedFile.Id, tempPath);
+                string restorePath = ApplicationIO.GetRestoreDatabasePath();
+                await backupService.RestoreFromGoogleDriveAsync(selectedFile.Id, restorePath);
+                
+                // Force application restart
+                MessageBox.Show("Restore completed. The application will now restart.");
+                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+                Application.Current.Shutdown();
 
                 Status_UpdateMessage("Restore from Google Drive completed.");
                 MessageBox.Show("Restore from Google Drive completed. Please restart the application for changes to take effect.");

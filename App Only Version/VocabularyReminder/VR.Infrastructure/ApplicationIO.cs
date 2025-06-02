@@ -52,6 +52,11 @@ namespace VR.Infrastructure
             return Path.Combine(GetApplicationFolderPath(), DatabaseFileName);
         }
 
+        public static string GetRestoreDatabasePath()
+        {
+            return Path.Combine(GetApplicationFolderPath(), $"{DatabaseFileName}.restore");
+        }
+
         public static string GetEVDatabasePath()
         {
             return Path.Combine(SelfData, "dict_ev.db");

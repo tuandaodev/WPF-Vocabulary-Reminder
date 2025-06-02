@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using VR.Domain.Models;
 using VR.Services;
+using VR.Infrastructure;
 
 namespace VR
 {
@@ -31,11 +33,39 @@ namespace VR
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ForceRestoreIfNeeded();
             DataService.InitializeDatabase();
-
             new MainWindow().Show();
-
             base.OnStartup(e);
+        }
+
+        private void ForceRestoreIfNeeded()
+        {
+            // Check for restore file
+            string restorePath = ApplicationIO.GetRestoreDatabasePath();
+            string dbPath = ApplicationIO.GetDatabasePath();
+            
+            if (File.Exists(restorePath))
+            {
+                try
+                {
+                    // Backup current database if it exists
+                    if (File.Exists(dbPath))
+                    {
+                        string backupPath = dbPath + $".bak_{DateTime.Now:yyyyMMdd_HHmmss}";
+                        File.Copy(dbPath, backupPath);
+                    }
+
+                    // Replace database with restore file
+                    File.Copy(restorePath, dbPath, true);
+                    File.Delete(restorePath);
+                    MessageBox.Show($"Database restored successfully.", "Restore Database", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to restore database: {ex.Message}");
+                }
+            }
         }
     }
 }
