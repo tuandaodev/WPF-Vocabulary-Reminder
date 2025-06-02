@@ -616,7 +616,7 @@ namespace VR
             var currentDef = currentJsonData.Definitions[_currentDefinitionIndex];
             
             // Update definition and example
-            Label_Translate2.Text = currentDef.Definition;
+            Label_EngDefination.Text = currentDef.Definition;
             Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
             Label_DefType.Text = Helper.GetShortFormType(currentJsonData?.Type);
 
@@ -823,6 +823,57 @@ namespace VR
                     break;
                 default:
                     break;
+            }
+        }
+
+        private async void Btn_TranslateDefinition_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Check if there's a definition to translate
+                if (string.IsNullOrEmpty(Label_EngDefination.Text))
+                {
+                    MessageBox.Show("No definition available to translate.", "Translation",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Disable button during translation
+                Btn_TranslateDefinition.IsEnabled = false;
+                
+                // Get LLM service
+                var llmService = LLMProviderFactory.GetLLMService();
+                if (llmService == null)
+                {
+                    MessageBox.Show("LLM service is not configured. Please check your AI provider settings.",
+                        "Translation Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Translate the definition using LLM
+                var translatedText = await llmService.TranslateAsync(Label_EngDefination.Text, "Vietnamese");
+                
+                if (!string.IsNullOrEmpty(translatedText) && translatedText != Label_EngDefination.Text)
+                {
+                    Label_VietnameseDefinition.Text = translatedText;
+                    Label_VietnameseDefinition.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    MessageBox.Show("Translation failed or returned empty result.", "Translation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Translation failed: {ex.Message}", "Translation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                Label_VietnameseDefinition.Visibility = Visibility.Collapsed;
+            }
+            finally
+            {
+                // Re-enable button
+                Btn_TranslateDefinition.IsEnabled = true;
             }
         }
     }

@@ -260,12 +260,70 @@
 
                 <!-- Definition and Example Content -->
                 <StackPanel>
-                    <TextBlock x:Name="Label_Translate2"
+                    <DockPanel>
+                        <Button x:Name="Btn_TranslateDefinition"
+                                DockPanel.Dock="Right"
+                                Width="24"
+                                Height="24"
+                                Margin="8,0,0,0"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                ToolTip="Translate definition to Vietnamese using LLM"
+                                Click="Btn_TranslateDefinition_Click"
+                                VerticalAlignment="Top"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="4"
+                                                        Padding="2">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#33FFFFFF"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#55FFFFFF"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Opacity" Value="0.5"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Viewbox Width="16" Height="16">
+                                <Canvas Width="24" Height="24">
+                                    <Path x:Name="TranslateIcon" Fill="#FFFFFF" Data="M12.87,15.07L10.33,12.56L10.36,12.53C12.1,10.59 13.34,8.36 14.07,6H17V4H10V2H8V4H1V6H12.17C11.5,7.92 10.44,9.75 9,11.35C8.07,10.32 7.3,9.19 6.69,8H4.69C5.42,9.63 6.42,11.17 7.67,12.56L2.58,17.58L4,19L9,14L12.11,17.11L12.87,15.07M18.5,10H16.5L12,22H14L15.12,19H19.87L21,22H23L18.5,10M15.88,17L17.5,12.67L19.12,17H15.88Z"/>
+                                </Canvas>
+                            </Viewbox>
+                        </Button>
+                        <TextBlock x:Name="Label_EngDefination"
+                                 Text=""
+                                 TextWrapping="Wrap"
+                                 Foreground="#FFFFFF"
+                                 FontSize="18"
+                                 Margin="0,4,0,12"/>
+                    </DockPanel>
+                    
+                    <!-- Vietnamese Translation of Definition -->
+                    <TextBlock x:Name="Label_VietnameseDefinition"
                              Text=""
                              TextWrapping="Wrap"
-                             Foreground="#FFFFFF"
-                             FontSize="18"
-                             Margin="0,4,0,12"/>
+                             Foreground="#88FFFFFF"
+                             FontStyle="Italic"
+                             FontSize="16"
+                             Margin="0,0,0,12"
+                             Visibility="Collapsed"/>
                     
                     <TextBlock Text="EXAMPLE" Style="{StaticResource SectionTitle}"/>
                     <TextBlock x:Name="Label_Example"
