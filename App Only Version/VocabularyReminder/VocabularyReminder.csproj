@@ -118,7 +118,6 @@
     <Compile Include="VR.Services\DataService.cs" />
     <Compile Include="VR.Infrastructure\ApplicationIO.cs" />
     <Compile Include="VR.Dto\StatsDto.cs" />
-    <Compile Include="VR.Domain\DicEVContext.cs" />
     <Compile Include="VR.Domain\VocaDbContext.cs" />
     <Compile Include="DictionaryManagementWindow.xaml.cs">
       <DependentUpon>DictionaryManagementWindow.xaml</DependentUpon>
@@ -195,9 +194,6 @@
     </None>
     <None Include="Data\dictionary.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Data\dict_ev.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

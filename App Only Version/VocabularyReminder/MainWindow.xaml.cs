@@ -653,49 +653,6 @@ namespace VR
             }
         }
 
-        //public async Task ProcessBackgroundUnprocessWords()
-        //{
-        //    try
-        //    {
-        //        var listVocabulary = await DataService.GetUnprocessVocabulariesAsync().ConfigureAwait(true);
-        //        if (!listVocabulary.Any())
-        //            return;
-
-        //        var evDic = await DataService.GetEVVocabulariesAsync().ConfigureAwait(true);
-
-        //        int TotalItems = listVocabulary.Count;
-        //        int Count = 0;
-
-        //        var service = PluralizationService.CreateService(new System.Globalization.CultureInfo("en-US"));
-
-        //        foreach (var item in listVocabulary)
-        //        {
-        //            var exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
-        //            if (exist == null)
-        //            {
-        //                if (service.IsPlural(item.Word))
-        //                {
-        //                    item.Word = service.Singularize(item.Word);
-        //                    exist = evDic.FirstOrDefault(e => e.Word.Equals(item.Word, StringComparison.OrdinalIgnoreCase));
-        //                }
-        //            }
-
-        //            if (exist != null)
-        //            {
-        //                if (string.IsNullOrEmpty(item.Ipa)) item.Ipa = exist.Pronounce;
-        //                if (string.IsNullOrEmpty(item.Translate)) item.Translate = exist.Description;
-        //                await DataService.UpdateVocabularyAsync(item).ConfigureAwait(true);
-        //            }
-
-        //            Status_UpdateProgressBar(++Count, TotalItems);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Status_UpdateMessage("Crawling: Process Background Unprocess words Fail: " + ex.Message);
-        //    }
-        //}
-
         private void Reload_Stats()
         {
             Dispatcher.Invoke(() =>

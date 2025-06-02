@@ -443,14 +443,6 @@ namespace VR.Services
             }
         }
 
-        public static async Task<List<EVVocabulary>> GetEVVocabulariesAsync()
-        {
-            using (var context = new DicEVContext())
-            {
-                return await context.Vocabularies.ToListAsync();
-            }
-        }
-
         public static async Task CleanUnableToGetAsync()
         {
             using (var context = new VocaDbContext())
