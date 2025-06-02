@@ -1,0 +1,141 @@
+<Window x:Class="VR.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Settings"
+        Height="600"
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" 
+                   Text="Application Settings" 
+                   FontSize="18" 
+                   FontWeight="Bold" 
+                   Margin="0,0,0,20" 
+                   HorizontalAlignment="Center"/>
+
+        <!-- AI Provider Section -->
+        <GroupBox Grid.Row="1" 
+                  Header="AI Provider" 
+                  Margin="0,0,0,15"
+                  Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="Provider:" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,10,0"/>
+                
+                <ComboBox x:Name="cmbAiProvider" 
+                          Grid.Row="0" Grid.Column="1" 
+                          Width="200"
+                          HorizontalAlignment="Left"
+                          SelectionChanged="cmbAiProvider_SelectionChanged">
+                    <ComboBoxItem Content="ChatGPT" Tag="ChatGPT"/>
+                    <ComboBoxItem Content="Gemini" Tag="Gemini"/>
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+
+        <!-- API Key Section -->
+        <GroupBox Grid.Row="2" 
+                  Header="API Configuration" 
+                  Margin="0,0,0,15"
+                  Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" 
+                           Text="API Key:" 
+                           VerticalAlignment="Center" 
+                           Margin="0,0,10,0"/>
+                
+                <PasswordBox x:Name="txtApiKey" 
+                             Grid.Row="0" Grid.Column="1" 
+                             Margin="0,0,0,10"
+                             PasswordChanged="txtApiKey_PasswordChanged"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1" 
+                           x:Name="lblApiKeyInfo"
+                           Text="Enter your API key for the selected AI provider"
+                           FontSize="11"
+                           Foreground="Gray"
+                           TextWrapping="Wrap"/>
+            </Grid>
+        </GroupBox>
+
+        <!-- Test Connection Section -->
+        <GroupBox Grid.Row="3" 
+                  Header="Connection Test" 
+                  Margin="0,0,0,15"
+                  Padding="10">
+            <StackPanel>
+                <Button x:Name="btnTestConnection" 
+                        Content="Test API Connection" 
+                        Width="150"
+                        HorizontalAlignment="Left"
+                        Click="btnTestConnection_Click"
+                        Margin="0,0,0,10"/>
+                
+                <TextBlock x:Name="lblConnectionStatus" 
+                           Text="Click 'Test API Connection' to verify your settings"
+                           FontSize="11"
+                           Foreground="Gray"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="5" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,20,0,0">
+            <Button x:Name="btnSave" 
+                    Content="Save" 
+                    Width="80" 
+                    Margin="0,0,10,0" 
+                    Click="btnSave_Click"
+                    IsDefault="True"/>
+            
+            <Button x:Name="btnCancel" 
+                    Content="Cancel" 
+                    Width="80" 
+                    Click="btnCancel_Click"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

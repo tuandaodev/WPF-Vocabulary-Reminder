@@ -1042,6 +1042,12 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
                 MessageBox.Show($"Failed to logout: {ex.Message}");
             }
         }
+
+        private void Btn_Settings_Click(object sender, RoutedEventArgs e)
+        {
+            var settingsWindow = new SettingsWindow();
+            settingsWindow.ShowDialog();
+        }
     }
 
 }

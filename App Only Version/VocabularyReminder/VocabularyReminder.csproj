@@ -108,6 +108,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="VR.Common\AIProvider.cs" />
     <Compile Include="VR.Common\VRConsts.cs" />
     <Compile Include="VR.Domain\Models\Dictionary.cs" />
     <Compile Include="VR.Domain\Models\VocabularyMapping.cs" />
@@ -125,6 +126,10 @@
     <Compile Include="LearnedWordsWindow.xaml.cs">
       <DependentUpon>LearnedWordsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsWindow.xaml.cs">
+      <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VR.Services\AIApiTestService.cs" />
     <Compile Include="VR.Services\BackgroundService.cs" />
     <Compile Include="VR.Services\CacheService.cs" />
     <Compile Include="VR.Services\SyncVocaService.cs" />
@@ -166,6 +171,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VocaPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
