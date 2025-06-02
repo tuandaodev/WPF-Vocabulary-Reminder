@@ -459,6 +459,70 @@ namespace VR
             }
         }
 
+        private async void Btn_GenerateExample_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_vocabulary?.Word))
+                return;
+
+            try
+            {
+                // Disable button while processing
+                Btn_GenerateExample.IsEnabled = false;
+                Btn_GenerateExample.Content = "Generating...";
+
+                // Check if LLM provider is configured
+                if (!LLMProviderFactory.IsCurrentConfigurationValid())
+                {
+                    MessageBox.Show("LLM provider is not properly configured. Please check your settings.",
+                        "LLM Configuration Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Generate new example using LLM
+                var llmService = LLMProviderFactory.GetLLMService();
+                var examples = await llmService.GetExamplesAsync(_vocabulary.Word, 1);
+
+                if (!string.IsNullOrEmpty(examples))
+                {
+                    // Extract just the first example sentence (remove numbering if present)
+                    var lines = examples.Split('\n');
+                    var firstExample = lines[0].Trim();
+                    
+                    // Remove common prefixes like "1. " or "- "
+                    if (firstExample.StartsWith("1. "))
+                        firstExample = firstExample.Substring(3).Trim();
+                    else if (firstExample.StartsWith("- "))
+                        firstExample = firstExample.Substring(2).Trim();
+
+                    // Update the example display
+                    Label_Example.Text = firstExample;
+                    
+                    // Hide previous translation and phonetic results
+                    Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+                    Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    MessageBox.Show("Failed to generate example. Please try again.",
+                        "Generation Error",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating example: {ex.Message}",
+                    "Generation Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                // Re-enable button
+                Btn_GenerateExample.IsEnabled = true;
+                Btn_GenerateExample.Content = "Generate Example";
+            }
+        }
+
         public void SetVocabulary(Vocabulary item)
         {
             _vocabulary = item ?? throw new ArgumentNullException(nameof(item));

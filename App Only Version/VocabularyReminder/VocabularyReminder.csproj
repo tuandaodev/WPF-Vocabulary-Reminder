@@ -129,7 +129,13 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="VR.Services\AIApiTestService.cs" />
+    <Compile Include="VR.Services\LLM\AIApiTestService.cs" />
+    <Compile Include="VR.Services\LLM\ChatGPTProvider.cs" />
+    <Compile Include="VR.Services\LLM\GeminiProvider.cs" />
+    <Compile Include="VR.Services\LLM\ILLMProvider.cs" />
+    <Compile Include="VR.Services\LLM\LLMProviderFactory.cs" />
+    <Compile Include="VR.Services\LLM\LLMService.cs" />
+    <Compile Include="VR.Services\LLM\LLMUsageExample.cs" />
     <Compile Include="VR.Services\BackgroundService.cs" />
     <Compile Include="VR.Services\CacheService.cs" />
     <Compile Include="VR.Services\SyncVocaService.cs" />
