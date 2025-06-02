@@ -20,7 +20,7 @@ namespace VR.Services
                 return;
 
             string _mp3Url = item.PlayURL2;
-            if (item?.JsonData?.Source == SourceVocabulary.Oxford.GetDescription() 
+            if (item?.JsonData[0]?.Source == SourceVocabulary.Oxford.GetDescription() 
                 && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
             {
                 _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;

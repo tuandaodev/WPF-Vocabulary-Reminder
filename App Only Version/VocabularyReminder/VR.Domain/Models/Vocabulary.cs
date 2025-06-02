@@ -29,13 +29,13 @@ namespace VR.Domain.Models
                 if (_data != value)
                 {
                     _data = value;
-                    JsonData = JsonConvert.DeserializeObject<ExtendedWordDataModel>(_data);
+                    JsonData = JsonConvert.DeserializeObject<List<ExtendedWordDataModel>>(_data);
                 }
             }
         }
 
         [NotMapped]
-        public ExtendedWordDataModel JsonData { get; private set; }
+        public List<ExtendedWordDataModel> JsonData { get; private set; }
 
         [MaxLength(100)]
         public string Type { get; set; }

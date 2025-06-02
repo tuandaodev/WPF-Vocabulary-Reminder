@@ -22,7 +22,7 @@ namespace VR.Services
                 else
                     _mp3Url = _item.PlayURL2;
 
-                if (_item?.JsonData?.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
+                if (_item?.JsonData[0]?.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
                     _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
 
                 if (!String.IsNullOrEmpty(_mp3Url))

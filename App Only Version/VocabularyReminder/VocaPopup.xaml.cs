@@ -469,21 +469,21 @@ namespace VR
 
         private void Btn_PrevDefinition_Click(object sender, RoutedEventArgs e)
         {
-            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
 
             _currentDefinitionIndex--;
             if (_currentDefinitionIndex < 0)
-                _currentDefinitionIndex = _vocabulary.JsonData.Definitions.Count - 1;
+                _currentDefinitionIndex = _vocabulary.JsonData[0].Definitions.Count - 1;
 
             UpdateDefinitionDisplay();
         }
 
         private void Btn_NextDefinition_Click(object sender, RoutedEventArgs e)
         {
-            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
 
             _currentDefinitionIndex++;
-            if (_currentDefinitionIndex >= _vocabulary.JsonData.Definitions.Count)
+            if (_currentDefinitionIndex >= _vocabulary.JsonData[0].Definitions.Count)
                 _currentDefinitionIndex = 0;
 
             UpdateDefinitionDisplay();
@@ -491,9 +491,9 @@ namespace VR
 
         private void UpdateDefinitionDisplay()
         {
-            if (_vocabulary?.JsonData?.Definitions == null || _vocabulary.JsonData.Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
 
-            var currentDef = _vocabulary.JsonData.Definitions[_currentDefinitionIndex];
+            var currentDef = _vocabulary.JsonData[0].Definitions[_currentDefinitionIndex];
             
             // Update definition and example
             Label_Translate2.Text = currentDef.Definition;
@@ -531,7 +531,7 @@ namespace VR
             }
             
             // Update the index display
-            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData.Definitions.Count}";
+            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData[0].Definitions.Count}";
             
             // Reset translation and phonetics when definition changes
             Label_ExampleTranslation.Text = string.Empty;
@@ -551,9 +551,9 @@ namespace VR
             Label_Type.Content = _vocabulary.Type;
 
             // Only show level if it exists
-            if (!string.IsNullOrEmpty(_vocabulary.JsonData?.Level))
+            if (!string.IsNullOrEmpty(_vocabulary.JsonData[0]?.Level))
             {
-                Label_Level.Content = _vocabulary.JsonData.Level;
+                Label_Level.Content = _vocabulary.JsonData[0].Level;
                 Label_Level.Visibility = Visibility.Visible;
             }
             else
