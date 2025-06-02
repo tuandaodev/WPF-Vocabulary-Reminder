@@ -849,6 +849,16 @@ namespace VR
             if (_TokenSource != null) _TokenSource.Cancel();
             VocabularyDisplayService.Hide();
             UnRegisterHotKeys();
+            
+            // Close all other windows when MainWindow is closing
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window != this && window.IsLoaded)
+                {
+                    window.Close();
+                }
+            }
+            
             base.OnClosed(e);
         }
 
