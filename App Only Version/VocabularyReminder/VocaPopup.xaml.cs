@@ -23,6 +23,7 @@ namespace VR
         private Vocabulary _vocabulary { get; set; }
         private System.Windows.Forms.Timer autoCloseTimer;
         private int _currentDefinitionIndex = 0;
+        private int _currentJsonDataIndex = 0;
 
         public VocaPopup()
         {
@@ -469,31 +470,76 @@ namespace VR
 
         private void Btn_PrevDefinition_Click(object sender, RoutedEventArgs e)
         {
-            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0) return;
 
-            _currentDefinitionIndex--;
-            if (_currentDefinitionIndex < 0)
-                _currentDefinitionIndex = _vocabulary.JsonData[0].Definitions.Count - 1;
+            // First try to go to previous definition within current JsonData entry
+            if (_currentJsonDataIndex < _vocabulary.JsonData.Count &&
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions != null &&
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count > 0)
+            {
+                _currentDefinitionIndex--;
+                if (_currentDefinitionIndex >= 0)
+                {
+                    UpdateDefinitionDisplay();
+                    return;
+                }
+            }
+
+            // If we're at the first definition or no definitions, go to previous JsonData entry
+            _currentJsonDataIndex--;
+            if (_currentJsonDataIndex < 0)
+                _currentJsonDataIndex = _vocabulary.JsonData.Count - 1;
+
+            // Set to last definition of the new JsonData entry
+            if (_vocabulary.JsonData[_currentJsonDataIndex]?.Definitions != null &&
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count > 0)
+            {
+                _currentDefinitionIndex = _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count - 1;
+            }
+            else
+            {
+                _currentDefinitionIndex = 0;
+            }
 
             UpdateDefinitionDisplay();
         }
 
         private void Btn_NextDefinition_Click(object sender, RoutedEventArgs e)
         {
-            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0) return;
 
-            _currentDefinitionIndex++;
-            if (_currentDefinitionIndex >= _vocabulary.JsonData[0].Definitions.Count)
-                _currentDefinitionIndex = 0;
+            // First try to go to next definition within current JsonData entry
+            if (_currentJsonDataIndex < _vocabulary.JsonData.Count &&
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions != null &&
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count > 0)
+            {
+                _currentDefinitionIndex++;
+                if (_currentDefinitionIndex < _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count)
+                {
+                    UpdateDefinitionDisplay();
+                    return;
+                }
+            }
+
+            // If we're at the last definition or no definitions, go to next JsonData entry
+            _currentJsonDataIndex++;
+            if (_currentJsonDataIndex >= _vocabulary.JsonData.Count)
+                _currentJsonDataIndex = 0;
+
+            // Set to first definition of the new JsonData entry
+            _currentDefinitionIndex = 0;
 
             UpdateDefinitionDisplay();
         }
 
         private void UpdateDefinitionDisplay()
         {
-            if (_vocabulary?.JsonData[0]?.Definitions == null || _vocabulary.JsonData[0].Definitions.Count == 0) return;
+            if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0 ||
+                _currentJsonDataIndex >= _vocabulary.JsonData.Count ||
+                _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions == null ||
+                _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count == 0) return;
 
-            var currentDef = _vocabulary.JsonData[0].Definitions[_currentDefinitionIndex];
+            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex].Definitions[_currentDefinitionIndex];
             
             // Update definition and example
             Label_Translate2.Text = currentDef.Definition;
@@ -531,7 +577,7 @@ namespace VR
             }
             
             // Update the index display
-            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData[0].Definitions.Count}";
+            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count}";
             
             // Reset translation and phonetics when definition changes
             Label_ExampleTranslation.Text = string.Empty;
@@ -551,9 +597,11 @@ namespace VR
             Label_Type.Content = _vocabulary.Type;
 
             // Only show level if it exists
-            if (!string.IsNullOrEmpty(_vocabulary.JsonData[0]?.Level))
+            if (_vocabulary.JsonData != null && _vocabulary.JsonData.Count > 0 &&
+                _currentJsonDataIndex < _vocabulary.JsonData.Count &&
+                !string.IsNullOrEmpty(_vocabulary.JsonData[_currentJsonDataIndex]?.Level))
             {
-                Label_Level.Content = _vocabulary.JsonData[0].Level;
+                Label_Level.Content = _vocabulary.JsonData[_currentJsonDataIndex].Level;
                 Label_Level.Visibility = Visibility.Visible;
             }
             else
@@ -602,7 +650,8 @@ namespace VR
                 MappingDisplayForWord();
             }
             
-            // Reset definition index
+            // Reset both indices when setting new vocabulary
+            _currentJsonDataIndex = 0;
             _currentDefinitionIndex = 0;
             UpdateDefinitionDisplay();
             
