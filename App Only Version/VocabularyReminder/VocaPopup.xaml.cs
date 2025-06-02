@@ -19,7 +19,6 @@ namespace VR
     public partial class VocaPopup : Window
     {
         private static IPAService _ipaService;
-        private static int _easyClickCount = 0;
         private Vocabulary _vocabulary { get; set; }
         private System.Windows.Forms.Timer autoCloseTimer;
         private int _currentDefinitionIndex = 0;
@@ -27,7 +26,7 @@ namespace VR
 
         public VocaPopup()
         {
-            _easyClickCount = 0;
+            App.GlobalJsonDataId = null;
 
             InitializeComponent();
 
@@ -227,12 +226,12 @@ namespace VR
 
         private async void Btn_PlaySound1_Click(object sender, RoutedEventArgs e)
         {
-            await BackgroundService.ActionPlay(1);
+            await BackgroundService.ActionPlay(ActionPlayEnum.US);
         }
 
         private async void Btn_PlaySound2_Click(object sender, RoutedEventArgs e)
         {
-            await BackgroundService.ActionPlay(2);
+            await BackgroundService.ActionPlay(ActionPlayEnum.UK);
         }
 
         private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -248,7 +247,6 @@ namespace VR
 
         private async Task NextVocabularyAsync()
         {
-            _easyClickCount = 0;
             await BackgroundService.NextVocabularyAsync();
             App.LastReaction = DateTime.Now;
             this.ClosePopup();
@@ -282,7 +280,6 @@ namespace VR
 
         private async Task ProcessEasyButtonAsync()
         {
-            _easyClickCount++;
             ProcessReview(4);
 
             // Check if next review is > 20 days
@@ -339,7 +336,7 @@ namespace VR
             }
         }
 
-        private async void Btn_ReadExample_Click(object sender, RoutedEventArgs e)
+        private void Btn_ReadExample_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -468,6 +465,12 @@ namespace VR
             MappingDisplay();
         }
 
+        private void ProcessAfterChangeDef()
+        {
+            App.GlobalJsonDataId = _vocabulary.JsonData[_currentJsonDataIndex]?.ID ?? null;
+            UpdateDefinitionDisplay();
+        }
+
         private void Btn_PrevDefinition_Click(object sender, RoutedEventArgs e)
         {
             if (_vocabulary?.JsonData == null || _vocabulary.JsonData.Count == 0) return;
@@ -501,7 +504,7 @@ namespace VR
                 _currentDefinitionIndex = 0;
             }
 
-            UpdateDefinitionDisplay();
+            ProcessAfterChangeDef();
         }
 
         private void Btn_NextDefinition_Click(object sender, RoutedEventArgs e)
@@ -529,7 +532,7 @@ namespace VR
             // Set to first definition of the new JsonData entry
             _currentDefinitionIndex = 0;
 
-            UpdateDefinitionDisplay();
+            ProcessAfterChangeDef();
         }
 
         private void UpdateDefinitionDisplay()
@@ -545,7 +548,7 @@ namespace VR
             // Update definition and example
             Label_Translate2.Text = currentDef.Definition;
             Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
-            Label_DefType.Text = currentJsonData?.Type ?? "";
+            Label_DefType.Text = Helper.GetShortFormType(currentJsonData?.Type);
 
             // Update metadata
             if (!string.IsNullOrEmpty(currentDef.PartOfSpeech))
@@ -602,24 +605,33 @@ namespace VR
         {
             Label_Word.Content = _vocabulary.Word?.ToUpper();
 
-            Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
-            Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
-                ? "-" : $"/{_vocabulary.Ipa}/";
-
-            Label_Type.Content = _vocabulary.Type;
-
             // Only show level if it exists
-            if (_vocabulary.JsonData != null && _vocabulary.JsonData.Count > 0 &&
-                _currentJsonDataIndex < _vocabulary.JsonData.Count &&
-                !string.IsNullOrEmpty(_vocabulary.JsonData[_currentJsonDataIndex]?.Level))
+            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex] ?? null;
+            if (!string.IsNullOrEmpty(currentDef?.Level))
             {
-                Label_Level.Content = _vocabulary.JsonData[_currentJsonDataIndex].Level;
+                Label_Level.Content = currentDef.Level;
                 Label_Level.Visibility = Visibility.Visible;
             }
             else
             {
                 Label_Level.Visibility = Visibility.Collapsed;
             }
+
+            // Load info from main vocabulary
+            Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
+            Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
+                ? "-" : $"/{_vocabulary.Ipa}/";
+
+            Label_Type.Content = _vocabulary.Type;
+
+            // Overwrite data from DEF
+            if (!string.IsNullOrEmpty(currentDef?.Ipa2) && !string.IsNullOrEmpty(currentDef?.Ipa))
+            {
+                Label_IPA.Content = $"/{currentDef?.Ipa2}/";
+                Label_IPA2.Content = string.IsNullOrEmpty(currentDef?.Ipa) || currentDef?.Ipa == currentDef?.Ipa2
+                ? "-" : $"/{currentDef?.Ipa}/";
+            }
+
             Label_Translate1.Text = _vocabulary.Translate;
         }
 
@@ -685,7 +697,7 @@ namespace VR
             switch (e.ChangedButton)
             {
                 case MouseButton.XButton1://Back button
-                    await BackgroundService.ActionPlay(1);
+                    await BackgroundService.ActionPlay(ActionPlayEnum.US);
                     break;
                 case MouseButton.XButton2://forward button
                     await NextVocabularyAsync();

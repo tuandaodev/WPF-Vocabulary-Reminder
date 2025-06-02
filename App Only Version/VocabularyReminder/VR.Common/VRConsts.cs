@@ -10,4 +10,10 @@
     {
         public const string Sentence = "sentence";
     }
+
+    public enum ActionPlayEnum
+    {
+        UK = 1,
+        US = 2,
+    }
 }

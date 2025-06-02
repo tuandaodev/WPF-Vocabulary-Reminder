@@ -117,14 +117,14 @@ namespace VR
                             ToggleLearning();
                             handled = true;
                             break;
-                        case HOTKEY_ID + 3:
+                        case HOTKEY_ID + 3: // F8
                             App.LastReaction = DateTime.Now;
-                            _ = BackgroundService.ActionPlay(1);
+                            _ = BackgroundService.ActionPlay(ActionPlayEnum.US);
                             handled = true;
                             break;
-                        case HOTKEY_ID + 4:
+                        case HOTKEY_ID + 4: // SHIFT + F8
                             App.LastReaction = DateTime.Now;
-                            _ = BackgroundService.ActionPlay(2);
+                            _ = BackgroundService.ActionPlay(ActionPlayEnum.UK);
                             handled = true;
                             break;
                         //case HOTKEY_ID + 5:

@@ -241,7 +241,7 @@
                                Margin="0,-4,0,0">
                         <Button x:Name="Btn_PrevDefinition"
                                  Content="◀"
-                                 Width="6"
+                                 Width="8"
                                  Height="24"
                                  Margin="0,0,4,0"
                                  Click="Btn_PrevDefinition_Click"/>
@@ -252,7 +252,7 @@
                                    Margin="8,0"/>
                         <Button x:Name="Btn_NextDefinition"
                                  Content="▶"
-                                 Width="12"
+                                 Width="8"
                                  Height="24"
                                  Margin="4,0,0,0"
                                  Click="Btn_NextDefinition_Click"/>

@@ -19,6 +19,8 @@ namespace VR
 
         public static int GlobalDicId = 0;
         public static int GlobalWordId = 0;
+        public static string GlobalJsonDataId = string.Empty;
+
         public static Vocabulary GlobalVocabulary = null;
         public static bool isRandomWords = false;
         public static bool isAutoPlaySounds = false;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Common;
 using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
 using VR.Utils;
@@ -10,17 +11,26 @@ namespace VR.Services
 {
     public class BackgroundService
     {
-        public static async Task ActionPlay(int playId = 1)
+        public static async Task ActionPlay(ActionPlayEnum playId = ActionPlayEnum.US)
         {
             Vocabulary _item;
             if (App.GlobalWordId > 0)
             {
                 string _mp3Url;
                 _item = await DataService.GetVocabularyByIdAsync(App.GlobalWordId);
-                if (playId == 2)
-                    _mp3Url = _item.PlayURL;
-                else
-                    _mp3Url = _item.PlayURL2;
+                if (_item == null)
+                    return;
+
+                _mp3Url = playId == ActionPlayEnum.US ? _item.PlayURL2 : _item.PlayURL;
+                if (!string.IsNullOrEmpty(App.GlobalJsonDataId))
+                {
+                    var currentJsonData = _item?.JsonData?.FirstOrDefault(e => e.ID == App.GlobalJsonDataId);
+                    if (currentJsonData != null && !string.IsNullOrEmpty(currentJsonData.Audio)
+                        && !string.IsNullOrEmpty(currentJsonData.Audio2))
+                    {
+                        _mp3Url = playId == ActionPlayEnum.US ? currentJsonData.Audio2 : currentJsonData.Audio;
+                    }
+                }
 
                 if (_item?.JsonData[0]?.Source == SourceVocabulary.Oxford.GetDescription() && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
                     _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
