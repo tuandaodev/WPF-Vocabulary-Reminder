@@ -692,7 +692,7 @@ namespace VR
             UpdateSrsInfo();
         }
 
-        private async void Border_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private async void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
             switch (e.ChangedButton)
             {
@@ -700,7 +700,7 @@ namespace VR
                     await BackgroundService.ActionPlay(ActionPlayEnum.US);
                     break;
                 case MouseButton.XButton2://forward button
-                    await NextVocabularyAsync();
+                    _ = TextToSpeechService.SpeakTextAsync(Label_Example.Text);
                     break;
                 default:
                     break;
