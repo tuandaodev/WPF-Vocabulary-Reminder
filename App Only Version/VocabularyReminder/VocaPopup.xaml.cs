@@ -94,16 +94,16 @@ namespace VR
             switch (e.Key)
             {
                 case Key.Left:
-                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                        Btn_PrevExample_Click(null, null);
-                    else
                         Btn_PrevDefinition_Click(null, null);
                     break;
                 case Key.Right:
-                    if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
-                        Btn_NextExample_Click(null, null);
-                    else
                         Btn_NextDefinition_Click(null, null);
+                    break;
+                case Key.Up:
+                    Btn_PrevExample_Click(null, null);
+                    break;
+                case Key.Down:
+                    Btn_NextExample_Click(null, null);
                     break;
             }
         }
