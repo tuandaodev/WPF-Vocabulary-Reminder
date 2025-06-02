@@ -211,27 +211,28 @@
             <!-- Definition Section -->
             <DockPanel LastChildFill="True" Margin="0,0,0,12" x:Name="SectionDef">
                 <!-- Definition Header -->
-                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8">
+                <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="DEF" Style="{StaticResource SectionTitle}" Margin="0,4,16,0"/>
+                        <TextBlock x:Name="Label_DefType" Text="Type" Margin="0,0,8,0" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="Label_DefLevel"
+                            Text="Level"
+                            FontSize="16"
+                            FontStyle="Italic"
+                            Margin="0,0,8,0"
+                            Foreground="#FFFFFF"
+                            Visibility="Collapsed"/>
                         <TextBlock x:Name="Label_DefPartOfSpeech"
-                            Text=""
+                            Text="PartOfSpeech"
                             FontSize="14"
                             FontStyle="Italic"
                             Foreground="#999999"
                             Margin="0,0,16,0"
                             Visibility="Collapsed"/>
                         <TextBlock x:Name="Label_DefTopic"
-                            Text=""
+                            Text="Topic"
                             FontSize="17"
                             Foreground="#FFFFFF"
                             Margin="0,0,16,0"
-                            Visibility="Collapsed"/>
-                        <TextBlock x:Name="Label_DefLevel"
-                            Text=""
-                            FontSize="16"
-                            FontStyle="Italic"
-                            Foreground="#FFFFFF"
                             Visibility="Collapsed"/>
                     </StackPanel>
                     <StackPanel DockPanel.Dock="Right"
@@ -240,7 +241,7 @@
                                Margin="0,-4,0,0">
                         <Button x:Name="Btn_PrevDefinition"
                                  Content="◀"
-                                 Width="24"
+                                 Width="6"
                                  Height="24"
                                  Margin="0,0,4,0"
                                  Click="Btn_PrevDefinition_Click"/>
@@ -251,7 +252,7 @@
                                    Margin="8,0"/>
                         <Button x:Name="Btn_NextDefinition"
                                  Content="▶"
-                                 Width="24"
+                                 Width="12"
                                  Height="24"
                                  Margin="4,0,0,0"
                                  Click="Btn_NextDefinition_Click"/>

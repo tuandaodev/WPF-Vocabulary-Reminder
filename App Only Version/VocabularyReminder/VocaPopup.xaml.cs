@@ -539,12 +539,14 @@ namespace VR
                 _vocabulary.JsonData[_currentJsonDataIndex]?.Definitions == null ||
                 _vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count == 0) return;
 
-            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex].Definitions[_currentDefinitionIndex];
+            var currentJsonData = _vocabulary.JsonData[_currentJsonDataIndex];
+            var currentDef = currentJsonData.Definitions[_currentDefinitionIndex];
             
             // Update definition and example
             Label_Translate2.Text = currentDef.Definition;
             Label_Example.Text = currentDef.Examples?.FirstOrDefault()?.Example ?? "";
-            
+            Label_DefType.Text = currentJsonData?.Type ?? "";
+
             // Update metadata
             if (!string.IsNullOrEmpty(currentDef.PartOfSpeech))
             {
@@ -576,8 +578,18 @@ namespace VR
                 Label_DefLevel.Visibility = Visibility.Collapsed;
             }
             
-            // Update the index display
-            Label_DefinitionIndex.Text = $"{_currentDefinitionIndex + 1}/{_vocabulary.JsonData[_currentJsonDataIndex].Definitions.Count}";
+            // Calculate total definitions across all JsonData entries
+            int totalDefinitions = _vocabulary.JsonData.Sum(jsonData => jsonData?.Definitions?.Count ?? 0);
+            
+            // Calculate current definition position across all JsonData entries
+            int currentDefinitionPosition = 0;
+            for (int i = 0; i < _currentJsonDataIndex; i++)
+                currentDefinitionPosition += _vocabulary.JsonData[i]?.Definitions?.Count ?? 0;
+
+            currentDefinitionPosition += _currentDefinitionIndex + 1;
+            
+            // Update the index display to show current position out of total definitions
+            Label_DefinitionIndex.Text = $"{currentDefinitionPosition}/{totalDefinitions}";
             
             // Reset translation and phonetics when definition changes
             Label_ExampleTranslation.Text = string.Empty;
