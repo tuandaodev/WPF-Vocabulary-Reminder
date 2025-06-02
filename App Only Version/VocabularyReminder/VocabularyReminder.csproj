@@ -149,6 +149,7 @@
     <Compile Include="VR.Services\SpacedRepetitionService.cs" />
     <Compile Include="VR.Services\TextToSpeechService.cs" />
     <Compile Include="VR.Services\TranslateService.cs" />
+    <Compile Include="VR.Services\SecurityService.cs" />
     <Compile Include="VR.Services\VocabularyDisplayService.cs" />
     <Compile Include="VR.Utils\DateTimeExtenstions.cs" />
     <Compile Include="VR.Utils\ExpressionStarter.cs" />
@@ -255,6 +256,9 @@
     </PackageReference>
     <PackageReference Include="System.Data.SQLite.EF6">
       <Version>1.0.119</Version>
+    </PackageReference>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData">
+      <Version>9.0.5</Version>
     </PackageReference>
     <PackageReference Include="System.Speech">
       <Version>9.0.2</Version>

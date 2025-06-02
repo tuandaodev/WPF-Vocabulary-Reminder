@@ -622,6 +622,25 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Security.Cryptography.ProtectedData/9.0.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Security"
+        ],
+        "compile": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net462/_._": {}
+        }
+      },
       "System.Speech/9.0.2": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1300,6 +1319,25 @@
         },
         "build": {
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
+        }
+      },
+      "System.Security.Cryptography.ProtectedData/9.0.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Security"
+        ],
+        "compile": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net462/_._": {}
         }
       },
       "System.Speech/9.0.2": {
@@ -1985,6 +2023,25 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Security.Cryptography.ProtectedData/9.0.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Security"
+        ],
+        "compile": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net462/_._": {}
+        }
+      },
       "System.Speech/9.0.2": {
         "type": "package",
         "frameworkAssemblies": [
@@ -2668,6 +2725,25 @@
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
         }
       },
+      "System.Security.Cryptography.ProtectedData/9.0.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Security"
+        ],
+        "compile": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net462/_._": {}
+        }
+      },
       "System.Speech/9.0.2": {
         "type": "package",
         "frameworkAssemblies": [
@@ -3349,6 +3425,25 @@
         },
         "build": {
           "build/net461/System.Runtime.WindowsRuntime.UI.Xaml.targets": {}
+        }
+      },
+      "System.Security.Cryptography.ProtectedData/9.0.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Security"
+        ],
+        "compile": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net462/System.Security.Cryptography.ProtectedData.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "buildTransitive/net462/_._": {}
         }
       },
       "System.Speech/9.0.2": {
@@ -4518,6 +4613,40 @@
         "version.txt"
       ]
     },
+    "System.Security.Cryptography.ProtectedData/9.0.5": {
+      "sha512": "tgS+q4zR08qX4ZA/HPtpNXU2i1EDRBNhNtbTGFdSgYyWcKf5mUtlihbzKcYqArisG1b3x4dk/FIOiWxnHrSENw==",
+      "type": "package",
+      "path": "system.security.cryptography.protecteddata/9.0.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "PACKAGE.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Security.Cryptography.ProtectedData.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net8.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Security.Cryptography.ProtectedData.targets",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net462/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net462/System.Security.Cryptography.ProtectedData.xml",
+        "lib/net8.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net8.0/System.Security.Cryptography.ProtectedData.xml",
+        "lib/net9.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/net9.0/System.Security.Cryptography.ProtectedData.xml",
+        "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll",
+        "lib/netstandard2.0/System.Security.Cryptography.ProtectedData.xml",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "system.security.cryptography.protecteddata.9.0.5.nupkg.sha512",
+        "system.security.cryptography.protecteddata.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
     "System.Speech/9.0.2": {
       "sha512": "arQPudYrkW+cZfF7qyKcv9ukR7lM54AKyQDPX/2RPrC1EFlkYWHeOI6ST6VeI8hefW4zH9f/FnThuC70LFNd9A==",
       "type": "package",
@@ -4768,6 +4897,7 @@
       "QueryString.NET >= 1.0.0",
       "System.Data.SQLite >= 1.0.119",
       "System.Data.SQLite.EF6 >= 1.0.119",
+      "System.Security.Cryptography.ProtectedData >= 9.0.5",
       "System.Speech >= 9.0.2",
       "System.Text.Json >= 9.0.2",
       "Z.EntityFramework.Extensions >= 8.102.3"
@@ -4862,6 +4992,10 @@
           "System.Data.SQLite.EF6": {
             "target": "Package",
             "version": "[1.0.119, )"
+          },
+          "System.Security.Cryptography.ProtectedData": {
+            "target": "Package",
+            "version": "[9.0.5, )"
           },
           "System.Speech": {
             "target": "Package",

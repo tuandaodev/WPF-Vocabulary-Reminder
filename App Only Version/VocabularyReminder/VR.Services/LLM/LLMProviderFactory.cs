@@ -154,10 +154,40 @@ namespace VR.Services
                         }
                     }
 
-                    // Load API Key
+                    // Load API Key with decryption
                     if (settings.ContainsKey("apiKey"))
                     {
-                        _currentApiKey = ((JsonElement)settings["apiKey"]).GetString() ?? string.Empty;
+                        string storedApiKey = ((JsonElement)settings["apiKey"]).GetString() ?? string.Empty;
+                        if (!string.IsNullOrEmpty(storedApiKey))
+                        {
+                            try
+                            {
+                                // Try to decrypt the API key if it's encrypted
+                                if (SecurityService.IsEncrypted(storedApiKey))
+                                {
+                                    _currentApiKey = SecurityService.DecryptString(storedApiKey) ?? string.Empty;
+                                }
+                                else
+                                {
+                                    // Handle legacy unencrypted API keys
+                                    _currentApiKey = storedApiKey;
+                                }
+                            }
+                            catch (SecurityException)
+                            {
+                                // If decryption fails, clear the API key
+                                _currentApiKey = string.Empty;
+                            }
+                            catch
+                            {
+                                // If any other error occurs, clear the API key
+                                _currentApiKey = string.Empty;
+                            }
+                        }
+                        else
+                        {
+                            _currentApiKey = string.Empty;
+                        }
                     }
                 }
             }

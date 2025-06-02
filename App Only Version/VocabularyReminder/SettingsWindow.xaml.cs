@@ -68,11 +68,39 @@ namespace VR
                 cmbAiProvider.SelectedIndex = 0; // Default to ChatGPT
             }
 
-            // Load API Key
+            // Load API Key with security
             if (_settings.ContainsKey("apiKey"))
             {
-                string apiKey = ((JsonElement)_settings["apiKey"]).GetString();
-                txtApiKey.Password = apiKey ?? string.Empty;
+                string storedApiKey = ((JsonElement)_settings["apiKey"]).GetString();
+                if (!string.IsNullOrEmpty(storedApiKey))
+                {
+                    try
+                    {
+                        // Try to decrypt the API key if it's encrypted
+                        if (SecurityService.IsEncrypted(storedApiKey))
+                        {
+                            string decryptedApiKey = SecurityService.DecryptString(storedApiKey);
+                            txtApiKey.Password = decryptedApiKey ?? string.Empty;
+                        }
+                        else
+                        {
+                            // Handle legacy unencrypted API keys - encrypt them on next save
+                            txtApiKey.Password = storedApiKey;
+                        }
+                    }
+                    catch (SecurityException ex)
+                    {
+                        MessageBox.Show($"Failed to decrypt API key: {ex.Message}\nPlease re-enter your API key.", 
+                                      "Security Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        txtApiKey.Password = string.Empty;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error loading API key: {ex.Message}\nPlease re-enter your API key.", 
+                                      "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        txtApiKey.Password = string.Empty;
+                    }
+                }
             }
 
             _hasUnsavedChanges = false;
@@ -93,10 +121,36 @@ namespace VR
                     _settings["aiProvider"] = AIProvider.ChatGPT.ToString();
                 }
                 
-                _settings["apiKey"] = txtApiKey.Password;
+                // Encrypt API key before saving
+                string apiKey = txtApiKey.Password;
+                if (!string.IsNullOrEmpty(apiKey))
+                {
+                    try
+                    {
+                        string encryptedApiKey = SecurityService.EncryptString(apiKey);
+                        _settings["apiKey"] = encryptedApiKey;
+                    }
+                    catch (SecurityException ex)
+                    {
+                        MessageBox.Show($"Failed to encrypt API key: {ex.Message}", "Security Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                }
+                else
+                {
+                    _settings["apiKey"] = string.Empty;
+                }
 
                 // Save to file
                 string settingsPath = ApplicationIO.GetSettingsPath();
+                
+                // Ensure directory exists
+                string settingsDir = Path.GetDirectoryName(settingsPath);
+                if (!Directory.Exists(settingsDir))
+                {
+                    Directory.CreateDirectory(settingsDir);
+                }
+                
                 var json = JsonSerializer.Serialize(_settings, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(settingsPath, json);
 

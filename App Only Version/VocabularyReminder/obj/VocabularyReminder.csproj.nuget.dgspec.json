@@ -91,6 +91,10 @@
               "target": "Package",
               "version": "[1.0.119, )"
             },
+            "System.Security.Cryptography.ProtectedData": {
+              "target": "Package",
+              "version": "[9.0.5, )"
+            },
             "System.Speech": {
               "target": "Package",
               "version": "[9.0.2, )"
