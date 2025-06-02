@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Windows.Documents;
+using System.Windows.Media;
 using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Domain.Models;
@@ -23,6 +25,8 @@ namespace VR
         private System.Windows.Forms.Timer autoCloseTimer;
         private int _currentDefinitionIndex = 0;
         private int _currentJsonDataIndex = 0;
+        private int _currentTypeIndex = 0;
+        private string[] _typeArray = null;
 
         public VocaPopup()
         {
@@ -569,6 +573,7 @@ namespace VR
             }
 
             ProcessAfterChangeDef();
+            UpdateTypeHighlighting();
         }
 
         private void Btn_NextDefinition_Click(object sender, RoutedEventArgs e)
@@ -597,6 +602,7 @@ namespace VR
             _currentDefinitionIndex = 0;
 
             ProcessAfterChangeDef();
+            UpdateTypeHighlighting();
         }
 
         private void UpdateDefinitionDisplay()
@@ -665,6 +671,54 @@ namespace VR
             Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
         }
 
+        private void UpdateTypeHighlighting()
+        {
+            if (_vocabulary == null || string.IsNullOrEmpty(_vocabulary.Type))
+                return;
+
+            // Parse the types from the vocabulary type string (comma-separated)
+            _typeArray = _vocabulary.Type.Split(',')
+                .Select(t => t.Trim())
+                .Where(t => !string.IsNullOrEmpty(t))
+                .ToArray();
+
+            if (_typeArray.Length == 0)
+                return;
+
+            // Calculate current type index based on current definition
+            _currentTypeIndex = _currentJsonDataIndex % _typeArray.Length;
+
+            // Clear existing inlines
+            Label_Type.Inlines.Clear();
+
+            // Create runs for each type
+            for (int i = 0; i < _typeArray.Length; i++)
+            {
+                var run = new Run(_typeArray[i]);
+                
+                // Highlight the current type
+                if (i == _currentTypeIndex)
+                {
+                    run.Foreground = new SolidColorBrush(Colors.Yellow);
+                    run.FontWeight = FontWeights.Bold;
+                }
+                else
+                {
+                    run.Foreground = new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)); // #999999
+                }
+
+                Label_Type.Inlines.Add(run);
+
+                // Add comma separator if not the last item
+                if (i < _typeArray.Length - 1)
+                {
+                    var comma = new Run(", ");
+                    comma.Foreground = new SolidColorBrush(Color.FromRgb(0x99, 0x99, 0x99)); // #999999
+                    Label_Type.Inlines.Add(comma);
+                }
+            }
+        }
+
         private void MappingDisplayForWord()
         {
             Label_Word.Content = _vocabulary.Word?.ToUpper();
@@ -686,7 +740,8 @@ namespace VR
             Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
                 ? "-" : $"/{_vocabulary.Ipa}/";
 
-            Label_Type.Content = _vocabulary.Type;
+            // Initialize type highlighting instead of setting simple content
+            UpdateTypeHighlighting();
 
             // Overwrite data from DEF
             if (!string.IsNullOrEmpty(currentDef?.Ipa2) && !string.IsNullOrEmpty(currentDef?.Ipa))

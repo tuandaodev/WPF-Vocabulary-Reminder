@@ -133,12 +133,11 @@
                                 FontWeight="Bold"
                                 Padding="0"
                                 Margin="0"/>
-                        <Label x:Name="Label_Type"
+                        <TextBlock x:Name="Label_Type"
                                 Grid.Column="1"
-                                Content="Type"
+                                Text="Type"
                                 FontSize="16"
                                 FontStyle="Italic"
-                                Padding="0"
                                 Margin="12,12,0,0"
                                 VerticalAlignment="Top"
                                 Foreground="#999999"/>
