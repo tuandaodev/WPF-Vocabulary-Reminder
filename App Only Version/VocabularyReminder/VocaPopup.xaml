@@ -209,17 +209,17 @@
                        Margin="0,4,0,8"/>
             
             <!-- Definition Section -->
-            <DockPanel LastChildFill="True" Margin="0,0,0,12" x:Name="SectionDef">
+            <DockPanel LastChildFill="True" Margin="0,0,0,12" x:Name="SectionDef" VerticalAlignment="Center">
                 <!-- Definition Header -->
                 <DockPanel DockPanel.Dock="Top" LastChildFill="False" Margin="0,0,0,8" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock x:Name="Label_DefType" Text="Type" Margin="0,0,8,0" FontSize="16" Foreground="#FFFFFF" VerticalAlignment="Center"/>
+                         <TextBlock x:Name="Label_DefType" Text="Type" Margin="0,0,8,0" FontSize="16" Foreground="#fff400" VerticalAlignment="Center"/>
                         <TextBlock x:Name="Label_DefLevel"
                             Text="Level"
                             FontSize="16"
                             FontStyle="Italic"
                             Margin="0,0,8,0"
-                            Foreground="#FFFFFF"
+                            Foreground="#94f1ff"
                             Visibility="Collapsed"/>
                         <TextBlock x:Name="Label_DefPartOfSpeech"
                             Text="PartOfSpeech"
