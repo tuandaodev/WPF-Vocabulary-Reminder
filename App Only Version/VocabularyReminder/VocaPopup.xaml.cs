@@ -483,24 +483,17 @@ namespace VR
                     return;
                 }
 
-                // Generate new example using LLM
+                // Get current meaning/definition from the displayed text
+                string currentMeaning = Label_EngDefination.Text;
+
+                // Generate new example using LLM with current meaning context
                 var llmService = LLMProviderFactory.GetLLMService();
-                var examples = await llmService.GetExamplesAsync(_vocabulary.Word, 1);
+                var example = await llmService.GetExampleAsync(_vocabulary.Word, currentMeaning);
 
-                if (!string.IsNullOrEmpty(examples))
+                if (!string.IsNullOrEmpty(example))
                 {
-                    // Extract just the first example sentence (remove numbering if present)
-                    var lines = examples.Split('\n');
-                    var firstExample = lines[0].Trim();
-                    
-                    // Remove common prefixes like "1. " or "- "
-                    if (firstExample.StartsWith("1. "))
-                        firstExample = firstExample.Substring(3).Trim();
-                    else if (firstExample.StartsWith("- "))
-                        firstExample = firstExample.Substring(2).Trim();
-
-                    // Update the example display
-                    Label_Example.Text = firstExample;
+                    // Update the example display directly (no parsing needed)
+                    Label_Example.Text = example;
                     
                     // Hide previous translation and phonetic results
                     Label_ExampleTranslation.Visibility = Visibility.Collapsed;
@@ -526,6 +519,7 @@ namespace VR
                 Btn_GenerateExample.Content = "Generate Example";
             }
         }
+
 
         public void SetVocabulary(Vocabulary item)
         {

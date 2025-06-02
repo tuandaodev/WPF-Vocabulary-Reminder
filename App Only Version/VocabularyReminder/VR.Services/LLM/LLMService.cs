@@ -108,6 +108,27 @@ namespace VR.Services
         }
 
         /// <summary>
+        /// Gets a single example sentence for a word with specific meaning context
+        /// </summary>
+        /// <param name="word">The word to get an example for</param>
+        /// <param name="meaning">The specific meaning/definition to use as context</param>
+        /// <returns>A single example sentence</returns>
+        public async Task<string> GetExampleAsync(string word, string meaning = null)
+        {
+            if (string.IsNullOrWhiteSpace(word))
+            {
+                throw new ArgumentException("Word cannot be empty", nameof(word));
+            }
+
+            var prompt = string.IsNullOrWhiteSpace(meaning)
+                ? $"Create one simple example sentence using the word '{word}'. Return only the sentence, no numbering, no explanation, no additional text."
+                : $"Create one simple example sentence using the word '{word}' with this specific meaning: '{meaning}'. Return only the sentence, no numbering, no explanation, no additional text.";
+            
+            var response = await _provider.GenerateTextAsync(prompt, _apiKey);
+            return response?.Trim();
+        }
+
+        /// <summary>
         /// Gets synonyms for a word
         /// </summary>
         /// <param name="word">The word to find synonyms for</param>
