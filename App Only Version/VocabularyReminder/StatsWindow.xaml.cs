@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using System.ComponentModel;
 using VR.Domain;
 using VR.Domain.Models;
 using VR.Dto;
@@ -18,16 +20,45 @@ namespace VR
     {
         private SpacedRepetitionStatsDto _currentStats;
         private List<Dictionary> _dictionaries;
+        private bool _isLoading = false;
+        private readonly DispatcherTimer _refreshTimer;
+        private DateTime _lastDataFetch = DateTime.MinValue;
+        private const int CACHE_DURATION_MINUTES = 5;
 
         public StatsWindow()
         {
             InitializeComponent();
+            
+            // Initialize auto-refresh timer
+            _refreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMinutes(1)
+            };
+            _refreshTimer.Tick += async (s, e) => await RefreshIfNeeded();
+            _refreshTimer.Start();
+        }
+
+        private async Task RefreshIfNeeded()
+        {
+            // Auto-refresh data every 5 minutes
+            if (DateTime.Now - _lastDataFetch > TimeSpan.FromMinutes(CACHE_DURATION_MINUTES))
+            {
+                await LoadStats();
+            }
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            await LoadDictionaries();
-            await LoadStats();
+            try
+            {
+                ShowLoadingState(true);
+                await LoadDictionaries();
+                await LoadStats();
+            }
+            finally
+            {
+                ShowLoadingState(false);
+            }
         }
 
         private async Task LoadDictionaries()
@@ -50,28 +81,71 @@ namespace VR
 
         private async void DictionaryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await LoadStats();
+            if (!_isLoading)
+            {
+                await LoadStats();
+            }
         }
 
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            _lastDataFetch = DateTime.MinValue; // Force refresh
             await LoadStats();
         }
 
         private async Task LoadStats()
         {
+            if (_isLoading) return;
+            
             try
             {
-                var selectedDictionary = DictionaryComboBox.SelectedValue as int? ?? 0;
-                _currentStats = await SpacedRepetitionStatsService.GetSpacedRepetitionStatsAsync(selectedDictionary);
+                _isLoading = true;
+                ShowLoadingState(true);
                 
-                UpdateSummaryCards();
-                UpdateDetailedStats();
-                DrawCharts();
+                var selectedDictionary = DictionaryComboBox.SelectedValue as int? ?? 0;
+                
+                // Use background thread for data loading
+                var stats = await Task.Run(async () =>
+                    await SpacedRepetitionStatsService.GetSpacedRepetitionStatsAsync(selectedDictionary));
+                
+                _currentStats = stats;
+                _lastDataFetch = DateTime.Now;
+                
+                // Update UI on main thread
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateSummaryCards();
+                    UpdateDetailedStats();
+                });
+                
+                // Draw charts with delay to allow UI to update
+                await Task.Delay(50);
+                await Dispatcher.InvokeAsync(() => DrawCharts());
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error loading statistics: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                await Dispatcher.InvokeAsync(() =>
+                    MessageBox.Show($"Error loading statistics: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error));
+            }
+            finally
+            {
+                _isLoading = false;
+                ShowLoadingState(false);
+            }
+        }
+
+        private void ShowLoadingState(bool isLoading)
+        {
+            RefreshButton.IsEnabled = !isLoading;
+            DictionaryComboBox.IsEnabled = !isLoading;
+            
+            if (isLoading)
+            {
+                this.Cursor = System.Windows.Input.Cursors.Wait;
+            }
+            else
+            {
+                this.Cursor = System.Windows.Input.Cursors.Arrow;
             }
         }
 
@@ -121,121 +195,93 @@ namespace VR
 
         private void DrawIntervalChart()
         {
-            IntervalChart.Children.Clear();
-            
-            if (_currentStats?.IntervalDistribution == null || !_currentStats.IntervalDistribution.Any())
-                return;
-
-            var data = _currentStats.IntervalDistribution;
-            var maxValue = data.Max(d => d.WordCount);
-            var chartWidth = IntervalChart.ActualWidth > 0 ? IntervalChart.ActualWidth - 60 : 300;
-            var chartHeight = IntervalChart.ActualHeight > 0 ? IntervalChart.ActualHeight - 80 : 220;
-            
-            var barWidth = chartWidth / data.Count - 10;
-            var colors = new[] { "#2196F3", "#4CAF50", "#FF9800", "#F44336", "#9C27B0", "#00BCD4", "#795548", "#607D8B" };
-
-            for (int i = 0; i < data.Count; i++)
-            {
-                var item = data[i];
-                var barHeight = maxValue > 0 ? (item.WordCount / (double)maxValue) * chartHeight : 0;
-                
-                // Draw bar
-                var rect = new Rectangle
-                {
-                    Width = barWidth,
-                    Height = barHeight,
-                    Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i % colors.Length]))
-                };
-                
-                Canvas.SetLeft(rect, 40 + i * (barWidth + 10));
-                Canvas.SetTop(rect, chartHeight - barHeight + 20);
-                IntervalChart.Children.Add(rect);
-
-                // Draw value label
-                var valueLabel = new TextBlock
-                {
-                    Text = item.WordCount.ToString(),
-                    FontSize = 10,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                };
-                
-                Canvas.SetLeft(valueLabel, 40 + i * (barWidth + 10) + barWidth / 2 - 10);
-                Canvas.SetTop(valueLabel, chartHeight - barHeight + 5);
-                IntervalChart.Children.Add(valueLabel);
-
-                // Draw x-axis label
-                var label = new TextBlock
-                {
-                    Text = item.IntervalRange,
-                    FontSize = 9,
-                    Width = barWidth + 20,
-                    TextAlignment = TextAlignment.Center,
-                    TextWrapping = TextWrapping.Wrap
-                };
-                
-                Canvas.SetLeft(label, 30 + i * (barWidth + 10));
-                Canvas.SetTop(label, chartHeight + 25);
-                IntervalChart.Children.Add(label);
-            }
+            DrawBarChart(IntervalChart, _currentStats?.IntervalDistribution,
+                d => d.WordCount, d => d.IntervalRange,
+                new[] { "#2196F3", "#4CAF50", "#FF9800", "#F44336", "#9C27B0", "#00BCD4", "#795548", "#607D8B" });
         }
 
         private void DrawEaseFactorChart()
         {
-            EaseFactorChart.Children.Clear();
+            DrawBarChart(EaseFactorChart, _currentStats?.EaseFactorDistribution,
+                d => d.WordCount, d => d.EaseRange,
+                new[] { "#F44336", "#FF9800", "#FFC107", "#4CAF50", "#2196F3" });
+        }
+
+        private void DrawBarChart<T>(Canvas canvas, IEnumerable<T> data,
+            Func<T, int> valueSelector, Func<T, string> labelSelector, string[] colors) where T : class
+        {
+            canvas.Children.Clear();
             
-            if (_currentStats?.EaseFactorDistribution == null || !_currentStats.EaseFactorDistribution.Any())
+            if (data == null || !data.Any())
                 return;
 
-            var data = _currentStats.EaseFactorDistribution;
-            var maxValue = data.Max(d => d.WordCount);
-            var chartWidth = EaseFactorChart.ActualWidth > 0 ? EaseFactorChart.ActualWidth - 60 : 300;
-            var chartHeight = EaseFactorChart.ActualHeight > 0 ? EaseFactorChart.ActualHeight - 80 : 220;
-            
-            var barWidth = chartWidth / data.Count - 10;
-            var colors = new[] { "#F44336", "#FF9800", "#FFC107", "#4CAF50", "#2196F3" };
+            var dataList = data.ToList();
+            var maxValue = dataList.Max(valueSelector);
+            if (maxValue == 0) return;
 
-            for (int i = 0; i < data.Count; i++)
+            var chartWidth = Math.Max(canvas.ActualWidth > 0 ? canvas.ActualWidth - 60 : 300, 200);
+            var chartHeight = Math.Max(canvas.ActualHeight > 0 ? canvas.ActualHeight - 80 : 220, 150);
+            
+            var barWidth = Math.Max((chartWidth / dataList.Count) - 10, 20);
+
+            // Use a more efficient drawing approach
+            var elements = new List<UIElement>();
+
+            for (int i = 0; i < dataList.Count; i++)
             {
-                var item = data[i];
-                var barHeight = maxValue > 0 ? (item.WordCount / (double)maxValue) * chartHeight : 0;
+                var item = dataList[i];
+                var value = valueSelector(item);
+                var label = labelSelector(item);
+                var barHeight = (value / (double)maxValue) * chartHeight;
                 
-                // Draw bar
+                // Create bar
                 var rect = new Rectangle
                 {
                     Width = barWidth,
                     Height = barHeight,
-                    Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i % colors.Length]))
+                    Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colors[i % colors.Length])),
+                    ToolTip = $"{label}: {value}"
                 };
                 
                 Canvas.SetLeft(rect, 40 + i * (barWidth + 10));
                 Canvas.SetTop(rect, chartHeight - barHeight + 20);
-                EaseFactorChart.Children.Add(rect);
+                elements.Add(rect);
 
-                // Draw value label
-                var valueLabel = new TextBlock
+                // Create value label
+                if (barHeight > 15) // Only show label if bar is tall enough
                 {
-                    Text = item.WordCount.ToString(),
-                    FontSize = 10,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                };
-                
-                Canvas.SetLeft(valueLabel, 40 + i * (barWidth + 10) + barWidth / 2 - 10);
-                Canvas.SetTop(valueLabel, chartHeight - barHeight + 5);
-                EaseFactorChart.Children.Add(valueLabel);
+                    var valueLabel = new TextBlock
+                    {
+                        Text = value.ToString(),
+                        FontSize = 10,
+                        Foreground = Brushes.White,
+                        FontWeight = FontWeights.Bold
+                    };
+                    
+                    Canvas.SetLeft(valueLabel, 40 + i * (barWidth + 10) + barWidth / 2 - 8);
+                    Canvas.SetTop(valueLabel, chartHeight - barHeight + 25);
+                    elements.Add(valueLabel);
+                }
 
-                // Draw x-axis label
-                var label = new TextBlock
+                // Create x-axis label
+                var axisLabel = new TextBlock
                 {
-                    Text = item.EaseRange,
+                    Text = label,
                     FontSize = 9,
                     Width = barWidth + 20,
                     TextAlignment = TextAlignment.Center,
                     TextWrapping = TextWrapping.Wrap
                 };
                 
-                Canvas.SetLeft(label, 30 + i * (barWidth + 10));
-                Canvas.SetTop(label, chartHeight + 25);
-                EaseFactorChart.Children.Add(label);
+                Canvas.SetLeft(axisLabel, 30 + i * (barWidth + 10));
+                Canvas.SetTop(axisLabel, chartHeight + 25);
+                elements.Add(axisLabel);
+            }
+
+            // Add all elements at once for better performance
+            foreach (var element in elements)
+            {
+                canvas.Children.Add(element);
             }
         }
 
@@ -368,6 +414,43 @@ namespace VR
                 Canvas.SetLeft(label, x + 16);
                 Canvas.SetTop(label, y - 1);
                 ProgressChart.Children.Add(label);
+            }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            // Clean up resources
+            if (_refreshTimer != null)
+            {
+                _refreshTimer.Stop();
+            }
+            
+            // Clear canvas children to prevent memory leaks
+            if (IntervalChart != null)
+                IntervalChart.Children.Clear();
+            if (EaseFactorChart != null)
+                EaseFactorChart.Children.Clear();
+            if (ProgressChart != null)
+                ProgressChart.Children.Clear();
+            
+            base.OnClosed(e);
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // Redraw charts when window is resized, but with throttling
+            if (!_isLoading && _currentStats != null)
+            {
+                var timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromMilliseconds(300)
+                };
+                timer.Tick += (s, args) =>
+                {
+                    timer.Stop();
+                    DrawCharts();
+                };
+                timer.Start();
             }
         }
     }

@@ -15,7 +15,8 @@
         Title="Spaced Repetition Statistics"
         Height="800" Width="1200"
         WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        SizeChanged="Window_SizeChanged">
     
     <Grid Margin="20">
         <Grid.RowDefinitions>
