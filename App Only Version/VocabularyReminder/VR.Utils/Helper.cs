@@ -22,6 +22,12 @@ namespace VR.Utils
             return $"https://translate.google.com/?sl=en&tl=vi&text={Uri.EscapeDataString(parseWord)}&op=translate";
         }
 
+        public static string GetYouGlishUrl(string word)
+        {
+            string parseWord = word.Trim();
+            return $"https://youglish.com/pronounce/{Uri.EscapeDataString(parseWord)}/us";
+        }
+
         /// <summary>
         /// Converts full grammatical type names to their short forms
         /// </summary>

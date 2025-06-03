@@ -484,6 +484,26 @@ namespace VR
             }
         }
 
+        private void Btn_OpenYouGlish_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_vocabulary?.Word))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = Helper.GetYouGlishUrl(_vocabulary.Word),
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening YouGlish: {ex.Message}", "Browser Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
         private void Btn_GetExamplePhonetics_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(Label_Example.Text))
