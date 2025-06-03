@@ -41,6 +41,9 @@ namespace VR
             this.Opacity = 0;
             this.KeyDown += VocaPopup_KeyDown;
             this.PreviewKeyDown += VocaPopup_KeyPreviewDown;
+            this.MouseEnter += (s, e) => ResetAutoCloseTimer();
+            this.MouseMove += (s, e) => ResetAutoCloseTimer();
+            this.GotFocus += (s, e) => ResetAutoCloseTimer();
 
             this.Loaded += (s, e) => {
                 var workArea = System.Windows.SystemParameters.WorkArea;
@@ -76,6 +79,15 @@ namespace VR
             autoCloseTimer.Start();
         }
 
+        private void ResetAutoCloseTimer()
+        {
+            if (autoCloseTimer != null)
+            {
+                autoCloseTimer.Stop();
+                autoCloseTimer.Start();
+            }
+        }
+
         private void ClosePopup()
         {
             // Add subtle fade-in animation after positioning
@@ -91,6 +103,7 @@ namespace VR
 
         private void VocaPopup_KeyPreviewDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            ResetAutoCloseTimer();
             switch (e.Key)
             {
                 case Key.Left:
@@ -110,6 +123,7 @@ namespace VR
 
         private void VocaPopup_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
+            ResetAutoCloseTimer();
             switch (e.Key)
             {
                 case Key.Escape:
@@ -227,7 +241,7 @@ namespace VR
 
         private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            autoCloseTimer.Start(); // Resume auto-close when user moves away
+            ResetAutoCloseTimer(); // Reset and resume auto-close when user moves away
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
