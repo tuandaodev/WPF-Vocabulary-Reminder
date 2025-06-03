@@ -124,6 +124,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
                         <Label x:Name="Label_Word"
@@ -156,7 +157,8 @@
                                 Grid.Column="3"
                                 Content="🔍 C"
                                 ToolTip="Open in Cambridge Dictionary"
-                                Width="40"
+                                Width="60"
+                                MinWidth="60"
                                 Height="36"
                                 Margin="0,0,8,0"
                                 VerticalAlignment="Top"
@@ -165,10 +167,21 @@
                                 Grid.Column="4"
                                 Content="🔍 O"
                                 ToolTip="Open in Oxford Dictionary"
-                                Width="40"
+                                Width="60"
+                                MinWidth="60"
                                 Height="36"
+                                Margin="0,0,8,0"
                                 VerticalAlignment="Top"
                                 Click="Btn_OpenOxford_Click"/>
+                        <Button x:Name="Btn_OpenGTranslate"
+                                Grid.Column="5"
+                                Content="🔍 G"
+                                ToolTip="Open in Google Translate"
+                                Width="60"
+                                MinWidth="60"
+                                Height="36"
+                                VerticalAlignment="Top"
+                                Click="Btn_OpenGTranslate_Click"/>
                     </Grid>
                     
                     <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
@@ -402,12 +415,14 @@
                         Content="Read"
                         HorizontalAlignment="Left"
                         Width="120"
+                        ToolTip="Read and Translate Example from Google Translate"
                         Click="Btn_ReadExample_Click"/>
                 <Button x:Name="Btn_TranslateExample"
                         Content="Translate"
                         HorizontalAlignment="Left"
                         Width="120"
                         Margin="8,0,0,0"
+                        ToolTip="Translate Example to Vietnamese using LLM"
                         Click="Btn_TranslateExample_Click"/>
                 <Button x:Name="Btn_GetExamplePhonetics"
                           Content="Phonetics"
@@ -420,6 +435,7 @@
                           HorizontalAlignment="Left"
                           Width="120"
                           Margin="8,0,0,0"
+                          ToolTip="Generate New Example using LLM"
                           Click="Btn_GenerateExample_Click"/>
             </StackPanel>
 

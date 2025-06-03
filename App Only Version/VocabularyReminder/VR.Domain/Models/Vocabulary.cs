@@ -30,6 +30,9 @@ namespace VR.Domain.Models
                 {
                     _data = value;
                     JsonData = JsonConvert.DeserializeObject<List<ExtendedWordDataModel>>(_data);
+                } else
+                {
+                    JsonData = new List<ExtendedWordDataModel>();
                 }
             }
         }

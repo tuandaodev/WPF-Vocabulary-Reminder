@@ -16,6 +16,12 @@ namespace VR.Utils
             return $"https://www.oxfordlearnersdictionaries.com/definition/english/{Uri.EscapeDataString(parseWord.ToLower())}";
         }
 
+        public static string GetGoogleTranslateUrl(string word)
+        {
+            string parseWord = word.Trim();
+            return $"https://translate.google.com/?sl=en&tl=vi&text={Uri.EscapeDataString(parseWord)}&op=translate";
+        }
+
         /// <summary>
         /// Converts full grammatical type names to their short forms
         /// </summary>

@@ -318,7 +318,7 @@ namespace VR
         {
             try
             {
-                await GetTranslateAsync();
+                await GetLLMTranslateAsync();
             }
             catch (Exception ex)
             {
@@ -343,6 +343,55 @@ namespace VR
                 {
                     Label_ExampleTranslation.Visibility = Visibility.Collapsed;
                 }
+                Btn_TranslateExample.IsEnabled = true;
+            }
+        }
+
+        private async Task GetLLMTranslateAsync()
+        {
+            if (string.IsNullOrEmpty(Label_Example.Text))
+                return;
+
+            try
+            {
+                // Disable button while processing
+                Btn_TranslateExample.IsEnabled = false;
+
+                // Check if LLM provider is configured
+                if (!LLMProviderFactory.IsCurrentConfigurationValid())
+                {
+                    MessageBox.Show("LLM provider is not properly configured. Please check your settings.",
+                        "LLM Configuration Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Get LLM service and translate the text
+                var llmService = LLMProviderFactory.GetLLMService();
+                var translation = await llmService.TranslateAsync(Label_Example.Text, "Vietnamese");
+
+                if (!string.IsNullOrEmpty(translation) && translation != Label_Example.Text)
+                {
+                    Label_ExampleTranslation.Text = translation;
+                    Label_ExampleTranslation.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fallback to Google Translate if LLM fails
+                MessageBox.Show($"LLM translation failed: {ex.Message}\nFalling back to Google Translate.", "LLM Translation Warning",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                
+                // Use existing Google Translate method as fallback
+                await GetTranslateAsync();
+                return;
+            }
+            finally
+            {
                 Btn_TranslateExample.IsEnabled = true;
             }
         }
@@ -396,6 +445,26 @@ namespace VR
                 catch (Exception ex)
                 {
                     MessageBox.Show($"Error opening Oxford Dictionary: {ex.Message}", "Browser Error",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+        }
+
+        private void Btn_OpenGTranslate_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_vocabulary?.Word))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = Helper.GetGoogleTranslateUrl(_vocabulary.Word),
+                        UseShellExecute = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error opening Google Translate: {ex.Message}", "Browser Error",
                         MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
@@ -808,7 +877,7 @@ namespace VR
             Label_Word.Content = _vocabulary.Word?.ToUpper();
 
             // Only show level if it exists
-            var currentDef = _vocabulary.JsonData[_currentJsonDataIndex] ?? null;
+            var currentDef = _vocabulary.JsonData?.ElementAtOrDefault(_currentJsonDataIndex);
             if (!string.IsNullOrEmpty(currentDef?.Level))
             {
                 Label_Level.Content = currentDef.Level;
