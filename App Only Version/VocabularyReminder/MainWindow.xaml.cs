@@ -176,16 +176,12 @@ namespace VR
 
             Load_Dictionaries();
             Status_Reset();
-            UpdateGoogleButtonsVisibility();
         }
 
-        private void UpdateGoogleButtonsVisibility()
+        public void UpdateGoogleButtonVisibility()
         {
-            var backupService = new ImportBackupDataService();
-            var isLoggedIn = backupService.IsLoggedIn();
-            
-            Btn_RestoreFromGoogleDrive.Visibility = isLoggedIn ? Visibility.Visible : Visibility.Collapsed;
-            Btn_LogoutGoogle.Visibility = isLoggedIn ? Visibility.Visible : Visibility.Collapsed;
+            // This method is now public so the GoogleDriveWindow can call it
+            // The Google Drive button is always visible
         }
 
         private void Load_Dictionaries()
@@ -952,65 +948,12 @@ namespace VR
             window.Closed += (s, args) => Load_Dictionaries();
             window.Show();
         }
-private async void Btn_BackupToGoogleDrive_Click(object sender, RoutedEventArgs e)
+
+        private void Btn_BackupRestore_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                Status_UpdateMessage("Backing up to Google Drive...");
-                var backupService = new ImportBackupDataService();
-                var backupFileName = backupService.Backup();
-                await backupService.BackupToGoogleDriveAsync(System.IO.Path.Combine("Data", backupFileName));
-                UpdateGoogleButtonsVisibility();
-                Status_UpdateMessage("Backup to Google Drive completed.");
-                MessageBox.Show("Backup to Google Drive completed.");
-            }
-            catch (Exception ex)
-            {
-                Status_UpdateMessage("Backup to Google Drive failed: " + ex.Message);
-                MessageBox.Show("Backup to Google Drive failed: " + ex.Message);
-            }
-        }
-private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Status_UpdateMessage("Listing backup files on Google Drive...");
-                var backupService = new ImportBackupDataService();
-                var files = await backupService.ListBackupFilesOnGoogleDriveAsync();
-
-                if (files == null || files.Count == 0)
-                {
-                    MessageBox.Show("No backup files found on Google Drive.");
-                    return;
-                }
-
-                // Use WPF dialog for file selection
-                var selectWindow = new SelectBackupFileWindow(files);
-                selectWindow.Owner = this;
-                if (selectWindow.ShowDialog() != true || selectWindow.SelectedFile == null)
-                {
-                    Status_UpdateMessage("Restore cancelled.");
-                    return;
-                }
-                var selectedFile = selectWindow.SelectedFile;
-
-                Status_UpdateMessage("Downloading and restoring backup...");
-                string restorePath = ApplicationIO.GetRestoreDatabasePath();
-                await backupService.RestoreFromGoogleDriveAsync(selectedFile.Id, restorePath);
-                
-                // Force application restart
-                MessageBox.Show("Restore completed. The application will now restart.");
-                System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-                Application.Current.Shutdown();
-
-                Status_UpdateMessage("Restore from Google Drive completed.");
-                MessageBox.Show("Restore from Google Drive completed. Please restart the application for changes to take effect.");
-            }
-            catch (Exception ex)
-            {
-                Status_UpdateMessage("Restore from Google Drive failed: " + ex.Message);
-                MessageBox.Show("Restore from Google Drive failed: " + ex.Message);
-            }
+            var backupWindow = new BackupWindow(this);
+            backupWindow.Owner = this;
+            backupWindow.ShowDialog();
         }
 
         private async void Btn_TestDefinition_Click(object sender, RoutedEventArgs e)
@@ -1028,24 +971,6 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
             //voca = await DataService.GetVocabularyByWordAsync("study");
             //await TranslateService.GetWordDefineInformationAsync(voca);
             //Console.WriteLine(voca);
-        }
-
-        private void Btn_LogoutGoogle_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Status_UpdateMessage("Logging out from Google Drive...");
-                var backupService = new ImportBackupDataService();
-                backupService.LogoutGoogle();
-                UpdateGoogleButtonsVisibility();
-                Status_UpdateMessage("Successfully logged out from Google Drive");
-                MessageBox.Show("Successfully logged out from Google Drive.");
-            }
-            catch (Exception ex)
-            {
-                Status_UpdateMessage($"Logout failed: {ex.Message}");
-                MessageBox.Show($"Failed to logout: {ex.Message}");
-            }
         }
 
         private void Btn_Settings_Click(object sender, RoutedEventArgs e)

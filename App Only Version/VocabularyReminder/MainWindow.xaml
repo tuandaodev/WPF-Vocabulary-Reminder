@@ -111,20 +111,10 @@
                     Click="Btn_ProcessDeleteData_Click"
                     Margin="0,0,0,10"/>
 
-            <Button x:Name="Btn_RestoreFromGoogleDrive"
-                    Content="Restore from Google Drive"
-                    Click="Btn_RestoreFromGoogleDrive_Click"
+            <Button x:Name="Btn_BackupRestore"
+                    Content="Backup &amp; Restore"
+                    Click="Btn_BackupRestore_Click"
                     Margin="0,0,0,10"/>
-
-            <Button x:Name="Btn_BackupToGoogleDrive"
-                                Content="Backup To Google Drive"
-                                Click="Btn_BackupToGoogleDrive_Click"
-                                Margin="0,0,0,10"/>
-            
-            <Button x:Name="Btn_LogoutGoogle"
-                                Content="Logout Google Account"
-                                Click="Btn_LogoutGoogle_Click"
-                                Margin="0,0,0,10"/>
             
             <Button x:Name="Btn_Settings"
                                 Content="Settings"

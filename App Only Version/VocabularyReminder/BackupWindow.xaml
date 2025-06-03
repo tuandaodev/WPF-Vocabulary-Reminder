@@ -1,0 +1,80 @@
+<Window x:Class="VR.BackupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Title="Backup &amp; Restore"
+        Height="400" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" 
+                   Text="Backup &amp; Restore" 
+                   FontSize="16" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,20"/>
+
+        <!-- Main Content -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <Button x:Name="Btn_BackupToGoogleDrive"
+                    Content="Backup To Google Drive"
+                    Click="Btn_BackupToGoogleDrive_Click"
+                    Height="40"
+                    Margin="0,0,0,15"
+                    FontSize="14"/>
+
+            <Button x:Name="Btn_RestoreFromGoogleDrive"
+                    Content="Restore from Google Drive"
+                    Click="Btn_RestoreFromGoogleDrive_Click"
+                    Height="40"
+                    Margin="0,0,0,15"
+                    FontSize="14"/>
+            
+            <Button x:Name="Btn_LogoutGoogle"
+                    Content="Logout Google Account"
+                    Click="Btn_LogoutGoogle_Click"
+                    Height="40"
+                    Margin="0,0,0,15"
+                    FontSize="14"/>
+        </StackPanel>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <ProgressBar x:Name="Status_ProgressBar"
+                        Grid.Row="0"
+                        Height="15"
+                        Value="0"
+                        Maximum="100"
+                        Margin="0,0,0,5"/>
+            
+            <TextBlock x:Name="Status_Message"
+                      Grid.Row="1"
+                      Text=""
+                      HorizontalAlignment="Center"
+                      FontSize="12"
+                      Foreground="Gray"/>
+        </Grid>
+    </Grid>
+</Window>
