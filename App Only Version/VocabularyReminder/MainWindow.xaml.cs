@@ -1053,6 +1053,12 @@ private async void Btn_RestoreFromGoogleDrive_Click(object sender, RoutedEventAr
             var settingsWindow = new SettingsWindow();
             settingsWindow.ShowDialog();
         }
+
+        private void Btn_Stats_Click(object sender, RoutedEventArgs e)
+        {
+            var statsWindow = new StatsWindow();
+            statsWindow.ShowDialog();
+        }
     }
 
 }

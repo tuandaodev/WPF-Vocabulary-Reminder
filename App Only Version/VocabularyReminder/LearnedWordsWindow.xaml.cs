@@ -267,7 +267,7 @@ namespace VR
                             //EscapeCsvField(word.Related),
                             EscapeCsvField(word.Status?.ToString()),
                             EscapeCsvField(word.ViewedDate?.ToString()),
-                            EscapeCsvField(word.LearnedDate?.ToString()),
+                            //EscapeCsvField(word.LearnedDate?.ToString()),
                             EscapeCsvField(word.CreatedDate?.ToString()),
                             EscapeCsvField(word.NextReviewDate?.ToString()),
                             EscapeCsvField(word.EaseFactor?.ToString()),

@@ -119,6 +119,7 @@
     <Compile Include="VR.Services\DataService.cs" />
     <Compile Include="VR.Infrastructure\ApplicationIO.cs" />
     <Compile Include="VR.Dto\StatsDto.cs" />
+    <Compile Include="VR.Dto\SpacedRepetitionStatsDto.cs" />
     <Compile Include="VR.Domain\VocaDbContext.cs" />
     <Compile Include="DictionaryManagementWindow.xaml.cs">
       <DependentUpon>DictionaryManagementWindow.xaml</DependentUpon>
@@ -128,6 +129,9 @@
     </Compile>
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StatsWindow.xaml.cs">
+      <DependentUpon>StatsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="VR.Services\LLM\AIApiTestService.cs" />
     <Compile Include="VR.Services\LLM\ChatGPTProvider.cs" />
@@ -147,6 +151,7 @@
     <Compile Include="VR.Services\PhoneticService.cs" />
     <Compile Include="VR.Services\PlaybackService.cs" />
     <Compile Include="VR.Services\SpacedRepetitionService.cs" />
+    <Compile Include="VR.Services\SpacedRepetitionStatsService.cs" />
     <Compile Include="VR.Services\TextToSpeechService.cs" />
     <Compile Include="VR.Services\TranslateService.cs" />
     <Compile Include="VR.Services\SecurityService.cs" />
@@ -179,6 +184,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StatsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

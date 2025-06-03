@@ -169,7 +169,6 @@ namespace VR.Services
                     .UpdateFromQueryAsync(x => new Vocabulary()
                     {
                         Status = _Status,
-                        LearnedDate = _Status == 0 ? DateTimeOffset.UtcNow.ToUnixTimeSeconds() : 0,
                     });
                 if (result > 0 && CurrentVocabulary != null && CurrentVocabulary.Id == _Id)
                 {
