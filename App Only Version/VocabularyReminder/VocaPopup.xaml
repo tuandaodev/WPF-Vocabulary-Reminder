@@ -116,36 +116,24 @@
                 <StackPanel>
             <!-- Header -->
             <DockPanel Margin="0,0,0,10" x:Name="SectionWord">
+                <!-- Left Group: Word + IPA -->
                 <StackPanel DockPanel.Dock="Left">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        
+                    <!-- Word and Type -->
+                    <StackPanel Orientation="Horizontal">
                         <Label x:Name="Label_Word"
-                                Grid.Column="0"
                                 Content="Word"
                                 FontSize="32"
                                 FontWeight="Bold"
                                 Padding="0"
                                 Margin="0"/>
                         <TextBlock x:Name="Label_Type"
-                                Grid.Column="1"
                                 Text="Type"
                                 FontSize="16"
                                 FontStyle="Italic"
                                 Margin="12,12,0,0"
                                 VerticalAlignment="Top"
                                 Foreground="#999999"/>
-                        
                         <Label x:Name="Label_Level"
-                                Grid.Column="2"
                                 Content=""
                                 FontSize="16"
                                 FontWeight="Bold"
@@ -153,49 +141,10 @@
                                 Margin="12,12,0,0"
                                 VerticalAlignment="Top"
                                 Visibility="Collapsed"/>
-                        
-                        <Button x:Name="Btn_OpenCambridge"
-                                Grid.Column="3"
-                                Content="🔍 C"
-                                ToolTip="Open in Cambridge Dictionary"
-                                Width="60"
-                                MinWidth="60"
-                                Height="36"
-                                Margin="0,0,8,0"
-                                VerticalAlignment="Top"
-                                Click="Btn_OpenCambridge_Click"/>
-                        <Button x:Name="Btn_OpenOxford"
-                                Grid.Column="4"
-                                Content="🔍 O"
-                                ToolTip="Open in Oxford Dictionary"
-                                Width="60"
-                                MinWidth="60"
-                                Height="36"
-                                Margin="0,0,8,0"
-                                VerticalAlignment="Top"
-                                Click="Btn_OpenOxford_Click"/>
-                        <Button x:Name="Btn_OpenGTranslate"
-                                Grid.Column="5"
-                                Content="🔍 G"
-                                ToolTip="Open in Google Translate"
-                                Width="60"
-                                MinWidth="60"
-                                Height="36"
-                                Margin="0,0,8,0"
-                                VerticalAlignment="Top"
-                                Click="Btn_OpenGTranslate_Click"/>
-                        <Button x:Name="Btn_OpenYouGlish"
-                                Grid.Column="6"
-                                Content="🔍 Y"
-                                ToolTip="Open in YouGlish"
-                                Width="60"
-                                MinWidth="60"
-                                Height="36"
-                                VerticalAlignment="Top"
-                                Click="Btn_OpenYouGlish_Click"/>
-                    </Grid>
+                    </StackPanel>
                     
-                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <!-- IPA Section -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                         <StackPanel>
                             <Label Content="IPA US"
                                    FontSize="10"
@@ -220,6 +169,58 @@
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
+                
+                <!-- Right Group: Dictionary Buttons -->
+                <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Margin="20,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- First Row of Buttons -->
+                    <Button x:Name="Btn_OpenCambridge"
+                            Grid.Row="0" Grid.Column="0"
+                            Content="🔍 C"
+                            ToolTip="Open in Cambridge Dictionary"
+                            Width="60"
+                            MinWidth="60"
+                            Height="36"
+                            Margin="0,0,4,4"
+                            Click="Btn_OpenCambridge_Click"/>
+                    <Button x:Name="Btn_OpenOxford"
+                            Grid.Row="0" Grid.Column="1"
+                            Content="🔍 O"
+                            ToolTip="Open in Oxford Dictionary"
+                            Width="60"
+                            MinWidth="60"
+                            Height="36"
+                            Margin="4,0,0,4"
+                            Click="Btn_OpenOxford_Click"/>
+                    
+                    <!-- Second Row of Buttons -->
+                    <Button x:Name="Btn_OpenGTranslate"
+                            Grid.Row="1" Grid.Column="0"
+                            Content="🔍 G"
+                            ToolTip="Open in Google Translate"
+                            Width="60"
+                            MinWidth="60"
+                            Height="36"
+                            Margin="0,0,4,0"
+                            Click="Btn_OpenGTranslate_Click"/>
+                    <Button x:Name="Btn_OpenYouGlish"
+                            Grid.Row="1" Grid.Column="1"
+                            Content="🔍 Y"
+                            ToolTip="Open in YouGlish"
+                            Width="60"
+                            MinWidth="60"
+                            Height="36"
+                            Margin="4,0,0,0"
+                            Click="Btn_OpenYouGlish_Click"/>
+                </Grid>
             </DockPanel>
 
             <!-- Translations -->

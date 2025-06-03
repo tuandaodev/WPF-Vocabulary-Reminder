@@ -639,7 +639,7 @@ namespace VR
 
         private void ProcessAfterChangeDef()
         {
-            App.GlobalJsonDataId = _vocabulary.JsonData[_currentJsonDataIndex]?.ID ?? null;
+            App.GlobalJsonDataId = _vocabulary.JsonData?.ElementAtOrDefault(_currentJsonDataIndex)?.ID ?? null;
             UpdateDefinitionDisplay();
         }
 
