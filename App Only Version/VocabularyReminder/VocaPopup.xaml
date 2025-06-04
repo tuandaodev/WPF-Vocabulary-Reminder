@@ -482,12 +482,9 @@
             <!-- Related Words -->
             <StackPanel x:Name="SectionRelatedWords">
                 <TextBlock Text="RELATED WORDS" Style="{StaticResource SectionTitle}"/>
-                <TextBlock x:Name="Label_Same"
-                          Text="Related words"
-                          TextWrapping="Wrap"
-                          Foreground="#FFFFFF"
-                          FontSize="16"
-                          Margin="0,4,0,20"/>
+                <WrapPanel x:Name="RelatedWordsContainer" Margin="0,4,0,20">
+                    <!-- Dynamic clickable words will be added here -->
+                </WrapPanel>
             </StackPanel>
 
             <!-- SRS Information -->

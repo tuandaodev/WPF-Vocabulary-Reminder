@@ -67,7 +67,19 @@ namespace VR.Services
                 throw new ArgumentException("Target language cannot be empty", nameof(targetLanguage));
             }
 
-            return await _provider.TranslateAsync(text, targetLanguage, _apiKey);
+            // Check cache first
+            if (CacheService.TryGetTranslation(text, out string cachedTranslation))
+            {
+                return cachedTranslation;
+            }
+
+            var translatedText = await _provider.TranslateAsync(text, targetLanguage, _apiKey);
+
+            // Cache the successful translation
+            if (!string.IsNullOrWhiteSpace(translatedText))
+                CacheService.CacheTranslation(text, translatedText);
+            
+            return translatedText;
         }
 
         /// <summary>

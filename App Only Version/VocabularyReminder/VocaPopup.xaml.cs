@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Controls;
 using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Domain.Models;
@@ -1051,7 +1052,8 @@ namespace VR
             var relatedWords = string.IsNullOrEmpty(this._vocabulary.Related)
                 ? "None"
                 : _vocabulary.Related;
-            this.Label_Same.Text = relatedWords;
+            // Create individual clickable words directly in the container
+            CreateClickableRelatedWords(relatedWords);
 
             // Disable play buttons if their corresponding URLs are empty/null
             //this.Btn_PlaySound1.IsEnabled = !string.IsNullOrEmpty(this._vocabulary.PlayURL2);
@@ -1126,5 +1128,266 @@ namespace VR
                 Btn_TranslateDefinition.IsEnabled = true;
             }
         }
+
+        private void CreateClickableRelatedWords(string relatedWords)
+        {
+            var relatedWordsContainer = this.FindName("RelatedWordsContainer") as System.Windows.Controls.WrapPanel;
+            if (relatedWordsContainer == null) return;
+
+            // Clear existing content
+            relatedWordsContainer.Children.Clear();
+
+            if (string.IsNullOrEmpty(relatedWords) || relatedWords == "None")
+            {
+                var noWordsText = new TextBlock
+                {
+                    Text = "No related words available",
+                    Foreground = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153)),
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(5)
+                };
+                relatedWordsContainer.Children.Add(noWordsText);
+                return;
+            }
+
+            // Split by comma and create individual clickable words
+            var words = relatedWords.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            for (int i = 0; i < words.Length; i++)
+            {
+                var word = words[i].Trim();
+                if (string.IsNullOrEmpty(word)) continue;
+
+                var wordContainer = new Border
+                {
+                    Background = new SolidColorBrush(Color.FromArgb(255, 68, 68, 68)),
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85)),
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(4),
+                    Margin = new Thickness(3, 2, 3, 2),
+                    Padding = new Thickness(8, 4, 8, 4),
+                    Cursor = Cursors.Hand
+                };
+
+                var wordText = new TextBlock
+                {
+                    Text = word,
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontSize = 14,
+                    TextWrapping = TextWrapping.NoWrap
+                };
+
+                wordContainer.Child = wordText;
+                
+                // Capture the word in the closure properly
+                var currentWord = word;
+                
+                // Add click event to show word definition directly
+                wordContainer.MouseLeftButtonUp += (s, ev) =>
+                {
+                    ResetAutoCloseTimer();
+                    ShowWordDefinitionPopup(currentWord);
+                    ev.Handled = true;
+                };
+
+                // Add hover effects
+                wordContainer.MouseEnter += (s, ev) =>
+                {
+                    wordContainer.Background = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85));
+                };
+                
+                wordContainer.MouseLeave += (s, ev) =>
+                {
+                    wordContainer.Background = new SolidColorBrush(Color.FromArgb(255, 68, 68, 68));
+                };
+
+                relatedWordsContainer.Children.Add(wordContainer);
+            }
+        }
+
+        private async void ShowWordDefinitionPopup(string word)
+        {
+            try
+            {
+                // Close the related words popup first
+                var relatedWordsPopup = this.FindName("RelatedWordsPopup") as System.Windows.Controls.Primitives.Popup;
+                if (relatedWordsPopup != null)
+                {
+                    relatedWordsPopup.IsOpen = false;
+                }
+
+                // Create a new popup for word definition
+                var definitionPopup = new System.Windows.Controls.Primitives.Popup
+                {
+                    AllowsTransparency = true,
+                    PopupAnimation = System.Windows.Controls.Primitives.PopupAnimation.Fade,
+                    Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
+                    StaysOpen = false,
+                    PlacementTarget = this
+                };
+
+                var border = new Border
+                {
+                    Background = new SolidColorBrush(Color.FromArgb(255, 45, 45, 45)),
+                    BorderBrush = new SolidColorBrush(Color.FromArgb(255, 85, 85, 85)),
+                    BorderThickness = new Thickness(1),
+                    CornerRadius = new CornerRadius(4),
+                    MaxWidth = 400,
+                    Margin = new Thickness(5)
+                };
+
+                var stackPanel = new StackPanel
+                {
+                    Margin = new Thickness(15)
+                };
+
+                // Word title
+                var titleText = new TextBlock
+                {
+                    Text = word.ToUpper(),
+                    Foreground = new SolidColorBrush(Colors.White),
+                    FontSize = 18,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(0, 0, 0, 10)
+                };
+                stackPanel.Children.Add(titleText);
+
+                // Loading text
+                var loadingText = new TextBlock
+                {
+                    Text = "Loading definition...",
+                    Foreground = new SolidColorBrush(Color.FromArgb(255, 153, 153, 153)),
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(0, 0, 0, 10)
+                };
+                stackPanel.Children.Add(loadingText);
+
+                border.Child = stackPanel;
+                definitionPopup.Child = border;
+
+                // Add to the main window
+                if (this.Content is Panel parentPanel)
+                {
+                    parentPanel.Children.Add(definitionPopup);
+                }
+
+                definitionPopup.IsOpen = true;
+
+                // First try to get Vietnamese translation from database
+                string vietnameseDefinition = null;
+                try
+                {
+                    using (var db = new VocaDbContext())
+                    {
+                        var vocabulary = db.Vocabularies
+                            .FirstOrDefault(v => v.Word.ToLower() == word.ToLower());
+                        
+                        if (vocabulary != null && !string.IsNullOrEmpty(vocabulary.Translate))
+                        {
+                            vietnameseDefinition = vocabulary.Translate;
+                            loadingText.Text = vietnameseDefinition;
+                            loadingText.FontStyle = FontStyles.Normal;
+                            loadingText.Foreground = new SolidColorBrush(Colors.White);
+                        }
+                    }
+                }
+                catch (Exception dbEx)
+                {
+                    Debug.WriteLine($"Database lookup failed for word '{word}': {dbEx.Message}");
+                }
+
+                // If not found in database, try LLM service for Vietnamese translation
+                if (string.IsNullOrEmpty(vietnameseDefinition))
+                {
+                    try
+                    {
+                        if (LLMProviderFactory.IsCurrentConfigurationValid())
+                        {
+                            var llmService = LLMProviderFactory.GetLLMService();
+                            // Request Vietnamese translation instead of English definition
+                            var vietnameseTranslation = await llmService.TranslateAsync(word, "Vietnamese");
+                            
+                            if (!string.IsNullOrEmpty(vietnameseTranslation))
+                            {
+                                loadingText.Text = vietnameseTranslation.Length > 300 ? vietnameseTranslation.Substring(0, 300) + "..." : vietnameseTranslation;
+                                loadingText.FontStyle = FontStyles.Normal;
+                                loadingText.Foreground = new SolidColorBrush(Colors.White);
+                            }
+                            else
+                            {
+                                loadingText.Text = "Không tìm thấy nghĩa tiếng Việt cho từ này.";
+                            }
+                        }
+                        else
+                        {
+                            loadingText.Text = "LLM chưa được cấu hình. Nhấp để tìm trực tuyến.";
+                            border.Cursor = Cursors.Hand;
+                            border.MouseLeftButtonDown += (s, ev) =>
+                            {
+                                try
+                                {
+                                    Process.Start(new ProcessStartInfo
+                                    {
+                                        FileName = $"https://translate.google.com/?sl=en&tl=vi&text={word}",
+                                        UseShellExecute = true
+                                    });
+                                }
+                                catch { }
+                            };
+                        }
+                    }
+                    catch (Exception llmEx)
+                    {
+                        Debug.WriteLine($"LLM translation failed for word '{word}': {llmEx.Message}");
+                        loadingText.Text = "Lỗi khi tải nghĩa. Nhấp để tìm trực tuyến.";
+                        border.Cursor = Cursors.Hand;
+                        border.MouseLeftButtonDown += (s, ev) =>
+                        {
+                            try
+                            {
+                                Process.Start(new ProcessStartInfo
+                                {
+                                    FileName = $"https://translate.google.com/?sl=en&tl=vi&text={word}",
+                                    UseShellExecute = true
+                                });
+                            }
+                            catch { }
+                        };
+                    }
+                }
+
+                // Auto-close after 10 seconds
+                var timer = new System.Windows.Threading.DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(10)
+                };
+                timer.Tick += (s, ev) =>
+                {
+                    timer.Stop();
+                    definitionPopup.IsOpen = false;
+                    if (this.Content is Panel panel)
+                    {
+                        panel.Children.Remove(definitionPopup);
+                    }
+                };
+                timer.Start();
+
+                // Clean up when popup closes
+                definitionPopup.Closed += (s, ev) =>
+                {
+                    timer.Stop();
+                    if (this.Content is Panel panel)
+                    {
+                        panel.Children.Remove(definitionPopup);
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error showing word definition: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
     }
 }
