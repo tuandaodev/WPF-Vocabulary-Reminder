@@ -165,6 +165,9 @@
     <Compile Include="VocaPopup.xaml.cs">
       <DependentUpon>VocaPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ContentDisplayWindow.xaml.cs">
+      <DependentUpon>ContentDisplayWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VR.Domain\Models\Vocabulary.cs" />
     <Page Include="DictionaryManagementWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -199,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VocaPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ContentDisplayWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -284,6 +291,9 @@
     </PackageReference>
     <PackageReference Include="Z.EntityFramework.Extensions">
       <Version>8.102.3</Version>
+    </PackageReference>
+    <PackageReference Include="MdXaml">
+      <Version>1.15.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

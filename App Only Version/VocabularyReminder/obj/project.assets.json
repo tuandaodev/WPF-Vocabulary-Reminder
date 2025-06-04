@@ -18,6 +18,22 @@
           }
         }
       },
+      "AvalonEdit/6.0.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Windows.Forms"
+        ],
+        "compile": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -163,6 +179,18 @@
         },
         "build": {
           "build/MaterialDesignThemes.targets": {}
+        }
+      },
+      "MdXaml/1.15.0": {
+        "type": "package",
+        "dependencies": {
+          "AvalonEdit": "6.0.0"
+        },
+        "compile": {
+          "lib/net45/MdXaml.dll": {}
+        },
+        "runtime": {
+          "lib/net45/MdXaml.dll": {}
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -767,6 +795,22 @@
           }
         }
       },
+      "AvalonEdit/6.0.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Windows.Forms"
+        ],
+        "compile": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -912,6 +956,18 @@
         },
         "build": {
           "build/MaterialDesignThemes.targets": {}
+        }
+      },
+      "MdXaml/1.15.0": {
+        "type": "package",
+        "dependencies": {
+          "AvalonEdit": "6.0.0"
+        },
+        "compile": {
+          "lib/net45/MdXaml.dll": {}
+        },
+        "runtime": {
+          "lib/net45/MdXaml.dll": {}
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -1466,6 +1522,22 @@
           }
         }
       },
+      "AvalonEdit/6.0.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Windows.Forms"
+        ],
+        "compile": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -1611,6 +1683,18 @@
         },
         "build": {
           "build/MaterialDesignThemes.targets": {}
+        }
+      },
+      "MdXaml/1.15.0": {
+        "type": "package",
+        "dependencies": {
+          "AvalonEdit": "6.0.0"
+        },
+        "compile": {
+          "lib/net45/MdXaml.dll": {}
+        },
+        "runtime": {
+          "lib/net45/MdXaml.dll": {}
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -2168,6 +2252,22 @@
           }
         }
       },
+      "AvalonEdit/6.0.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Windows.Forms"
+        ],
+        "compile": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -2313,6 +2413,18 @@
         },
         "build": {
           "build/MaterialDesignThemes.targets": {}
+        }
+      },
+      "MdXaml/1.15.0": {
+        "type": "package",
+        "dependencies": {
+          "AvalonEdit": "6.0.0"
+        },
+        "compile": {
+          "lib/net45/MdXaml.dll": {}
+        },
+        "runtime": {
+          "lib/net45/MdXaml.dll": {}
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -2870,6 +2982,22 @@
           }
         }
       },
+      "AvalonEdit/6.0.0": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Windows.Forms"
+        ],
+        "compile": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net45/ICSharpCode.AvalonEdit.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "EntityFramework/6.5.1": {
         "type": "package",
         "frameworkAssemblies": [
@@ -3015,6 +3143,18 @@
         },
         "build": {
           "build/MaterialDesignThemes.targets": {}
+        }
+      },
+      "MdXaml/1.15.0": {
+        "type": "package",
+        "dependencies": {
+          "AvalonEdit": "6.0.0"
+        },
+        "compile": {
+          "lib/net45/MdXaml.dll": {}
+        },
+        "runtime": {
+          "lib/net45/MdXaml.dll": {}
         }
       },
       "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -3573,6 +3713,23 @@
         "lib/netstandard2.0/AutoMapper.xml"
       ]
     },
+    "AvalonEdit/6.0.0": {
+      "sha512": "QMbyJrlhOuWzLRPqvW724ly9XbSEkp8Xg2mQY7tvsh1se1pDEJnmDjS6c6OuqDe2Q37uCnXwKdV8tJUx2iLUnw==",
+      "type": "package",
+      "path": "avalonedit/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "avalonedit.6.0.0.nupkg.sha512",
+        "avalonedit.nuspec",
+        "lib/net40/ICSharpCode.AvalonEdit.dll",
+        "lib/net40/ICSharpCode.AvalonEdit.xml",
+        "lib/net45/ICSharpCode.AvalonEdit.dll",
+        "lib/net45/ICSharpCode.AvalonEdit.xml",
+        "lib/netcoreapp3.0/ICSharpCode.AvalonEdit.dll",
+        "lib/netcoreapp3.0/ICSharpCode.AvalonEdit.xml"
+      ]
+    },
     "EntityFramework/6.5.1": {
       "sha512": "sQRP2lWg1i3aAGWqdliAM8zrGx7LHMUk+9/MoxUjwfTZYGMXvZ2JYZTlyTm1PqDxvn3c9E3U76TWDON7Y5+CVA==",
       "type": "package",
@@ -3822,6 +3979,20 @@
         "lib/netcoreapp3.0/MaterialDesignThemes.Wpf.xml",
         "materialdesignthemes.3.0.1.nupkg.sha512",
         "materialdesignthemes.nuspec"
+      ]
+    },
+    "MdXaml/1.15.0": {
+      "sha512": "c4J3ppAHUruWofZD+Q6l3Z8ukqeimxRczeh6Qayu4ezoX2laeKdgkaI+0nqdj6Ign2+h996Vz/ovMv2WSUKL6A==",
+      "type": "package",
+      "path": "mdxaml/1.15.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net45/MdXaml.dll",
+        "lib/net5.0-windows7.0/MdXaml.dll",
+        "lib/netcoreapp3.0/MdXaml.dll",
+        "mdxaml.1.15.0.nupkg.sha512",
+        "mdxaml.nuspec"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/9.0.2": {
@@ -4890,6 +5061,7 @@
       "Google.Apis.Drive.v3 >= 1.69.0.3778",
       "HtmlAgilityPack >= 1.11.18",
       "MaterialDesignThemes >= 3.0.1",
+      "MdXaml >= 1.15.0",
       "Microsoft.Data.Sqlite >= 3.1.1",
       "Microsoft.Toolkit.Uwp.Notifications >= 2.0.0",
       "Microsoft.Windows.SDK.Contracts >= 10.0.18362.2002-preview",
@@ -4964,6 +5136,10 @@
           "MaterialDesignThemes": {
             "target": "Package",
             "version": "[3.0.1, )"
+          },
+          "MdXaml": {
+            "target": "Package",
+            "version": "[1.15.0, )"
           },
           "Microsoft.Data.Sqlite": {
             "target": "Package",

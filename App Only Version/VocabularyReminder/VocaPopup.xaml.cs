@@ -72,9 +72,10 @@ namespace VR
                     Duration = TimeSpan.FromMilliseconds(500)
                 };
                 this.BeginAnimation(Window.OpacityProperty, fadeIn);
-
+                Console.WriteLine("Auto Close in VocaPopup");
                 this.Close();
             };
+
             autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
             autoCloseTimer.Start();
         }
@@ -83,6 +84,7 @@ namespace VR
         {
             if (autoCloseTimer != null)
             {
+                App.LastReaction = DateTime.Now;
                 autoCloseTimer.Stop();
                 autoCloseTimer.Start();
             }
@@ -558,61 +560,139 @@ namespace VR
 
         private async void Btn_GenerateExample_Click(object sender, RoutedEventArgs e)
         {
+            await ExecuteAITask("New Example", async () =>
+            {
+                // Get current meaning/definition from the displayed text
+                string currentMeaning = Label_EngDefination?.Text ?? "";
+
+                // Generate new example using LLM with current meaning context
+                var llmService = LLMProviderFactory.GetLLMService();
+                return await llmService.GetExampleAsync(_vocabulary.Word, currentMeaning);
+            });
+        }
+
+        private async void Btn_GenerateSimpleSentence_Click(object sender, RoutedEventArgs e)
+        {
+            await ExecuteAITask("Simple Sentence", async () =>
+            {
+                var llmService = LLMProviderFactory.GetLLMService();
+                var prompt = $"Create one very short and simple sentence (maximum 8 words) using the word '{_vocabulary.Word}'. Make it easy to understand for English learners. Return only the sentence.";
+                return await llmService.GenerateTextAsync(prompt);
+            });
+        }
+
+        private async void Btn_GetEasySynonyms_Click(object sender, RoutedEventArgs e)
+        {
+            await ExecuteAITaskInNewWindow("Easy Synonyms", async () =>
+            {
+                var llmService = LLMProviderFactory.GetLLMService();
+                var prompt = $"List 3-5 easier, more common synonyms for the word '{_vocabulary.Word}' that English learners should learn first. Include difficulty level (beginner/intermediate) for each. Format: word (level).";
+                return await llmService.GenerateTextAsync(prompt);
+            });
+        }
+
+
+        private async void Btn_ExplainUsage_Click(object sender, RoutedEventArgs e)
+        {
+            await ExecuteAITaskInNewWindow("Usage Tips", async () =>
+            {
+                var llmService = LLMProviderFactory.GetLLMService();
+                var prompt = $"Explain how to use the word '{_vocabulary.Word}' correctly. Include: 1) Common contexts where it's used, 2) Grammar tips, 3) Common mistakes to avoid, 4) Formality level (formal/informal). Keep it concise and practical for English learners.";
+                return await llmService.GenerateTextAsync(prompt);
+            });
+        }
+
+        private async Task ExecuteAITask(string taskName, Func<Task<string>> aiTask)
+        {
             if (string.IsNullOrEmpty(_vocabulary?.Word))
                 return;
 
             try
             {
-                // Disable button while processing
-                Btn_GenerateExample.IsEnabled = false;
-                Btn_GenerateExample.Content = "Generating...";
+                // Show loading state in Label_Example
+                Label_Example.Text = $"Generating {taskName.ToLower()}...";
+                
+                // Hide previous translation and phonetic results
+                Label_ExampleTranslation.Visibility = Visibility.Collapsed;
+                Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
 
                 // Check if LLM provider is configured
                 if (!LLMProviderFactory.IsCurrentConfigurationValid())
                 {
-                    MessageBox.Show("LLM provider is not properly configured. Please check your settings.",
-                        "LLM Configuration Error",
-                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    Label_Example.Text = "❌ LLM provider is not properly configured. Please check your settings.";
                     return;
                 }
 
-                // Get current meaning/definition from the displayed text
-                string currentMeaning = Label_EngDefination.Text;
+                // Execute the AI task
+                var result = await aiTask();
 
-                // Generate new example using LLM with current meaning context
-                var llmService = LLMProviderFactory.GetLLMService();
-                var example = await llmService.GetExampleAsync(_vocabulary.Word, currentMeaning);
-
-                if (!string.IsNullOrEmpty(example))
+                if (!string.IsNullOrEmpty(result))
                 {
-                    // Update the example display directly (no parsing needed)
-                    Label_Example.Text = example;
-                    
-                    // Hide previous translation and phonetic results
-                    Label_ExampleTranslation.Visibility = Visibility.Collapsed;
-                    Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+                    // Display result in Label_Example
+                    Label_Example.Text = result.Trim();
                 }
                 else
                 {
-                    MessageBox.Show("Failed to generate example. Please try again.",
-                        "Generation Error",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    Label_Example.Text = $"❌ Failed to generate {taskName.ToLower()}. Please try again.";
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error generating example: {ex.Message}",
-                    "Generation Error",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                Label_Example.Text = $"❌ Error generating {taskName.ToLower()}: {ex.Message}";
             }
             finally
             {
-                // Re-enable button
-                Btn_GenerateExample.IsEnabled = true;
-                Btn_GenerateExample.Content = "Generate Example";
+                ResetAutoCloseTimer();
             }
         }
 
+        private async Task ExecuteAITaskInNewWindow(string taskName, Func<Task<string>> aiTask)
+        {
+            if (string.IsNullOrEmpty(_vocabulary?.Word))
+                return;
+            
+            try
+            {
+                // Check if LLM provider is configured
+                if (!LLMProviderFactory.IsCurrentConfigurationValid())
+                {
+                    var errorWindow = new ContentDisplayWindow($"{taskName} - Error",
+                        "❌ LLM provider is not properly configured.\n\nPlease check your settings in the application configuration.");
+                    errorWindow.Owner = this;
+                    errorWindow.Show();
+                    return;
+                }
+
+                // Execute the AI task first
+                var result = await aiTask();
+
+                if (!string.IsNullOrEmpty(result))
+                {
+                    // Only create and show the content window after getting the result
+                    var resultWindow = new ContentDisplayWindow($"{taskName} - {_vocabulary.Word}", result.Trim());
+                    resultWindow.Owner = this;
+                    resultWindow.Show();
+                }
+                else
+                {
+                    var errorWindow = new ContentDisplayWindow($"{taskName} - Error",
+                        $"❌ Failed to generate {taskName.ToLower()}.\n\nPlease try again.");
+                    errorWindow.Owner = this;
+                    errorWindow.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorWindow = new ContentDisplayWindow($"{taskName} - Error",
+                    $"❌ Error generating {taskName.ToLower()}:\n\n{ex.Message}");
+                errorWindow.Owner = this;
+                errorWindow.Show();
+            }
+            finally
+            {
+                ResetAutoCloseTimer();
+            }
+        }
 
         public void SetVocabulary(Vocabulary item)
         {
