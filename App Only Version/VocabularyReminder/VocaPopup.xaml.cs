@@ -1182,10 +1182,21 @@ namespace VR
                 // Capture the word in the closure properly
                 var currentWord = word;
                 
-                // Add click event to show word definition directly
-                wordContainer.MouseLeftButtonUp += (s, ev) =>
+                // Add click event to show word definition directly and play sound
+                wordContainer.MouseLeftButtonUp += async (s, ev) =>
                 {
                     ResetAutoCloseTimer();
+                    
+                    // Play US pronunciation
+                    try
+                    {
+                        _ = TextToSpeechService.SpeakTextAsync(currentWord);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"Error playing sound for word '{currentWord}': {ex.Message}");
+                    }
+                    
                     ShowWordDefinitionPopup(currentWord);
                     ev.Handled = true;
                 };
@@ -1248,9 +1259,44 @@ namespace VR
                     Foreground = new SolidColorBrush(Colors.White),
                     FontSize = 18,
                     FontWeight = FontWeights.Bold,
-                    Margin = new Thickness(0, 0, 0, 10)
+                    Margin = new Thickness(0, 0, 0, 5)
                 };
                 stackPanel.Children.Add(titleText);
+
+                // IPA pronunciation
+                var ipaText = new TextBlock
+                {
+                    Text = "",
+                    Foreground = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200)),
+                    FontSize = 14,
+                    FontStyle = FontStyles.Normal,
+                    Margin = new Thickness(0, 0, 0, 10)
+                };
+                stackPanel.Children.Add(ipaText);
+
+                // Try to get IPA pronunciation
+                try
+                {
+                    if (_ipaService == null)
+                    {
+                        _ipaService = new IPAService();
+                    }
+                    
+                    var ipa = _ipaService.EnglishToIPA(word);
+                    if (!string.IsNullOrEmpty(ipa) && ipa != word.ToLower())
+                    {
+                        ipaText.Text = $"/{ipa}/";
+                    }
+                    else
+                    {
+                        ipaText.Visibility = Visibility.Collapsed;
+                    }
+                }
+                catch (Exception ipaEx)
+                {
+                    Debug.WriteLine($"IPA lookup failed for word '{word}': {ipaEx.Message}");
+                    ipaText.Visibility = Visibility.Collapsed;
+                }
 
                 // Loading text
                 var loadingText = new TextBlock
@@ -1281,13 +1327,15 @@ namespace VR
                     {
                         var vocabulary = db.Vocabularies
                             .FirstOrDefault(v => v.Word.ToLower() == word.ToLower());
-                        
+
                         if (vocabulary != null && !string.IsNullOrEmpty(vocabulary.Translate))
                         {
                             vietnameseDefinition = vocabulary.Translate;
                             loadingText.Text = vietnameseDefinition;
                             loadingText.FontStyle = FontStyles.Normal;
                             loadingText.Foreground = new SolidColorBrush(Colors.White);
+                            
+                            ipaText.Text = string.IsNullOrEmpty(vocabulary.Ipa2) ? "" : $"/{vocabulary.Ipa2}/";
                         }
                     }
                 }
