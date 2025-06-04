@@ -107,10 +107,10 @@ namespace VR
             switch (e.Key)
             {
                 case Key.Left:
-                        Btn_PrevDefinition_Click(null, null);
+                    Btn_PrevDefinition_Click(null, null);
                     break;
                 case Key.Right:
-                        Btn_NextDefinition_Click(null, null);
+                    Btn_NextDefinition_Click(null, null);
                     break;
                 case Key.Up:
                     Btn_PrevExample_Click(null, null);
@@ -201,7 +201,7 @@ namespace VR
                             vocab.Word = _vocabulary.Word;
                         if (string.IsNullOrEmpty(vocab.WordId))
                             vocab.WordId = _vocabulary.WordId;
-                        
+
                         try
                         {
                             await db.SaveChangesAsync();
@@ -212,7 +212,7 @@ namespace VR
                                 ex.EntityValidationErrors
                                 .SelectMany(x => x.ValidationErrors)
                                 .Select(x => $"Property: {x.PropertyName}, Error: {x.ErrorMessage}"));
-                            
+
                             MessageBox.Show($"Validation errors occurred:\n{errorMessages}",
                                 "Validation Error",
                                 MessageBoxButton.OK,
@@ -232,6 +232,14 @@ namespace VR
             }
 
             UpdateSrsInfo();
+
+            // Check conditions for auto-close
+            if (App.showNextOnEasy)
+                await NextVocabularyAsync();
+            else
+                ClosePopup();
+
+            ResetAutoCloseTimer();
         }
 
         private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -300,32 +308,7 @@ namespace VR
 
         private async void Btn_Easy_Click(object sender, RoutedEventArgs e)
         {
-            await ProcessEasyButtonAsync();
-        }
-
-        private async Task ProcessEasyButtonAsync()
-        {
             ProcessReview(4);
-
-            // Check if next review is > 20 days
-            if (_vocabulary.NextReviewDate.HasValue)
-            {
-                var nextReview = DateTimeOffset.FromUnixTimeSeconds(_vocabulary.NextReviewDate.Value);
-                var daysUntilReview = (nextReview - DateTimeOffset.Now).TotalDays;
-                if (daysUntilReview > 20)
-                {
-                    // Check conditions for auto-close
-                    if (App.showNextOnEasy)
-                    {
-                        await NextVocabularyAsync();
-                    }
-                    else
-                    {
-                        ClosePopup();
-                    }
-                    return;
-                }
-            }
         }
 
         private async void Btn_TranslateExample_Click(object sender, RoutedEventArgs e)
