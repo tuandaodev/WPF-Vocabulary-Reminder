@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
-using System.Windows.Documents;
-using System.Windows.Media;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Domain.Models;
@@ -79,6 +79,29 @@ namespace VR
 
             //autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
             //autoCloseTimer.Start();
+        }
+
+        // public function to set vocabulary from parent component
+        public void SetVocabulary(Vocabulary item)
+        {
+            _vocabulary = item ?? throw new ArgumentNullException(nameof(item));
+            InitializeData();
+            MappingDisplay();
+        }
+
+        private void InitializeData()
+        {
+            if (!string.IsNullOrEmpty(_vocabulary.Example))
+            {
+                var def = _vocabulary.JsonData.FirstOrDefault().Definitions.FirstOrDefault();
+                if (def != null && def.Examples != null && def.Examples.All(e => e.Example != _vocabulary.Example))
+                {
+                    def.Examples.Insert(0, new ExampleDataModel()
+                    {
+                        Example = _vocabulary.Example
+                    });
+                }
+            }
         }
 
         private void ResetAutoCloseTimer()
@@ -733,12 +756,6 @@ namespace VR
             }
         }
 
-        public void SetVocabulary(Vocabulary item)
-        {
-            _vocabulary = item ?? throw new ArgumentNullException(nameof(item));
-            MappingDisplay();
-        }
-
         private void ProcessAfterChangeDef()
         {
             App.GlobalJsonDataId = _vocabulary.JsonData?.ElementAtOrDefault(_currentJsonDataIndex)?.ID ?? null;
@@ -867,7 +884,7 @@ namespace VR
             {
                 var currentExample = currentDef.Examples[_currentExampleIndex];
                 Label_Example.Text = currentExample?.Example ?? "";
-                
+
                 // Show struct if available
                 if (!string.IsNullOrEmpty(currentExample?.Struct))
                 {
