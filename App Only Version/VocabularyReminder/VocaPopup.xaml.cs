@@ -23,7 +23,7 @@ namespace VR
     {
         private static IPAService _ipaService;
         private Vocabulary _vocabulary { get; set; }
-        private System.Windows.Forms.Timer autoCloseTimer;
+        //private System.Windows.Forms.Timer autoCloseTimer;
         private int _currentDefinitionIndex = 0;
         private int _currentJsonDataIndex = 0;
         private int _currentTypeIndex = 0;
@@ -62,33 +62,33 @@ namespace VR
             };
 
             // Initialize auto-close timer
-            autoCloseTimer = new System.Windows.Forms.Timer();
-            autoCloseTimer.Tick += delegate {
+            //autoCloseTimer = new System.Windows.Forms.Timer();
+            //autoCloseTimer.Tick += delegate {
 
-                // Add subtle fade-in animation after positioning
-                var fadeIn = new DoubleAnimation
-                {
-                    From = 0.95,
-                    To = 0,
-                    Duration = TimeSpan.FromMilliseconds(500)
-                };
-                this.BeginAnimation(Window.OpacityProperty, fadeIn);
-                Console.WriteLine("Auto Close in VocaPopup");
-                this.Close();
-            };
+            //    // Add subtle fade-in animation after positioning
+            //    var fadeIn = new DoubleAnimation
+            //    {
+            //        From = 0.95,
+            //        To = 0,
+            //        Duration = TimeSpan.FromMilliseconds(500)
+            //    };
+            //    this.BeginAnimation(Window.OpacityProperty, fadeIn);
+            //    Console.WriteLine("Auto Close in VocaPopup");
+            //    this.Close();
+            //};
 
-            autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
-            autoCloseTimer.Start();
+            //autoCloseTimer.Interval = (int)TimeSpan.FromSeconds(20).TotalMilliseconds;
+            //autoCloseTimer.Start();
         }
 
         private void ResetAutoCloseTimer()
         {
-            if (autoCloseTimer != null)
-            {
-                App.LastReaction = DateTime.Now;
-                autoCloseTimer.Stop();
-                autoCloseTimer.Start();
-            }
+            App.LastReaction = DateTime.Now;
+            //if (autoCloseTimer != null)
+            //{
+            //    autoCloseTimer.Stop();
+            //    autoCloseTimer.Start();
+            //}
         }
 
         private void ClosePopup()
@@ -247,7 +247,8 @@ namespace VR
 
         private void Border_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            autoCloseTimer.Stop(); // Pause auto-close when user is viewing
+            //autoCloseTimer.Stop(); // Pause auto-close when user is viewing
+            ResetAutoCloseTimer();
         }
 
         private void Border_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -1068,7 +1069,17 @@ namespace VR
             switch (e.ChangedButton)
             {
                 case MouseButton.XButton1://Back button
-                    await BackgroundService.ActionPlay(ActionPlayEnum.US);
+                    // Check if Shift key is pressed
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                    {
+                        // Play example text when Shift+XButton1 is pressed
+                        _ = TextToSpeechService.SpeakTextAsync(Label_Example.Text);
+                    }
+                    else
+                    {
+                        // Normal XButton1 behavior - play US pronunciation
+                        await BackgroundService.ActionPlay(ActionPlayEnum.US);
+                    }
                     break;
                 case MouseButton.XButton2://forward button
                     _ = TextToSpeechService.SpeakTextAsync(Label_Example.Text);
