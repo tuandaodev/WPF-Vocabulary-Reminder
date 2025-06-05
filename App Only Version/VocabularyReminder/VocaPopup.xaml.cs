@@ -411,6 +411,43 @@ namespace VR
             }
         }
 
+        private async void Btn_BookmarkExample_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_vocabulary == null || string.IsNullOrEmpty(Label_Example.Text))
+                {
+                    MessageBox.Show("No example text to bookmark.", "Bookmark Info",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Update the vocabulary's Example property with current example text
+                _vocabulary.Example = Label_Example.Text;
+
+                // Update the database using DataService
+                await DataService.UpdateVocabularyAsync(_vocabulary);
+                
+                // Update bookmark icon to filled state to show it's bookmarked
+                var bookmarkIcon = BookmarkIcon;
+                if (bookmarkIcon != null)
+                {
+                    bookmarkIcon.Fill = new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold color
+                    bookmarkIcon.Stroke = new SolidColorBrush(Color.FromRgb(255, 215, 0));
+                }
+                
+                MessageBox.Show($"Example bookmarked successfully!\n\nSaved: {_vocabulary.Example}",
+                    "Bookmark Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                ResetAutoCloseTimer();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error bookmarking example: " + ex.Message, "Bookmark Error",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void Btn_OpenCambridge_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(_vocabulary?.Word))

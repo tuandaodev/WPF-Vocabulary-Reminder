@@ -261,7 +261,7 @@ namespace VR
                             EscapeCsvField(word.Translate),
                             EscapeCsvField(word.Define),
                             EscapeCsvField(word.Example),
-                            EscapeCsvField(word.Example2),
+                            //EscapeCsvField(word.Example2),
                             //EscapeCsvField(word.PlayURL),
                             //EscapeCsvField(word.PlayURL2),
                             //EscapeCsvField(word.Related),
