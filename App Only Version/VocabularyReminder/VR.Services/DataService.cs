@@ -142,18 +142,18 @@ namespace VR.Services
             }
         }
 
-        public static async Task UpdateViewDateAsync(int _Id)
-        {
-            using (var context = new VocaDbContext())
-            {
-                var result = await context.Vocabularies
-                    .Where(e => e.Id == _Id)
-                    .UpdateFromQueryAsync(x => new Vocabulary()
-                    {
-                        ViewedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                    });
-            }
-        }
+        //public static async Task UpdateViewDateAsync(int _Id)
+        //{
+        //    using (var context = new VocaDbContext())
+        //    {
+        //        var result = await context.Vocabularies
+        //            .Where(e => e.Id == _Id)
+        //            .UpdateFromQueryAsync(x => new Vocabulary()
+        //            {
+        //                ViewedDate = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+        //            });
+        //    }
+        //}
 
         public static async Task UpdateStatusAsync(int _Id, int _Status = 0)
         {

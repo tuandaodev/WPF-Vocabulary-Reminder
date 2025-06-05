@@ -445,28 +445,30 @@ namespace VR
                     return;
                 }
 
-                // Update the vocabulary's Example property with current example text
-                _vocabulary.Example = Label_Example.Text;
+                // Check if the current example is already bookmarked
+                bool isCurrentlyBookmarked = !string.IsNullOrEmpty(_vocabulary.Example) && _vocabulary.Example == Label_Example.Text;
+                if (isCurrentlyBookmarked)
+                {
+                    // Remove bookmark - clear the Example property
+                    _vocabulary.Example = null;
+                }
+                else
+                {
+                    // Set bookmark - update the vocabulary's Example property with current example text
+                    _vocabulary.Example = Label_Example.Text;
+                }
 
                 // Update the database using DataService
                 await DataService.UpdateVocabularyAsync(_vocabulary);
                 
-                // Update bookmark icon to filled state to show it's bookmarked
-                var bookmarkIcon = BookmarkIcon;
-                if (bookmarkIcon != null)
-                {
-                    bookmarkIcon.Fill = new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold color
-                    bookmarkIcon.Stroke = new SolidColorBrush(Color.FromRgb(255, 215, 0));
-                }
+                // Update bookmark icon based on new state
+                UpdateBookmarkIcon();
                 
-                MessageBox.Show($"Example bookmarked successfully!\n\nSaved: {_vocabulary.Example}",
-                    "Bookmark Success", MessageBoxButton.OK, MessageBoxImage.Information);
-
                 ResetAutoCloseTimer();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error bookmarking example: " + ex.Message, "Bookmark Error",
+                MessageBox.Show("Error updating bookmark: " + ex.Message, "Bookmark Error",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -876,6 +878,7 @@ namespace VR
                 Label_ExampleIndex.Text = "0/0";
                 Label_ExampleStruct.Text = "";
                 Label_ExampleStruct.Visibility = Visibility.Collapsed;
+                UpdateBookmarkIcon();
                 return;
             }
 
@@ -906,6 +909,45 @@ namespace VR
             Label_ExampleTranslation.Visibility = Visibility.Collapsed;
             Label_ExamplePhonetic.Text = string.Empty;
             Label_ExamplePhonetic.Visibility = Visibility.Collapsed;
+
+            // Update bookmark icon based on current example
+            UpdateBookmarkIcon();
+        }
+
+    /// <summary>
+        /// Updates the bookmark icon appearance based on whether the current example matches the vocabulary's saved example
+        /// </summary>
+        private void UpdateBookmarkIcon()
+        {
+            try
+            {
+                // Get the bookmark icon from the XAML
+                var bookmarkIcon = BookmarkIcon;
+                if (bookmarkIcon != null && _vocabulary != null)
+                {
+                    // Check if the current displayed example matches the vocabulary's saved example
+                    bool isBookmarked = !string.IsNullOrEmpty(Label_Example?.Text) &&
+                                       !string.IsNullOrEmpty(_vocabulary.Example) &&
+                                       Label_Example.Text == _vocabulary.Example;
+                    if (isBookmarked)
+                    {
+                        // Fill the bookmark icon with gold color to show it's bookmarked
+                        bookmarkIcon.Fill = new SolidColorBrush(Color.FromRgb(255, 215, 0)); // Gold color
+                        bookmarkIcon.Stroke = new SolidColorBrush(Color.FromRgb(255, 215, 0));
+                    }
+                    else
+                    {
+                        // Show as transparent with gold outline when not bookmarked
+                        bookmarkIcon.Fill = new SolidColorBrush(Colors.Transparent);
+                        bookmarkIcon.Stroke = new SolidColorBrush(Color.FromRgb(255, 215, 0));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the error but don't break the functionality
+                Debug.WriteLine($"Error updating bookmark icon: {ex.Message}");
+            }
         }
 
         private void UpdateDefinitionDisplay()

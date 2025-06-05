@@ -90,8 +90,8 @@ namespace VR.Services
                     await Mp3Service.PlayFileAsync(_item);
                 }
 
-                _item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
-                await DataService.UpdateViewDateAsync(App.GlobalWordId);
+                //_item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
+                //await DataService.UpdateViewDateAsync(App.GlobalWordId);
             }
             else
             {
@@ -124,7 +124,7 @@ namespace VR.Services
         {
             var _item = await DataService.GetVocabularyByIdAsync(App.GlobalWordId);
             VocabularyDisplayService.ShowVocabulary(_item);
-            await DataService.UpdateViewDateAsync(App.GlobalWordId);
+            //await DataService.UpdateViewDateAsync(App.GlobalWordId);
             _item = null;
         }
     }
