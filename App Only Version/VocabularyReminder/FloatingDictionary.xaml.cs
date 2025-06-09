@@ -1,11 +1,13 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
+using VocabularyReminder.VR.Common;
 using VR.Domain.Models;
 using VR.Services;
 using Application = System.Windows.Application;
@@ -327,19 +329,42 @@ namespace VR
                 Lbl_Translation.Text = vocab.Translate;
                 Panel_Translation.Visibility = Visibility.Visible;
             }
-            
+
+            // Get First Definition from JsonData
+            var firstDef = vocab.JsonData?.FirstOrDefault()?.Definitions?.FirstOrDefault();
+
             // Display definition
             if (!string.IsNullOrEmpty(vocab.Define))
             {
                 Lbl_Definition.Text = vocab.Define;
                 Panel_Definition.Visibility = Visibility.Visible;
+            } else
+            {
+                if (firstDef != null)
+                {
+                    Lbl_Definition.Text = firstDef.Definition;
+                    Panel_Definition.Visibility = Visibility.Visible;
+                }
             }
-            
+
             // Display example
             if (!string.IsNullOrEmpty(vocab.Example))
             {
                 Lbl_Example.Text = vocab.Example;
                 Panel_Example.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                // Get exampl from json data if available
+                if (firstDef != null)
+                {
+                    var exampleData = firstDef.Examples?.FirstOrDefault();
+                    if (exampleData != null)
+                    {
+                        Lbl_Example.Text = exampleData.Example;
+                        Panel_Example.Visibility = Visibility.Visible;
+                    }
+                }
             }
             
             // Show action buttons
@@ -423,7 +448,10 @@ namespace VR
                     var existing = await DataService.GetVocabularyByWordAsync(_currentVocabulary.Word);
                     if (existing == null)
                     {
-                        await DataService.AddVocabularyAsync(_currentVocabulary.Word, _currentVocabulary.Translate, _currentVocabulary.Type);
+                        var vocaId = await DataService.AddVocabularyAsync(_currentVocabulary.Word);
+                        if (vocaId > 0)
+                            await DataService.AddVocabularyMappingAsync((int)DictionaryConsts.Uncategorized, vocaId);
+
                         System.Windows.MessageBox.Show("Word added to dictionary!", "Success", 
                             MessageBoxButton.OK, MessageBoxImage.Information);
                     }
@@ -457,7 +485,13 @@ namespace VR
             {
                 try
                 {
-                    await TextToSpeechService.SpeakTextAsync(_currentVocabulary.Word);
+                    if (!string.IsNullOrEmpty(_currentVocabulary.PlayURL2))
+                    {
+                        await Mp3Service.PlayFileAsync(_currentVocabulary.PlayURL2);
+                    } else
+                    {
+                        await TextToSpeechService.SpeakTextAsync(_currentVocabulary.Word);
+                    }
                 }
                 catch (Exception ex)
                 {

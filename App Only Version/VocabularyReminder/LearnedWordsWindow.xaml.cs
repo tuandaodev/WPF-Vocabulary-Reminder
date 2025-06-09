@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using VocabularyReminder.VR.Common;
 using VR.Dto;
 using VR.Infrastructure;
 using VR.Services;
@@ -96,7 +97,7 @@ namespace VR
         {
             var dictionaries = await DataService.GetDictionariesAsync();
             DictionaryFilter.Items.Clear();
-            DictionaryFilter.Items.Add(new ComboBoxItem { Content = "All", Tag = 0 });
+            DictionaryFilter.Items.Add(new ComboBoxItem { Content = "All", Tag = (int)DictionaryConsts.All });
             foreach (var dictionary in dictionaries)
             {
                 DictionaryFilter.Items.Add(new ComboBoxItem { Content = dictionary.Name, Tag = dictionary.Id });
@@ -112,7 +113,7 @@ namespace VR
             }
             else
             {
-                DictionaryFilter.SelectedIndex = 0; // Fallback to "All"
+                DictionaryFilter.SelectedIndex = (int)DictionaryConsts.All; // Fallback to "All"
             }
         }
 
@@ -126,7 +127,7 @@ namespace VR
             var searchContent = FilterContent.Text?.Trim();
             
             var selectedDictionary = DictionaryFilter.SelectedItem as ComboBoxItem;
-            int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : 0;
+            int dictionaryId = selectedDictionary != null ? (int)selectedDictionary.Tag : (int)DictionaryConsts.All;
 
             var vocabularyList = await DataService.GetListLearndedAsync(isRead, searchContent, dictionaryId);
             var mapVocabularyList = vocabularyList.Select(x => MyMapper.Mapper.Map<VocabularyDisplayDto>(x)).ToList();

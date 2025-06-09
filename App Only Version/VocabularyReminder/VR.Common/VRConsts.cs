@@ -3,6 +3,7 @@
     public enum DictionaryConsts
     {
         All = -1,
+        Uncategorized = 0,
         Default = 1,
     }
 

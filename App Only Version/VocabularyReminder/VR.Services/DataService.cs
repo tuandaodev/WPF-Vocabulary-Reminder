@@ -119,7 +119,7 @@ namespace VR.Services
         public static async Task<bool> AddVocabularyMappingAsync(int dicId, int vocaId)
         {
             // Set default dic to "Default"
-            if (dicId < 1)
+            if (dicId < (int)DictionaryConsts.Uncategorized)
                 dicId = (int)DictionaryConsts.Default;
 
             using (var context = new VocaDbContext())
@@ -222,7 +222,7 @@ namespace VR.Services
             {
                 var query = context.Vocabularies.AsQueryable();
                 // Apply dictionary filter if specified
-                if (dicId > 0)
+                if (dicId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
@@ -243,7 +243,7 @@ namespace VR.Services
             {
                 var query = context.Vocabularies.AsQueryable();
                 // Apply dictionary filter if specified
-                if (dicId > 0)
+                if (dicId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
@@ -258,7 +258,7 @@ namespace VR.Services
             }
         }
 
-        public static StatDtos GetStats(int dictionaryId = 0)
+        public static StatDtos GetStats(int dictionaryId = (int)DictionaryConsts.All)
         {
             try
             {
@@ -270,7 +270,7 @@ namespace VR.Services
                         Remembered = context.Vocabularies.Count(v => v.Status == 1 && v.ReviewCount > 0)
                     };
 
-                    if (dictionaryId > 0)
+                    if (dictionaryId > (int)DictionaryConsts.All)
                     {
                         stats.DictionaryLearned = context.VocabularyMappings
                             .Count(vm => vm.DictionaryId == dictionaryId && vm.Vocabulary.Status == 1 && vm.Vocabulary.ReviewCount > 0);
@@ -318,7 +318,7 @@ namespace VR.Services
             {
                 var query = context.Vocabularies.AsQueryable();
                 // Apply dictionary filter if specified
-                if (dicId > 0)
+                if (dicId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
@@ -334,7 +334,7 @@ namespace VR.Services
             {
                 var query = context.Vocabularies.AsQueryable();
                 // Apply dictionary filter if specified
-                if (dicId > 0)
+                if (dicId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
@@ -349,7 +349,7 @@ namespace VR.Services
             {
                 var query = context.Vocabularies.AsQueryable();
                 // Apply dictionary filter if specified
-                if (dicId > 0)
+                if (dicId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dicId));
@@ -366,7 +366,7 @@ namespace VR.Services
                 long currentTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
                 // Apply dictionary filter if specified
-                if (dictionaryId > 0)
+                if (dictionaryId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
@@ -392,7 +392,7 @@ namespace VR.Services
                 var query = context.Vocabularies.AsQueryable();
 
                 // Apply dictionary filter if specified
-                if (dictionaryId > 0)
+                if (dictionaryId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));

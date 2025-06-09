@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Common;
 using VR.Domain.Models;
 
 namespace VR.Services
@@ -47,7 +48,7 @@ namespace VR.Services
                         newWords.Add(newVocaId);
                         // Map to dictionary if successful
                         var dicId = await DataService.GetDictionaryIdByVocabularyIdAsync(_item.Id);
-                        if (dicId > 0)
+                        if (dicId > (int)DictionaryConsts.All)
                             await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
                     }
                 }

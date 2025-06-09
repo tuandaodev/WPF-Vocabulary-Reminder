@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using VocabularyReminder.VR.Common;
 using VR.Domain;
 using VR.Dto;
 using VR.Utils;
@@ -18,7 +19,7 @@ namespace VR.Services
                 var query = context.Vocabularies.AsQueryable();
 
                 // Apply dictionary filter if specified
-                if (dictionaryId > 0)
+                if (dictionaryId > (int)DictionaryConsts.All)
                 {
                     query = query.Where(v => context.VocabularyMappings
                         .Any(m => m.VocabularyId == v.Id && m.DictionaryId == dictionaryId));
