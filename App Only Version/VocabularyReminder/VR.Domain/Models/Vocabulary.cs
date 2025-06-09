@@ -61,9 +61,15 @@ namespace VR.Domain.Models
         [MaxLength(2048)]
         public string Example2 { get; set; }
 
+        /// <summary>
+        /// UK Sound
+        /// </summary>
         [MaxLength(2048)]
         public string PlayURL { get; set; }
 
+        /// <summary>
+        /// US Sound
+        /// </summary>
         [MaxLength(2048)]
         public string PlayURL2 { get; set; }
 

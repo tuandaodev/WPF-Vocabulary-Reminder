@@ -4,15 +4,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 using VocabularyReminder.VR.Common;
+using VocabularyReminder.VR.Services;
 using VR.Domain.Models;
 using VR.Services;
-using Application = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace VR
 {
@@ -485,13 +483,7 @@ namespace VR
             {
                 try
                 {
-                    if (!string.IsNullOrEmpty(_currentVocabulary.PlayURL2))
-                    {
-                        await Mp3Service.PlayFileAsync(_currentVocabulary.PlayURL2);
-                    } else
-                    {
-                        await TextToSpeechService.SpeakTextAsync(_currentVocabulary.Word);
-                    }
+                    await GlobalVocabularyService.PlaySoundAsync(_currentVocabulary);
                 }
                 catch (Exception ex)
                 {

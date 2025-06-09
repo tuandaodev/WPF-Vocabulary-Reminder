@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VocabularyReminder.VR.Common;
+using VocabularyReminder.VR.Services;
 using VocabularyReminder.VR.Utils;
 using VR.Domain.Models;
 using VR.Utils;
@@ -86,9 +87,7 @@ namespace VR.Services
                 VocabularyDisplayService.ShowVocabulary(_item);
                 
                 if (App.isAutoPlaySounds)
-                {
-                    await Mp3Service.PlayFileAsync(_item);
-                }
+                    await GlobalVocabularyService.PlaySoundAsync(_item);
 
                 //_item.ViewedDate = DateTime.Now.ToUnixTimeInSeconds();
                 //await DataService.UpdateViewDateAsync(App.GlobalWordId);

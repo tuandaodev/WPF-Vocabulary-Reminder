@@ -14,22 +14,20 @@ namespace VR.Services
         public static WMPLib.WindowsMediaPlayer Player;
         public static SpeechSynthesizer SpeechSynthesizer;
 
-        public static async Task PlayFileAsync(Vocabulary item)
+        public static void PlayFile(Vocabulary item)
         {
             if (item == null || item.Id == 0)
                 return;
 
-            string _mp3Url = item.PlayURL2;
-            if (item?.JsonData[0]?.Source == SourceVocabulary.Oxford.GetDescription() 
+            string _mp3Url = item.PlayURL2;  // US sound
+            if (item?.JsonData[0]?.Source == SourceVocabulary.Oxford.GetDescription()
                 && !string.IsNullOrEmpty(_mp3Url) && !_mp3Url.StartsWith("http"))
             {
                 _mp3Url = "https://www.oxfordlearnersdictionaries.com" + _mp3Url;
             }
 
             if (!string.IsNullOrEmpty(_mp3Url))
-                _ = Task.Run(() => Mp3Service.PlayFileAsync(_mp3Url));
-
-            await PlayFileAsync(_mp3Url);
+                _ = Task.Run(() => PlayFileAsync(_mp3Url));
         }
 
         public static async Task PlayFileAsync(string url)

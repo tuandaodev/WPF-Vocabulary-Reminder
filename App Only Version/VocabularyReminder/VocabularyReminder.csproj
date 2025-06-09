@@ -136,6 +136,7 @@
     <Compile Include="StatsWindow.xaml.cs">
       <DependentUpon>StatsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="VR.Services\GlobalVocabularyService.cs" />
     <Compile Include="VR.Services\LLM\AIApiTestService.cs" />
     <Compile Include="VR.Services\LLM\ChatGPTProvider.cs" />
     <Compile Include="VR.Services\LLM\GeminiProvider.cs" />
