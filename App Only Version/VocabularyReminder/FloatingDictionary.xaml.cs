@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,12 +20,20 @@ namespace VR
     {
         #region Constants
         
-        private const int MIN_WORD_LENGTH = 1;
+        private const int MIN_WORD_LENGTH = 2;
         private const int MAX_WORD_LENGTH = 50;
         private const int CLIPBOARD_CHECK_INTERVAL = 500;
-        private const double LETTER_THRESHOLD = 0.7;
-        private const int MAX_WORD_COUNT = 2;
+        private const double LETTER_THRESHOLD = 0.75;
+        private const int MAX_WORD_COUNT = 3;
         private const string PLACEHOLDER_TEXT = "Type word here or select text from any application...";
+        
+        // Regex patterns for better word detection
+        private static readonly Regex VALID_WORD_PATTERN = new Regex(@"^[a-zA-Z]([a-zA-Z\-'\.]*[a-zA-Z])?$", RegexOptions.Compiled);
+        private static readonly Regex COMMON_PREFIXES = new Regex(@"^(un|re|pre|dis|over|under|out|up|in|im|non|anti|de|pro|sub|super|trans|inter|multi|auto|co|ex|post|semi)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex COMMON_SUFFIXES = new Regex(@"(ing|ed|er|est|ly|tion|sion|ness|ment|able|ible|ful|less|ous|ive|al|ic|acy|ity|ism|ist|ship|ward|wise|like)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        
+        // Words to exclude from auto-lookup
+        private static readonly string[] EXCLUDED_WORDS = { "the", "and", "or", "but", "for", "nor", "so", "yet", "a", "an", "to", "of", "in", "on", "at", "by", "with", "from", "as", "is", "was", "are", "were", "be", "been", "have", "has", "had", "do", "does", "did", "will", "would", "could", "should", "may", "might", "can", "must", "shall", "i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "his", "our", "their", "this", "that", "these", "those" };
         
         #endregion
 
@@ -139,45 +148,127 @@ namespace VR
 
         private bool IsValidClipboardText(string text)
         {
-            return !string.IsNullOrEmpty(text) &&
-                   text != _lastClipboardText &&
-                   text.Length <= MAX_WORD_LENGTH &&
-                   !text.Contains("\n") &&
-                   IsLikelyWord(text);
+            if (string.IsNullOrEmpty(text) || text == _lastClipboardText)
+                return false;
+
+            // Basic length and format checks
+            if (text.Length < MIN_WORD_LENGTH || text.Length > MAX_WORD_LENGTH)
+                return false;
+
+            // Remove common issues with clipboard text
+            text = CleanClipboardText(text);
+
+            // Check for multi-line text or excessive whitespace
+            if (text.Contains("\n") || text.Contains("\r") || text.Split(' ').Length > MAX_WORD_COUNT)
+                return false;
+
+            // Check if it's likely a word or phrase
+            return IsLikelyWord(text);
         }
 
         private static bool IsAutoLookupCandidate(string text)
         {
-            return text.Split(' ').Length <= MAX_WORD_COUNT;
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            var words = text.Split(new char[] { ' ', '\t', '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            // Check word count
+            if (words.Length > MAX_WORD_COUNT)
+                return false;
+
+            // For single words, check if it's not a common word
+            if (words.Length == 1)
+            {
+                string word = words[0].ToLower();
+                return !EXCLUDED_WORDS.Contains(word) && IsValidWordStructure(word);
+            }
+
+            // For phrases, ensure all words are valid
+            return words.All(w => IsValidWordStructure(w) && w.Length >= MIN_WORD_LENGTH);
         }
 
         private static bool IsLikelyWord(string text)
         {
-            if (string.IsNullOrWhiteSpace(text)) return false;
+            if (string.IsNullOrWhiteSpace(text))
+                return false;
+
+            // Split into words for phrase analysis
+            var words = text.Split(new char[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             
-            int letterCount = text.Count(char.IsLetter);
-            return letterCount > text.Length * LETTER_THRESHOLD;
+            if (words.Length == 0)
+                return false;
+
+            // Check each word individually
+            foreach (var word in words)
+            {
+                if (!IsValidWordStructure(word))
+                    return false;
+            }
+
+            return true;
         }
 
-
-
-        private void ShowAndFocusWindow()
+        private static bool IsValidWordStructure(string word)
         {
-            Show();
-            Activate();
-            Focus();
+            if (string.IsNullOrWhiteSpace(word) || word.Length < MIN_WORD_LENGTH)
+                return false;
+
+            // Check letter ratio
+            int letterCount = word.Count(char.IsLetter);
+            if (letterCount < word.Length * LETTER_THRESHOLD)
+                return false;
+
+            // Use regex pattern for basic word structure
+            if (!VALID_WORD_PATTERN.IsMatch(word))
+                return false;
+
+            // Additional checks for word-like patterns
+            return HasValidWordPattern(word);
+        }
+
+        private static bool HasValidWordPattern(string word)
+        {
+            // Check for common word patterns
+            string lowerWord = word.ToLower();
+
+            // Allow words with common prefixes or suffixes
+            if (COMMON_PREFIXES.IsMatch(lowerWord) || COMMON_SUFFIXES.IsMatch(lowerWord))
+                return true;
+
+            // Check for reasonable vowel distribution
+            int vowelCount = lowerWord.Count(c => "aeiou".Contains(c));
+            double vowelRatio = (double)vowelCount / word.Length;
             
-            _clipboardTimer?.Start();
-            
-            try
+            // Words should have reasonable vowel distribution (20-60%)
+            if (vowelRatio < 0.2 || vowelRatio > 0.6)
+                return false;
+
+            // Check for excessive repeated characters
+            for (int i = 0; i < word.Length - 2; i++)
             {
-                Txt_Input.Focus();
-                Txt_Input.SelectAll();
+                if (word[i] == word[i + 1] && word[i] == word[i + 2])
+                    return false; // Three consecutive identical characters
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to focus input: {ex.Message}");
-            }
+
+            return true;
+        }
+
+        private static string CleanClipboardText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+
+            // Remove leading/trailing whitespace and common formatting
+            text = text.Trim();
+
+            // Remove common punctuation that might be accidentally selected
+            text = text.Trim(new char[] { '.', ',', ';', ':', '!', '?', '"', '\'', '(', ')', '[', ']', '{', '}', '<', '>', '/', '\\', '|', '*', '+', '=', '_', '~', '`' });
+
+            // Remove extra whitespace
+            text = Regex.Replace(text, @"\s+", " ");
+
+            return text.Trim();
         }
 
         private async Task LookupWordAsync(string word)
@@ -236,6 +327,7 @@ namespace VR
             Lbl_Word.Text = vocab.Word;
             Lbl_Type.Text = vocab.Type ?? "";
             Lbl_IPA.Text = vocab.Ipa ?? "";
+            Lbl_Example.Text = "";
             Panel_WordInfo.Visibility = Visibility.Visible;
             
             // Display translation
