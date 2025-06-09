@@ -487,7 +487,7 @@ namespace VR.Services
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 };
-                item.Data = JsonConvert.SerializeObject(extendedData, jsonSettings);
+                item.Data = JsonConvert.SerializeObject(new List<ExtendedWordDataModel>() { extendedData }, jsonSettings);
 
                 await DataService.UpdateVocabularyAsync(item);
             }

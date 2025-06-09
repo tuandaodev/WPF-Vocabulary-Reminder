@@ -145,6 +145,7 @@ namespace VR.Services
 
         public static async Task UpdateVocabularyAsync(Vocabulary item)
         {
+            if (item.Id <= 0) return;
             using (var context = new VocaDbContext())
             {
                 await context.SingleUpdateAsync(item);

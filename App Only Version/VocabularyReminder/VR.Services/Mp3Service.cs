@@ -16,7 +16,7 @@ namespace VR.Services
 
         public static void PlayFile(Vocabulary item)
         {
-            if (item == null || item.Id == 0)
+            if (item == null || string.IsNullOrWhiteSpace(item.PlayURL2))
                 return;
 
             string _mp3Url = item.PlayURL2;  // US sound
