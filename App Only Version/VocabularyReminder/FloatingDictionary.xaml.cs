@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -10,7 +9,6 @@ using VocabularyReminder.VR.Common;
 using VocabularyReminder.VR.Services;
 using VR.Domain.Models;
 using VR.Services;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace VR
 {
@@ -19,41 +17,25 @@ namespace VR
     /// </summary>
     public partial class FloatingDictionary : Window
     {
-        #region Win32 API for Global Hotkey and Clipboard
+        #region Constants
         
-        [DllImport("user32.dll")]
-        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [DllImport("user32.dll")]
-        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetFocus();
-
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-
-        private const int HOTKEY_ID = 9000;
-        private const uint MOD_CTRL = 0x0002;
-        private const uint MOD_SHIFT = 0x0004;
-        private const uint VK_Q = 0x51; // 'Q' key
-        private const uint WM_COPY = 0x0301;
-
+        private const int MIN_WORD_LENGTH = 1;
+        private const int MAX_WORD_LENGTH = 50;
+        private const int CLIPBOARD_CHECK_INTERVAL = 500;
+        private const double LETTER_THRESHOLD = 0.7;
+        private const int MAX_WORD_COUNT = 2;
+        private const string PLACEHOLDER_TEXT = "Type word here or select text from any application...";
+        
         #endregion
 
-        private bool _isPinned = false;
-        private string _lastClipboardText = "";
+        #region Private Fields
+        
+        private bool _isPinned;
+        private string _lastClipboardText = string.Empty;
         private DispatcherTimer _clipboardTimer;
         private Vocabulary _currentVocabulary;
+        
+        #endregion
 
         public FloatingDictionary()
         {
@@ -67,154 +49,135 @@ namespace VR
 
         private void FloatingDictionary_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (this.IsVisible)
+            if (IsVisible)
             {
-                // Start clipboard monitoring when window becomes visible
                 _clipboardTimer?.Start();
             }
             else
             {
-                // Stop clipboard monitoring when window is hidden to save resources
                 _clipboardTimer?.Stop();
             }
         }
 
         private void InitializeWindow()
         {
-            // Position window at bottom-right corner
-            this.WindowStartupLocation = WindowStartupLocation.Manual;
-            this.Left = SystemParameters.PrimaryScreenWidth - this.Width - 20;
-            this.Top = SystemParameters.PrimaryScreenHeight - this.Height - 60;
-            
-            // Set initial state
-            this.Topmost = true;
-            this.ShowActivated = false;
-            
-            // Setup placeholder text behavior
-            Txt_Input.GotFocus += (s, e) =>
+            SetWindowPosition();
+            SetWindowProperties();
+            SetupPlaceholderText();
+        }
+
+        private void SetWindowPosition()
+        {
+            WindowStartupLocation = WindowStartupLocation.Manual;
+            Left = SystemParameters.PrimaryScreenWidth - Width - 20;
+            Top = SystemParameters.PrimaryScreenHeight - Height - 60;
+        }
+
+        private void SetWindowProperties()
+        {
+            Topmost = true;
+            ShowActivated = false;
+        }
+
+        private void SetupPlaceholderText()
+        {
+            Txt_Input.GotFocus += OnInputGotFocus;
+            Txt_Input.LostFocus += OnInputLostFocus;
+        }
+
+        private void OnInputGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (Txt_Input.Text == PLACEHOLDER_TEXT)
             {
-                if (Txt_Input.Text == "Type word here or select text from any application...")
-                {
-                    Txt_Input.Text = "";
-                    Txt_Input.Foreground = System.Windows.Media.Brushes.White;
-                }
-            };
-            
-            Txt_Input.LostFocus += (s, e) =>
+                Txt_Input.Text = string.Empty;
+                Txt_Input.Foreground = System.Windows.Media.Brushes.White;
+            }
+        }
+
+        private void OnInputLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Txt_Input.Text))
             {
-                if (string.IsNullOrWhiteSpace(Txt_Input.Text))
-                {
-                    Txt_Input.Text = "Type word here or select text from any application...";
-                    Txt_Input.Foreground = System.Windows.Media.Brushes.Gray;
-                }
-            };
+                Txt_Input.Text = PLACEHOLDER_TEXT;
+                Txt_Input.Foreground = System.Windows.Media.Brushes.Gray;
+            }
         }
 
         private void SetupClipboardMonitoring()
         {
-            // Monitor clipboard changes
-            _clipboardTimer = new DispatcherTimer();
-            _clipboardTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _clipboardTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(CLIPBOARD_CHECK_INTERVAL)
+            };
             _clipboardTimer.Tick += ClipboardTimer_Tick;
-            // Don't start timer here - it will be started when window becomes visible
         }
 
-        private void ClipboardTimer_Tick(object sender, EventArgs e)
+        private async void ClipboardTimer_Tick(object sender, EventArgs e)
         {
             try
             {
-                if (System.Windows.Clipboard.ContainsText())
+                if (!System.Windows.Clipboard.ContainsText()) return;
+
+                string clipboardText = System.Windows.Clipboard.GetText().Trim();
+                
+                if (IsValidClipboardText(clipboardText))
                 {
-                    string clipboardText = System.Windows.Clipboard.GetText().Trim();
+                    _lastClipboardText = clipboardText;
                     
-                    // Check if it's a single word or short phrase and different from last time
-                    if (!string.IsNullOrEmpty(clipboardText) && 
-                        clipboardText != _lastClipboardText &&
-                        clipboardText.Length <= 50 && 
-                        !clipboardText.Contains("\n") &&
-                        IsLikelyWord(clipboardText))
+                    if (IsAutoLookupCandidate(clipboardText))
                     {
-                        _lastClipboardText = clipboardText;
-                        
-                        // Auto-lookup if it's a single word
-                        if (clipboardText.Split(' ').Length <= 2)
-                        {
-                            Txt_Input.Text = clipboardText;
-                            _ = LookupWordAsync(clipboardText);
-                        }
+                        Txt_Input.Text = clipboardText;
+                        await LookupWordAsync(clipboardText);
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Silently handle clipboard access errors
                 Debug.WriteLine($"Clipboard monitoring error: {ex.Message}");
             }
         }
 
-        private bool IsLikelyWord(string text)
+        private bool IsValidClipboardText(string text)
         {
-            // Simple check to see if text looks like a word
+            return !string.IsNullOrEmpty(text) &&
+                   text != _lastClipboardText &&
+                   text.Length <= MAX_WORD_LENGTH &&
+                   !text.Contains("\n") &&
+                   IsLikelyWord(text);
+        }
+
+        private static bool IsAutoLookupCandidate(string text)
+        {
+            return text.Split(' ').Length <= MAX_WORD_COUNT;
+        }
+
+        private static bool IsLikelyWord(string text)
+        {
             if (string.IsNullOrWhiteSpace(text)) return false;
             
-            // Should contain mostly letters
-            int letterCount = 0;
-            foreach (char c in text)
-            {
-                if (char.IsLetter(c)) letterCount++;
-            }
-            
-            return letterCount > text.Length * 0.7; // At least 70% letters
+            int letterCount = text.Count(char.IsLetter);
+            return letterCount > text.Length * LETTER_THRESHOLD;
         }
 
 
-        private async Task CaptureSelectedText()
-        {
-            try
-            {
-                // Send Ctrl+C to copy selected text
-                System.Windows.Forms.SendKeys.SendWait("^c");
-                
-                // Wait a bit for clipboard to update
-                await Task.Delay(100);
-                
-                if (System.Windows.Clipboard.ContainsText())
-                {
-                    string selectedText = System.Windows.Clipboard.GetText().Trim();
-                    if (!string.IsNullOrEmpty(selectedText) && selectedText.Length <= 50)
-                    {
-                        Txt_Input.Text = selectedText;
-                        await LookupWordAsync(selectedText);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to capture selected text: {ex.Message}");
-            }
-        }
 
         private void ShowAndFocusWindow()
         {
-            this.Show();
-            this.Activate();
-            this.Focus();
+            Show();
+            Activate();
+            Focus();
             
-            // Start clipboard monitoring when showing window
             _clipboardTimer?.Start();
             
-            // Focus and select text input (these will work once XAML is properly compiled)
             try
             {
-                // Use FindName to get controls if direct references don't work
-                var txtInput = this.FindName("Txt_Input") as System.Windows.Controls.TextBox;
-                if (txtInput != null)
-                {
-                    txtInput.Focus();
-                    txtInput.SelectAll();
-                }
+                Txt_Input.Focus();
+                Txt_Input.SelectAll();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to focus input: {ex.Message}");
+            }
         }
 
         private async Task LookupWordAsync(string word)
