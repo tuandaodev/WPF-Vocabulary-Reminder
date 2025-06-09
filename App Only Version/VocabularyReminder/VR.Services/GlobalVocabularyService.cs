@@ -6,6 +6,10 @@ namespace VocabularyReminder.VR.Services
 {
     public class GlobalVocabularyService
     {
+
+        /// <summary>
+        /// Global function to play audio, try to play from mp3 from oxford, then callback to Google Translate voice
+        /// </summary>
         public static async Task PlaySoundAsync(Vocabulary item)
         {
             if (!string.IsNullOrEmpty(item.PlayURL2))

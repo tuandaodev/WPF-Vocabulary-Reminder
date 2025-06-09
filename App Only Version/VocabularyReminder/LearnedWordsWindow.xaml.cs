@@ -202,7 +202,7 @@ namespace VR
                 var vocabulary = await DataService.GetVocabularyByIdAsync(vocaInfo.Id);
                 if (vocabulary != null)
                 {
-                    App.GlobalWordId = vocabulary.Id;
+                    //App.GlobalWordId = vocabulary.Id;
                     var vocaPopup = new VocaPopup();
                     vocaPopup.SetVocabulary(vocabulary);
                     vocaPopup.Show();

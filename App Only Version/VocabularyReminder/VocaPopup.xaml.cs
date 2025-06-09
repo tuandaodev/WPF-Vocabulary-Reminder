@@ -85,6 +85,7 @@ namespace VR
         public void SetVocabulary(Vocabulary item)
         {
             _vocabulary = item ?? throw new ArgumentNullException(nameof(item));
+            App.GlobalWordId = _vocabulary.Id;
             InitializeData();
             MappingDisplay();
         }

@@ -396,11 +396,31 @@ namespace VR
 
         #region Event Handlers
 
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            switch (e.ChangedButton)
             {
-                this.DragMove();
+                case MouseButton.Left:
+                    this.DragMove();
+                    break;
+                case MouseButton.XButton1://Back button
+                    // Check if Shift key is pressed
+                    if (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift))
+                    {
+                        // Play example text when Shift+XButton1 is pressed
+                        _ = TextToSpeechService.SpeakTextAsync(Lbl_Example.Text);
+                    }
+                    else
+                    {
+                        // Normal XButton1 behavior - play US pronunciation
+                        await PlaySoundAsync();
+                    }
+                    break;
+                case MouseButton.XButton2://forward button
+                    _ = TextToSpeechService.SpeakTextAsync(Lbl_Example.Text);
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -479,6 +499,11 @@ namespace VR
 
         private async void Btn_Speak_Click(object sender, RoutedEventArgs e)
         {
+            await PlaySoundAsync();
+        }
+
+        private async Task PlaySoundAsync()
+        {
             if (_currentVocabulary != null && !string.IsNullOrEmpty(_currentVocabulary.Word))
             {
                 try
@@ -498,14 +523,14 @@ namespace VR
         {
             // Cleanup
             _clipboardTimer?.Stop();
-            
+
             try
             {
                 var helper = new System.Windows.Interop.WindowInteropHelper(this);
                 UnregisterHotKey(helper.Handle, HOTKEY_ID);
             }
             catch { }
-            
+
             base.OnClosed(e);
         }
     }
