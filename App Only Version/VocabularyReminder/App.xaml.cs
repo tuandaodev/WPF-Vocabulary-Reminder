@@ -11,16 +11,11 @@ namespace VR
     /// </summary>
     public partial class App : Application
     {
-        // Single instance of FloatingDictionary for global hotkey access
-        public static FloatingDictionary GlobalFloatingDictionary { get; private set; }
 
         protected override void OnExit(ExitEventArgs e)
         {
             // Clear cached data when application exits
             CacheService.Clear();
-            
-            // Clean up FloatingDictionary if it exists
-            GlobalFloatingDictionary?.Close();
             
             base.OnExit(e);
         }
@@ -37,58 +32,10 @@ namespace VR
         public static bool isUseCustomPopup = false;
         public static DateTime LastReaction;
 
-        /// <summary>
-        /// Gets or creates the global FloatingDictionary instance
-        /// </summary>
-        public static FloatingDictionary GetFloatingDictionary()
-        {
-            if (GlobalFloatingDictionary == null || !GlobalFloatingDictionary.IsLoaded)
-            {
-                GlobalFloatingDictionary = new FloatingDictionary();
-            }
-            return GlobalFloatingDictionary;
-        }
-
-        /// <summary>
-        /// Toggles the FloatingDictionary window visibility
-        /// </summary>
-        public static void ToggleFloatingDictionary()
-        {
-            var floatingDict = GetFloatingDictionary();
-            if (floatingDict.IsVisible)
-            {
-                floatingDict.Hide();
-            }
-            else
-            {
-                floatingDict.Show();
-                floatingDict.Activate();
-                floatingDict.Focus();
-            }
-        }
-
-        /// <summary>
-        /// Shows the FloatingDictionary window and focuses it
-        /// </summary>
-        public static void ShowFloatingDictionary()
-        {
-            var floatingDict = GetFloatingDictionary();
-            if (!floatingDict.IsVisible)
-            {
-                floatingDict.Show();
-            }
-            floatingDict.Activate();
-            floatingDict.Focus();
-        }
-
         protected override void OnStartup(StartupEventArgs e)
         {
             ForceRestoreIfNeeded();
             DataService.InitializeDatabase();
-            
-            // Initialize the global FloatingDictionary instance early
-            // This ensures the global hotkey (Ctrl+Shift+Q) is registered
-            GetFloatingDictionary();
             
             new MainWindow().Show();
             base.OnStartup(e);

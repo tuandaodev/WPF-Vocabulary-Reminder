@@ -61,16 +61,8 @@ namespace VR
             InitializeWindow();
             SetupClipboardMonitoring();
             
-            // Register hotkey after window is loaded
-            this.Loaded += FloatingDictionary_Loaded;
-            
             // Start/stop clipboard monitoring based on window visibility
             this.IsVisibleChanged += FloatingDictionary_IsVisibleChanged;
-        }
-
-        private void FloatingDictionary_Loaded(object sender, RoutedEventArgs e)
-        {
-            RegisterGlobalHotkey();
         }
 
         private void FloatingDictionary_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -175,44 +167,6 @@ namespace VR
             return letterCount > text.Length * 0.7; // At least 70% letters
         }
 
-        private void RegisterGlobalHotkey()
-        {
-            try
-            {
-                var helper = new System.Windows.Interop.WindowInteropHelper(this);
-                var source = System.Windows.Interop.HwndSource.FromHwnd(helper.Handle);
-                source.AddHook(WndProc);
-                
-                // Register Ctrl+Shift+D hotkey
-                RegisterHotKey(helper.Handle, HOTKEY_ID, MOD_CTRL | MOD_SHIFT, VK_Q);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to register hotkey: {ex.Message}");
-            }
-        }
-
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            const int WM_HOTKEY = 0x0312;
-            
-            if (msg == WM_HOTKEY && wParam.ToInt32() == HOTKEY_ID)
-            {
-                // Hotkey pressed - toggle window visibility
-                if (this.IsVisible)
-                {
-                    this.Hide();
-                }
-                else
-                {
-                    ShowAndFocusWindow();
-                    _ = CaptureSelectedText();
-                }
-                handled = true;
-            }
-            
-            return IntPtr.Zero;
-        }
 
         private async Task CaptureSelectedText()
         {
@@ -523,13 +477,6 @@ namespace VR
         {
             // Cleanup
             _clipboardTimer?.Stop();
-
-            try
-            {
-                var helper = new System.Windows.Interop.WindowInteropHelper(this);
-                UnregisterHotKey(helper.Handle, HOTKEY_ID);
-            }
-            catch { }
 
             base.OnClosed(e);
         }

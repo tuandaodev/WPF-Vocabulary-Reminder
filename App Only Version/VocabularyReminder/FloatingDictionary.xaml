@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Floating Dictionary"
         Width="400"
-        Height="300"
+        Height="400"
         MinWidth="350"
         MinHeight="250"
         Background="#1E1E1E"

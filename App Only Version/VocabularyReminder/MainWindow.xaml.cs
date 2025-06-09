@@ -52,10 +52,14 @@ namespace VR
             
             _windowHandle = new WindowInteropHelper(this).Handle;
             _source = HwndSource.FromHwnd(_windowHandle);
+            
+            // Register FloatingDictionary hotkey immediately when app starts
+            RegisterFloatingDictionaryHotKey();
         }
 
         private bool _isHotKeyRegister = false;
         private List<Vocabulary> _vocabularies = new List<Vocabulary>();
+        private FloatingDictionary _floatingDictionary;
 
         private void RegisterHotKeys()
         {
@@ -80,16 +84,37 @@ namespace VR
             
         }
 
+        private void RegisterFloatingDictionaryHotKey()
+        {
+            if (_windowHandle == IntPtr.Zero) return;
+            
+            // Set up the hook if not already done
+            if (!_isHotKeyRegister)
+            {
+                _isHotKeyRegister = true;
+                _source.AddHook(HwndHook);
+            }
+            
+            _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 8, (int)(KeyModifier.Control | KeyModifier.Shift), 0x51);  // Toggle FloatingDictionary (Q key = 0x51)
+        }
+
         private void UnRegisterHotKeys()
         {
             if (!_isHotKeyRegister) return;
 
-            _isHotKeyRegister = false;
-            _source.RemoveHook(HwndHook);
+            // Only unregister the main learning hotkeys, keep the hook for FloatingDictionary
             for (int i = HOTKEY_ID; i <= HOTKEY_ID + 7; i++)
             {
                 UnregisterHotKey(_windowHandle, i);
             }
+            
+            // Don't remove the hook or set _isHotKeyRegister to false
+            // because FloatingDictionary hotkey still needs them
+        }
+
+        private void UnRegisterFloatingDictionaryHotKey()
+        {
+            UnregisterHotKey(_windowHandle, HOTKEY_ID + 8);
         }
 
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -143,6 +168,11 @@ namespace VR
                         //    _ = BackgroundService.NextAndDeleteVocabulary();
                         //    handled = true;
                         //    break;
+                        case HOTKEY_ID + 8: // Ctrl+Shift+Q
+                            App.LastReaction = DateTime.Now;
+                            ToggleFloatingDictionary();
+                            handled = true;
+                            break;
                     }
                     break;
             }
@@ -810,7 +840,22 @@ namespace VR
         {
             if (_TokenSource != null) _TokenSource.Cancel();
             VocabularyDisplayService.Hide();
-            UnRegisterHotKeys();
+            
+            // When window is closing, clean up everything properly
+            if (_isHotKeyRegister)
+            {
+                _isHotKeyRegister = false;
+                _source.RemoveHook(HwndHook);
+                
+                // Unregister all hotkeys including FloatingDictionary
+                for (int i = HOTKEY_ID; i <= HOTKEY_ID + 8; i++)
+                {
+                    UnregisterHotKey(_windowHandle, i);
+                }
+            }
+            
+            // Clean up FloatingDictionary
+            _floatingDictionary?.Close();
             
             // Close all other windows when MainWindow is closing
             foreach (Window window in Application.Current.Windows)
@@ -996,7 +1041,37 @@ namespace VR
 
         private void Btn_FloatingDict_Click(object sender, RoutedEventArgs e)
         {
-            App.ToggleFloatingDictionary();
+            ToggleFloatingDictionary();
+        }
+
+        /// <summary>
+        /// Gets or creates the FloatingDictionary instance
+        /// </summary>
+        private FloatingDictionary GetFloatingDictionary()
+        {
+            if (_floatingDictionary == null || !_floatingDictionary.IsLoaded)
+            {
+                _floatingDictionary = new FloatingDictionary();
+            }
+            return _floatingDictionary;
+        }
+
+        /// <summary>
+        /// Toggles the FloatingDictionary window visibility
+        /// </summary>
+        private void ToggleFloatingDictionary()
+        {
+            var floatingDict = GetFloatingDictionary();
+            if (floatingDict.IsVisible)
+            {
+                floatingDict.Hide();
+            }
+            else
+            {
+                floatingDict.Show();
+                floatingDict.Activate();
+                floatingDict.Focus();
+            }
         }
     }
 
