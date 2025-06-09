@@ -391,7 +391,11 @@ namespace VR
 
                 foreach (var word in existWords.Where(x => x.Status == 1))
                 {
-                    await DataService.AddVocabularyMappingAsync(dicId, word.Id);
+                    // Check if mapping already exists before adding
+                    if (!await DataService.VocabularyMappingExistsAsync(dicId, word.Id))
+                    {
+                        await DataService.AddVocabularyMappingAsync(dicId, word.Id);
+                    }
                 }
 
                 if (!newWords.Any())
@@ -446,7 +450,11 @@ namespace VR
                             
                             if (newVocaId > 0)
                             {
-                                await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
+                                // Check if mapping already exists before adding
+                                if (!await DataService.VocabularyMappingExistsAsync(dicId, newVocaId))
+                                {
+                                    await DataService.AddVocabularyMappingAsync(dicId, newVocaId);
+                                }
                                 CountSuccess++;
                             }
                             Status_UpdateProgressBar(++Count, TotalWords);

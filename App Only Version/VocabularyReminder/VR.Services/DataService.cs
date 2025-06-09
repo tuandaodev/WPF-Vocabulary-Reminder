@@ -134,6 +134,15 @@ namespace VR.Services
             }
         }
 
+        public static async Task<bool> VocabularyMappingExistsAsync(int dicId, int vocaId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                return await context.VocabularyMappings
+                    .AnyAsync(m => m.DictionaryId == dicId && m.VocabularyId == vocaId);
+            }
+        }
+
         public static async Task UpdateVocabularyAsync(Vocabulary item)
         {
             using (var context = new VocaDbContext())
