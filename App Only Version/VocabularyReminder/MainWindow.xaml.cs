@@ -984,6 +984,12 @@ namespace VR
             var statsWindow = new StatsWindow();
             statsWindow.ShowDialog();
         }
+
+        private void Btn_FloatingDict_Click(object sender, RoutedEventArgs e)
+        {
+            var floatingDict = new FloatingDictionary();
+            floatingDict.Show();
+        }
     }
 
 }

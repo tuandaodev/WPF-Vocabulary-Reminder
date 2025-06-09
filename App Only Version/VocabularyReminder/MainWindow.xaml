@@ -126,6 +126,11 @@
                                 Click="Btn_Stats_Click"
                                 Margin="0,0,0,10"/>
             
+            <Button x:Name="Btn_FloatingDict"
+                                Content="Floating Dictionary"
+                                Click="Btn_FloatingDict_Click"
+                                Margin="0,0,0,10"/>
+            
         </StackPanel>
 
         <!-- Bottom Controls -->

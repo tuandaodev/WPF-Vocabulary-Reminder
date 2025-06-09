@@ -165,6 +165,9 @@
     <Compile Include="VocaPopup.xaml.cs">
       <DependentUpon>VocaPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FloatingDictionary.xaml.cs">
+      <DependentUpon>FloatingDictionary.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ContentDisplayWindow.xaml.cs">
       <DependentUpon>ContentDisplayWindow.xaml</DependentUpon>
     </Compile>
@@ -202,6 +205,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="VocaPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FloatingDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
