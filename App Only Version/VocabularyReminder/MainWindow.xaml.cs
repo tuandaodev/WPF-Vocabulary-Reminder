@@ -77,6 +77,7 @@ namespace VR
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
+            
         }
 
         private void UnRegisterHotKeys()
@@ -995,8 +996,7 @@ namespace VR
 
         private void Btn_FloatingDict_Click(object sender, RoutedEventArgs e)
         {
-            var floatingDict = new FloatingDictionary();
-            floatingDict.Show();
+            App.ToggleFloatingDictionary();
         }
     }
 

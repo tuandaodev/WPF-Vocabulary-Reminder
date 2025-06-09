@@ -45,7 +45,7 @@ namespace VR
         private const int HOTKEY_ID = 9000;
         private const uint MOD_CTRL = 0x0002;
         private const uint MOD_SHIFT = 0x0004;
-        private const uint VK_D = 0x44; // 'D' key
+        private const uint VK_Q = 0x51; // 'Q' key
         private const uint WM_COPY = 0x0301;
 
         #endregion
@@ -60,7 +60,31 @@ namespace VR
             InitializeComponent();
             InitializeWindow();
             SetupClipboardMonitoring();
+            
+            // Register hotkey after window is loaded
+            this.Loaded += FloatingDictionary_Loaded;
+            
+            // Start/stop clipboard monitoring based on window visibility
+            this.IsVisibleChanged += FloatingDictionary_IsVisibleChanged;
+        }
+
+        private void FloatingDictionary_Loaded(object sender, RoutedEventArgs e)
+        {
             RegisterGlobalHotkey();
+        }
+
+        private void FloatingDictionary_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (this.IsVisible)
+            {
+                // Start clipboard monitoring when window becomes visible
+                _clipboardTimer?.Start();
+            }
+            else
+            {
+                // Stop clipboard monitoring when window is hidden to save resources
+                _clipboardTimer?.Stop();
+            }
         }
 
         private void InitializeWindow()
@@ -100,7 +124,7 @@ namespace VR
             _clipboardTimer = new DispatcherTimer();
             _clipboardTimer.Interval = TimeSpan.FromMilliseconds(500);
             _clipboardTimer.Tick += ClipboardTimer_Tick;
-            _clipboardTimer.Start();
+            // Don't start timer here - it will be started when window becomes visible
         }
 
         private void ClipboardTimer_Tick(object sender, EventArgs e)
@@ -160,7 +184,7 @@ namespace VR
                 source.AddHook(WndProc);
                 
                 // Register Ctrl+Shift+D hotkey
-                RegisterHotKey(helper.Handle, HOTKEY_ID, MOD_CTRL | MOD_SHIFT, VK_D);
+                RegisterHotKey(helper.Handle, HOTKEY_ID, MOD_CTRL | MOD_SHIFT, VK_Q);
             }
             catch (Exception ex)
             {
@@ -174,9 +198,16 @@ namespace VR
             
             if (msg == WM_HOTKEY && wParam.ToInt32() == HOTKEY_ID)
             {
-                // Hotkey pressed - show window and try to get selected text
-                ShowAndFocusWindow();
-                _ = CaptureSelectedText();
+                // Hotkey pressed - toggle window visibility
+                if (this.IsVisible)
+                {
+                    this.Hide();
+                }
+                else
+                {
+                    ShowAndFocusWindow();
+                    _ = CaptureSelectedText();
+                }
                 handled = true;
             }
             
@@ -214,8 +245,22 @@ namespace VR
             this.Show();
             this.Activate();
             this.Focus();
-            Txt_Input.Focus();
-            Txt_Input.SelectAll();
+            
+            // Start clipboard monitoring when showing window
+            _clipboardTimer?.Start();
+            
+            // Focus and select text input (these will work once XAML is properly compiled)
+            try
+            {
+                // Use FindName to get controls if direct references don't work
+                var txtInput = this.FindName("Txt_Input") as System.Windows.Controls.TextBox;
+                if (txtInput != null)
+                {
+                    txtInput.Focus();
+                    txtInput.SelectAll();
+                }
+            }
+            catch { }
         }
 
         private async Task LookupWordAsync(string word)
