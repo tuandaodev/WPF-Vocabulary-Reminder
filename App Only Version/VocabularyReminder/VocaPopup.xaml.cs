@@ -534,6 +534,18 @@ namespace VR
             }
         }
 
+        private void ContextMenu_OpenOxford_Click(object sender, RoutedEventArgs e)
+        {
+            // Reuse the existing Oxford button functionality
+            Btn_OpenOxford_Click(sender, e);
+        }
+
+        private void ContextMenu_OpenGTranslate_Click(object sender, RoutedEventArgs e)
+        {
+            // Reuse the existing Google Translate button functionality
+            Btn_OpenGTranslate_Click(sender, e);
+        }
+
         private void Btn_OpenYouGlish_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(_vocabulary?.Word))

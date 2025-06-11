@@ -60,6 +60,25 @@
     </Window.Resources>
     
     <Border Padding="20" Background="#1E1E1E" MouseEnter="Border_MouseEnter" MouseLeave="Border_MouseLeave" MouseDown="Border_MouseDown">
+        <Border.ContextMenu>
+            <ContextMenu Background="#2D2D2D" BorderBrush="#444444" BorderThickness="1">
+                <ContextMenu.Resources>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Background" Value="#2D2D2D"/>
+                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="8,4"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="#404040"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ContextMenu.Resources>
+                <MenuItem Header="🔍 Open in Oxford" Click="ContextMenu_OpenOxford_Click"/>
+                <MenuItem Header="🔍 Open in Google Translate" Click="ContextMenu_OpenGTranslate_Click"/>
+            </ContextMenu>
+        </Border.ContextMenu>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
