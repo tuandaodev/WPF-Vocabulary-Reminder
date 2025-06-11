@@ -479,19 +479,19 @@ namespace VR
                         if (vocaId > 0)
                             await DataService.AddVocabularyMappingAsync((int)DictionaryConsts.Uncategorized, vocaId);
 
-                        System.Windows.MessageBox.Show("Word added to dictionary!", "Success", 
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+                        // Change button text to indicate success
+                        Btn_AddToDict.Content = "Added";
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show("Word already exists in dictionary.", "Info", 
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+                        // Change button text to indicate word already exists
+                        Btn_AddToDict.Content = "Already Exists, Ignored";
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show($"Error adding word: {ex.Message}", "Error", 
-                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    // Keep original text on error
+                    Debug.WriteLine($"Error adding word: {ex.Message}");
                 }
             }
         }
