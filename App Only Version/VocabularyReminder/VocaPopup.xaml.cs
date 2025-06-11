@@ -172,8 +172,8 @@ namespace VR
                 case Key.NumPad4:
                     Btn_Easy_Click(null, null);
                     break;
-                case Key.Oem3:
-                    Btn_ReadExample_Click(null, null);
+                case Key.Oem3: // Backtick <`> key
+                    _ = Btn_GenerateSimpleSentence_Click(null, null);
                     break;
                 case Key.Delete:
                     Btn_Delete_Click(null, null);
