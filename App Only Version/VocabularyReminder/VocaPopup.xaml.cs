@@ -546,6 +546,77 @@ namespace VR
             Btn_OpenGTranslate_Click(sender, e);
         }
 
+        private async void ContextMenu_MoveToDictionary_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary == null) return;
+
+            try
+            {
+                // Get list of available dictionaries
+                var dictionaries = await DataService.GetDictionariesAsync();
+                
+                if (dictionaries == null || !dictionaries.Any())
+                {
+                    MessageBox.Show("No dictionaries available.", "Move to Dictionary",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Get current dictionary information
+                int currentDictionaryId = await DataService.GetDictionaryIdByVocabularyIdAsync(_vocabulary.Id);
+                var currentDictionary = dictionaries.FirstOrDefault(d => d.Id == currentDictionaryId);
+                string currentDictionaryName = currentDictionary?.Name ?? "Unknown";
+
+                // Filter out current dictionary from options
+                var availableDictionaries = dictionaries.Where(d => d.Id != currentDictionaryId).ToList();
+                
+                if (!availableDictionaries.Any())
+                {
+                    MessageBox.Show($"'{_vocabulary.Word}' is already in the only available dictionary '{currentDictionaryName}'.",
+                        "Move to Dictionary", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Show the new Dictionary Selection Window
+                var selectionWindow = new DictionarySelectionWindow(_vocabulary, currentDictionaryName, availableDictionaries);
+                var dialogResult = selectionWindow.ShowDialog();
+                
+                if (dialogResult == true && selectionWindow.SelectedDictionary != null)
+                {
+                    var targetDictionary = selectionWindow.SelectedDictionary;
+                    
+                    // Perform the move operation
+                    bool success = await DataService.MoveVocabularyToDictionaryAsync(_vocabulary.Id, targetDictionary.Id);
+                    
+                    if (success)
+                    {
+                        MessageBox.Show(
+                            $"✅ Successfully moved '{_vocabulary.Word}' to '{targetDictionary.Name}' dictionary.",
+                            "Move Completed",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "❌ Failed to move vocabulary. Please try again.",
+                            "Move Failed",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error moving vocabulary: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+
         private async void ContextMenu_ResetStatsAndMoveToDefault_Click(object sender, RoutedEventArgs e)
         {
             if (_vocabulary == null) return;

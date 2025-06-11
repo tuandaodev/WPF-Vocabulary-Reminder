@@ -178,3 +178,5 @@ C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyR
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\bin\Debug\MdXaml.dll
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\FloatingDictionary.g.cs
 C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\FloatingDictionary.baml
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\DictionarySelectionWindow.baml
+C:\Users\tuan.dao\workspace\WPF-Vocabulary-Reminder\App Only Version\VocabularyReminder\obj\Debug\DictionarySelectionWindow.g.cs

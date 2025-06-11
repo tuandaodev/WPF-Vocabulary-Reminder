@@ -668,5 +668,46 @@ namespace VR.Services
             }
         }
 
+        /// <summary>
+        /// Move vocabulary from current dictionary to another dictionary
+        /// </summary>
+        /// <param name="vocabularyId">ID of the vocabulary to move</param>
+        /// <param name="targetDictionaryId">ID of the target dictionary</param>
+        /// <returns>True if successful, false if failed</returns>
+        public static async Task<bool> MoveVocabularyToDictionaryAsync(int vocabularyId, int targetDictionaryId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                try
+                {
+                    // Remove existing vocabulary mappings
+                    var existingMappings = await context.VocabularyMappings
+                        .Where(vm => vm.VocabularyId == vocabularyId)
+                        .ToListAsync();
+                    
+                    if (existingMappings.Any())
+                    {
+                        context.VocabularyMappings.RemoveRange(existingMappings);
+                    }
+
+                    // Add mapping to target dictionary
+                    var newMapping = new VocabularyMapping
+                    {
+                        VocabularyId = vocabularyId,
+                        DictionaryId = targetDictionaryId
+                    };
+                    context.VocabularyMappings.Add(newMapping);
+
+                    // Save changes
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
     }
 }

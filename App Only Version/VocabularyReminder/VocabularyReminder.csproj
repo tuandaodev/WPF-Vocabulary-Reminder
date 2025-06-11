@@ -111,6 +111,9 @@
     <Compile Include="BackupWindow.xaml.cs">
       <DependentUpon>BackupWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DictionarySelectionWindow.xaml.cs">
+      <DependentUpon>DictionarySelectionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="VR.Common\AIProvider.cs" />
     <Compile Include="VR.Common\VRConsts.cs" />
     <Compile Include="VR.Domain\Models\Dictionary.cs" />
@@ -178,6 +181,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="BackupWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DictionarySelectionWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
