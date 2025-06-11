@@ -29,6 +29,7 @@ namespace VR
         public static bool isAutoPlaySounds = false;
         public static bool isShowPopup = false;
         public static bool showNextOnEasy = true;
+        public static bool hideIPAFirst = false;
         public static bool isUseCustomPopup = false;
         public static DateTime LastReaction;
 

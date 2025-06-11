@@ -206,6 +206,8 @@ namespace VR
             this.Inp_AutoPlayOption.Unchecked += Settings_Changed;
             this.Inp_ShowNextOnEasyOption.Checked += Settings_Changed;
             this.Inp_ShowNextOnEasyOption.Unchecked += Settings_Changed;
+            this.Inp_HideIPAFirstOption.Checked += Settings_Changed;
+            this.Inp_HideIPAFirstOption.Unchecked += Settings_Changed;
             this.Inp_TimeRepeat.TextChanged += Settings_Changed;
 
             Load_Dictionaries();
@@ -272,7 +274,13 @@ namespace VR
                                 Inp_ShowNextOnEasyOption.IsChecked = ((JsonElement)settings["showNextOnEasy"]).GetBoolean();
                                 App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
                             }
-
+                
+                            if (settings.ContainsKey("hideIPAFirst"))
+                            {
+                                Inp_HideIPAFirstOption.IsChecked = ((JsonElement)settings["hideIPAFirst"]).GetBoolean();
+                                App.hideIPAFirst = Inp_HideIPAFirstOption.IsChecked.GetValueOrDefault();
+                            }
+                
                             return;
                         }
                     }
@@ -725,6 +733,7 @@ namespace VR
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
                 App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
+                App.hideIPAFirst = Inp_HideIPAFirstOption.IsChecked.GetValueOrDefault();
 
                 Btn_StartLearning.Content = "Stop Learning";
                 // Init value
@@ -906,6 +915,7 @@ namespace VR
             settings["isRandomWords"] = Inp_RandomOption.IsChecked;
             settings["isAutoPlaySounds"] = Inp_AutoPlayOption.IsChecked;
             settings["showNextOnEasy"] = Inp_ShowNextOnEasyOption.IsChecked;
+            settings["hideIPAFirst"] = Inp_HideIPAFirstOption.IsChecked;
             settings["timeRepeat"] = int.Parse(Inp_TimeRepeat.Text);
 
             // Save settings

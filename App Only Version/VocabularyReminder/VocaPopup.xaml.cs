@@ -287,12 +287,24 @@ namespace VR
 
         private async void Btn_PlaySound1_Click(object sender, RoutedEventArgs e)
         {
+            ShowIPAIfHidden();
             await BackgroundService.ActionPlay(ActionPlayEnum.US);
         }
 
         private async void Btn_PlaySound2_Click(object sender, RoutedEventArgs e)
         {
+            ShowIPAIfHidden();
             await BackgroundService.ActionPlay(ActionPlayEnum.UK);
+        }
+
+        private void ShowIPAIfHidden()
+        {
+            if (App.hideIPAFirst)
+            {
+                // Only change visibility, content is already set
+                Label_IPA.Visibility = Visibility.Visible;
+                Label_IPA2.Visibility = Visibility.Visible;
+            }
         }
 
         private async void Btn_Delete_Click(object sender, RoutedEventArgs e)
@@ -1219,6 +1231,18 @@ namespace VR
             Label_IPA.Content = $"/{_vocabulary.Ipa2}/";
             Label_IPA2.Content = string.IsNullOrEmpty(_vocabulary.Ipa) || _vocabulary.Ipa == _vocabulary.Ipa2
                 ? "-" : $"/{_vocabulary.Ipa}/";
+            
+            // Control visibility based on setting
+            if (App.hideIPAFirst)
+            {
+                Label_IPA.Visibility = Visibility.Hidden;
+                Label_IPA2.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                Label_IPA.Visibility = Visibility.Visible;
+                Label_IPA2.Visibility = Visibility.Visible;
+            }
 
             // Initialize type highlighting instead of setting simple content
             UpdateTypeHighlighting();
@@ -1306,6 +1330,7 @@ namespace VR
                     else
                     {
                         // Normal XButton1 behavior - play US pronunciation
+                        ShowIPAIfHidden();
                         await BackgroundService.ActionPlay(ActionPlayEnum.US);
                     }
                     break;
