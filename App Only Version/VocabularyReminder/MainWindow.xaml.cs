@@ -61,12 +61,16 @@ namespace VR
         private List<Vocabulary> _vocabularies = new List<Vocabulary>();
         private FloatingDictionary _floatingDictionary;
 
-        private void RegisterHotKeys()
+        private void RegisterLearningHotKeys()
         {
-            if (_isHotKeyRegister) return;
+            if (_windowHandle == IntPtr.Zero) return;
             
-            _isHotKeyRegister = true;
-            _source.AddHook(HwndHook);
+            // Set up the hook if not already done
+            if (!_isHotKeyRegister)
+            {
+                _isHotKeyRegister = true;
+                _source.AddHook(HwndHook);
+            }
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 1, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.F1.GetHashCode());  // Show Current Toast
 
@@ -81,7 +85,6 @@ namespace VR
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 6, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Scroll.GetHashCode());  // Next
 
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 7, (int)KeyModifier.None, (uint)System.Windows.Forms.Keys.Pause.GetHashCode());  // Next and Delete
-            
         }
 
         private void RegisterFloatingDictionaryHotKey()
@@ -98,18 +101,18 @@ namespace VR
             _ = RegisterHotKey(_windowHandle, HOTKEY_ID + 8, (int)(KeyModifier.Control | KeyModifier.Shift), 0x51);  // Toggle FloatingDictionary (Q key = 0x51)
         }
 
-        private void UnRegisterHotKeys()
+        private void UnRegisterLearningHotKeys()
         {
-            if (!_isHotKeyRegister) return;
+            if (_windowHandle == IntPtr.Zero) return;
 
-            // Only unregister the main learning hotkeys, keep the hook for FloatingDictionary
-            for (int i = HOTKEY_ID; i <= HOTKEY_ID + 7; i++)
+            // Only unregister the learning hotkeys (HOTKEY_ID + 1 to HOTKEY_ID + 7)
+            for (int i = HOTKEY_ID + 1; i <= HOTKEY_ID + 7; i++)
             {
                 UnregisterHotKey(_windowHandle, i);
             }
             
             // Don't remove the hook or set _isHotKeyRegister to false
-            // because FloatingDictionary hotkey still needs them
+            // because FloatingDictionary hotkey (HOTKEY_ID + 8) still needs them
         }
 
         private void UnRegisterFloatingDictionaryHotKey()
@@ -715,7 +718,7 @@ namespace VR
         {
             if (!IsStarted)
             {
-                RegisterHotKeys();
+                RegisterLearningHotKeys();
 
                 IsStarted = true;
                 //App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
@@ -774,7 +777,7 @@ namespace VR
 
             VocabularyDisplayService.Hide();
             _TokenSource.Cancel();
-            UnRegisterHotKeys();
+            UnRegisterLearningHotKeys();
             Console.WriteLine("Stop and active Cancel Token");
         }
 
@@ -847,13 +850,13 @@ namespace VR
                 _isHotKeyRegister = false;
                 _source.RemoveHook(HwndHook);
                 
-                // Unregister all hotkeys including FloatingDictionary
-                for (int i = HOTKEY_ID; i <= HOTKEY_ID + 8; i++)
+                // Unregister all hotkeys including learning hotkeys and FloatingDictionary
+                for (int i = HOTKEY_ID + 1; i <= HOTKEY_ID + 8; i++)
                 {
                     UnregisterHotKey(_windowHandle, i);
                 }
             }
-            
+
             // Clean up FloatingDictionary
             _floatingDictionary?.Close();
             
