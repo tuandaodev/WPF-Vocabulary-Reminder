@@ -616,5 +616,57 @@ namespace VR.Services
             }
         }
 
+        /// <summary>
+        /// Reset all SRS stats of the vocabulary and move it to Default dictionary
+        /// </summary>
+        /// <param name="vocabularyId">ID of the vocabulary to reset</param>
+        /// <returns>True if successful, false if failed</returns>
+        public static async Task<bool> ResetVocabularyStatsAndMoveToDefaultAsync(int vocabularyId)
+        {
+            using (var context = new VocaDbContext())
+            {
+                try
+                {
+                    // Get the vocabulary
+                    var vocabulary = await context.Vocabularies.FindAsync(vocabularyId);
+                    if (vocabulary == null)
+                        return false;
+
+                    // Reset all SRS stats
+                    vocabulary.NextReviewDate = null;
+                    vocabulary.EaseFactor = null;
+                    vocabulary.Interval = null;
+                    vocabulary.ReviewCount = null;
+                    vocabulary.LapseCount = null;
+
+                    // Remove existing vocabulary mappings
+                    var existingMappings = await context.VocabularyMappings
+                        .Where(vm => vm.VocabularyId == vocabularyId)
+                        .ToListAsync();
+                    
+                    if (existingMappings.Any())
+                    {
+                        context.VocabularyMappings.RemoveRange(existingMappings);
+                    }
+
+                    // Add mapping to Default dictionary
+                    var defaultMapping = new VocabularyMapping
+                    {
+                        VocabularyId = vocabularyId,
+                        DictionaryId = (int)DictionaryConsts.Default
+                    };
+                    context.VocabularyMappings.Add(defaultMapping);
+
+                    // Save changes
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+        }
+
     }
 }

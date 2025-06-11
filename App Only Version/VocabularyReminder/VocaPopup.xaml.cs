@@ -546,6 +546,54 @@ namespace VR
             Btn_OpenGTranslate_Click(sender, e);
         }
 
+        private async void ContextMenu_ResetStatsAndMoveToDefault_Click(object sender, RoutedEventArgs e)
+        {
+            if (_vocabulary == null) return;
+
+            try
+            {
+                // Show confirmation dialog
+                var result = MessageBox.Show(
+                    $"This will reset all learning progress for '{_vocabulary.Word}' and move it to the Default dictionary.\n\nAre you sure you want to continue?",
+                    "Reset Vocabulary Stats",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    bool success = await DataService.ResetVocabularyStatsAndMoveToDefaultAsync(_vocabulary.Id);
+                    
+                    if (success)
+                    {
+                        MessageBox.Show(
+                            $"Successfully reset stats for '{_vocabulary.Word}' and moved to Default dictionary.",
+                            "Reset Completed",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information);
+                        
+                        // Close the popup since the vocabulary has been reset
+                        ClosePopup();
+                    }
+                    else
+                    {
+                        MessageBox.Show(
+                            "Failed to reset vocabulary stats. Please try again.",
+                            "Reset Failed",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error resetting vocabulary stats: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
         private void Btn_OpenYouGlish_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(_vocabulary?.Word))

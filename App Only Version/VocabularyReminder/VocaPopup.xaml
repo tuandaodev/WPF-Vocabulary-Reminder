@@ -77,6 +77,8 @@
                 </ContextMenu.Resources>
                 <MenuItem Header="🔍 Open in Oxford" Click="ContextMenu_OpenOxford_Click"/>
                 <MenuItem Header="🔍 Open in Google Translate" Click="ContextMenu_OpenGTranslate_Click"/>
+                <Separator/>
+                <MenuItem Header="🔄 Reset Stats &amp; Move to Default" Click="ContextMenu_ResetStatsAndMoveToDefault_Click"/>
             </ContextMenu>
         </Border.ContextMenu>
         <Grid>
