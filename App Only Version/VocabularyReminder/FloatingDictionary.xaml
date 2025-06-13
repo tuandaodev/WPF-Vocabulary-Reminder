@@ -123,140 +123,329 @@
                         Margin="0"/>
             </Grid>
 
-            <!-- Input Section -->
-            <Grid Grid.Row="1" Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                
-                <TextBox x:Name="Txt_Input"
-                         Grid.Column="0"
-                         Height="25"
-                         VerticalAlignment="Center"
-                         KeyDown="Txt_Input_KeyDown"
-                         Text="Type word here or select text from any application..."/>
-                
-                <Button x:Name="Btn_Lookup"
-                        Grid.Column="1"
-                        Content="🔍"
-                        Width="30"
-                        Height="25"
-                        ToolTip="Lookup word"
-                        Click="Btn_Lookup_Click"
-                        Margin="5,0,0,0"/>
-            </Grid>
+            <!-- Tab Control -->
+            <TabControl x:Name="MainTabControl" Grid.Row="1" Grid.RowSpan="2" Margin="10" Background="#1E1E1E" BorderThickness="0">
+                <TabControl.Resources>
+                    <Style TargetType="TabItem">
+                        <Setter Property="Background" Value="#2D2D2D"/>
+                        <Setter Property="Foreground" Value="#FFFFFF"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Padding" Value="12,6"/>
+                        <Setter Property="Margin" Value="0,0,2,0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderThickness="0"
+                                            CornerRadius="4,4,0,0">
+                                        <ContentPresenter x:Name="ContentSite"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        ContentSource="Header"
+                                                        Margin="{TemplateBinding Padding}"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="#444444"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#3D3D3D"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
 
-            <!-- Results Section -->
-            <ScrollViewer Grid.Row="2" 
-                         VerticalScrollBarVisibility="Auto"
-                         HorizontalScrollBarVisibility="Disabled"
-                         Margin="10,0,10,10">
-                <StackPanel x:Name="Panel_Results">
-                    <!-- Word and Basic Info -->
-                    <StackPanel x:Name="Panel_WordInfo" Visibility="Collapsed">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                            <TextBlock x:Name="Lbl_Word" 
-                                      FontSize="20" 
-                                      FontWeight="Bold"
-                                      Margin="0,0,10,0"/>
-                            <TextBlock x:Name="Lbl_Type" 
-                                      FontSize="14"
-                                      FontStyle="Italic"
-                                      Foreground="#999999"
-                                      VerticalAlignment="Bottom"/>
+                <!-- Dictionary Tab -->
+                <TabItem Header="📖 Dictionary" x:Name="Tab_Dictionary">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Input Section -->
+                        <Grid Grid.Row="0" Margin="0,10,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBox x:Name="Txt_Input"
+                                     Grid.Column="0"
+                                     Height="25"
+                                     VerticalAlignment="Center"
+                                     KeyDown="Txt_Input_KeyDown"
+                                     Text="Type word here or select text from any application..."/>
+                            
+                            <Button x:Name="Btn_Lookup"
+                                    Grid.Column="1"
+                                    Content="🔍"
+                                    Width="30"
+                                    Height="25"
+                                    ToolTip="Lookup word"
+                                    Click="Btn_Lookup_Click"
+                                    Margin="5,0,0,0"/>
+                        </Grid>
+
+                        <!-- Results Section -->
+                        <ScrollViewer Grid.Row="1"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel x:Name="Panel_Results">
+                                <!-- Word and Basic Info -->
+                                <StackPanel x:Name="Panel_WordInfo" Visibility="Collapsed">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                        <TextBlock x:Name="Lbl_Word"
+                                                  FontSize="20"
+                                                  FontWeight="Bold"
+                                                  Margin="0,0,10,0"/>
+                                        <TextBlock x:Name="Lbl_Type"
+                                                  FontSize="14"
+                                                  FontStyle="Italic"
+                                                  Foreground="#999999"
+                                                  VerticalAlignment="Bottom"/>
+                                    </StackPanel>
+                                    
+                                    <!-- IPA -->
+                                    <TextBlock x:Name="Lbl_IPA"
+                                              FontSize="14"
+                                              Foreground="#CCCCCC"
+                                              Margin="0,0,0,10"/>
+                                </StackPanel>
+
+                                <!-- Translation -->
+                                <StackPanel x:Name="Panel_Translation" Visibility="Collapsed">
+                                    <TextBlock Text="Translation:"
+                                              FontWeight="Bold"
+                                              FontSize="12"
+                                              Foreground="#999999"
+                                              Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="Lbl_Translation"
+                                              FontSize="14"
+                                              Margin="0,0,0,10"/>
+                                </StackPanel>
+
+                                <!-- Definition -->
+                                <StackPanel x:Name="Panel_Definition" Visibility="Collapsed">
+                                    <TextBlock Text="Definition:"
+                                              FontWeight="Bold"
+                                              FontSize="12"
+                                              Foreground="#999999"
+                                              Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="Lbl_Definition"
+                                              FontSize="14"
+                                              Margin="0,0,0,10"/>
+                                </StackPanel>
+
+                                <!-- Example -->
+                                <StackPanel x:Name="Panel_Example" Visibility="Collapsed">
+                                    <TextBlock Text="Example:"
+                                              FontWeight="Bold"
+                                              FontSize="12"
+                                              Foreground="#999999"
+                                              Margin="0,0,0,2"/>
+                                    <TextBlock x:Name="Lbl_Example"
+                                              FontSize="14"
+                                              Margin="0,0,0,10"/>
+                                </StackPanel>
+
+                                <!-- Loading Indicator -->
+                                <StackPanel x:Name="Panel_Loading"
+                                           Orientation="Horizontal"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="0,20">
+                                    <TextBlock Text="Looking up..."
+                                              FontStyle="Italic"
+                                              Foreground="#999999"/>
+                                </StackPanel>
+
+                                <!-- No Results -->
+                                <StackPanel x:Name="Panel_NoResults"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="0,20">
+                                    <TextBlock Text="No results found"
+                                              FontStyle="Italic"
+                                              Foreground="#999999"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Dictionary Action Buttons -->
+                        <StackPanel Grid.Row="2"
+                                   Orientation="Horizontal"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,10">
+                            <Button x:Name="Btn_AddToDict"
+                                    Content="Add to Dictionary"
+                                    Click="Btn_AddToDict_Click"
+                                    Visibility="Collapsed"/>
+                            
+                            <Button x:Name="Btn_OpenFull"
+                                    Content="Open Full View"
+                                    Click="Btn_OpenFull_Click"
+                                    Visibility="Collapsed"
+                                    Margin="5,0,0,0"/>
+                            
+                            <Button x:Name="Btn_Speak"
+                                    Content="🔊"
+                                    Width="35"
+                                    ToolTip="Speak word"
+                                    Click="Btn_Speak_Click"
+                                    Visibility="Collapsed"
+                                    Margin="5,0,0,0"/>
                         </StackPanel>
-                        
-                        <!-- IPA -->
-                        <TextBlock x:Name="Lbl_IPA" 
-                                  FontSize="14"
-                                  Foreground="#CCCCCC"
-                                  Margin="0,0,0,10"/>
-                    </StackPanel>
+                    </Grid>
+                </TabItem>
 
-                    <!-- Translation -->
-                    <StackPanel x:Name="Panel_Translation" Visibility="Collapsed">
-                        <TextBlock Text="Translation:" 
-                                  FontWeight="Bold" 
-                                  FontSize="12"
-                                  Foreground="#999999"
-                                  Margin="0,0,0,2"/>
-                        <TextBlock x:Name="Lbl_Translation" 
-                                  FontSize="14"
-                                  Margin="0,0,0,10"/>
-                    </StackPanel>
+                <!-- Grammar Check Tab -->
+                <TabItem Header="✍️ Grammar" x:Name="Tab_Grammar">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Definition -->
-                    <StackPanel x:Name="Panel_Definition" Visibility="Collapsed">
-                        <TextBlock Text="Definition:" 
-                                  FontWeight="Bold" 
-                                  FontSize="12"
-                                  Foreground="#999999"
-                                  Margin="0,0,0,2"/>
-                        <TextBlock x:Name="Lbl_Definition" 
-                                  FontSize="14"
-                                  Margin="0,0,0,10"/>
-                    </StackPanel>
+                        <!-- Input Section for Grammar -->
+                        <Grid Grid.Row="0" Margin="0,10,0,10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Text="Enter text to check grammar:"
+                                      Grid.Row="0"
+                                      FontWeight="Bold"
+                                      FontSize="12"
+                                      Foreground="#CCCCCC"
+                                      Margin="0,0,0,5"/>
+                            
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBox x:Name="Txt_GrammarInput"
+                                         Grid.Column="0"
+                                         Height="60"
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True"
+                                         VerticalScrollBarVisibility="Auto"
+                                         VerticalAlignment="Stretch"
+                                         KeyDown="Txt_GrammarInput_KeyDown"
+                                         Text="Type or paste your text here for grammar checking..."/>
+                                
+                                <Button x:Name="Btn_CheckGrammar"
+                                        Grid.Column="1"
+                                        Content="✅"
+                                        Width="30"
+                                        Height="30"
+                                        ToolTip="Check grammar"
+                                        Click="Btn_CheckGrammar_Click"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Top"/>
+                            </Grid>
+                        </Grid>
 
-                    <!-- Example -->
-                    <StackPanel x:Name="Panel_Example" Visibility="Collapsed">
-                        <TextBlock Text="Example:" 
-                                  FontWeight="Bold" 
-                                  FontSize="12"
-                                  Foreground="#999999"
-                                  Margin="0,0,0,2"/>
-                        <TextBlock x:Name="Lbl_Example" 
-                                  FontSize="14"
-                                  Margin="0,0,0,10"/>
-                    </StackPanel>
+                        <!-- Grammar Results Section -->
+                        <ScrollViewer Grid.Row="1"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel x:Name="Panel_GrammarResults">
+                                <!-- Corrected Text -->
+                                <StackPanel x:Name="Panel_CorrectedText" Visibility="Collapsed">
+                                    <TextBlock Text="Corrected Text:"
+                                              FontWeight="Bold"
+                                              FontSize="12"
+                                              Foreground="#4CAF50"
+                                              Margin="0,0,0,5"/>
+                                    <Border Background="#1B2F1B"
+                                           BorderBrush="#4CAF50"
+                                           BorderThickness="1"
+                                           CornerRadius="4"
+                                           Padding="8"
+                                           Margin="0,0,0,10">
+                                        <TextBlock x:Name="Lbl_CorrectedText"
+                                                  FontSize="14"
+                                                  TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
 
-                    <!-- Loading Indicator -->
-                    <StackPanel x:Name="Panel_Loading" 
-                               Orientation="Horizontal"
-                               HorizontalAlignment="Center"
-                               Visibility="Collapsed"
-                               Margin="0,20">
-                        <TextBlock Text="Looking up..." 
-                                  FontStyle="Italic"
-                                  Foreground="#999999"/>
-                    </StackPanel>
+                                <!-- Grammar Suggestions -->
+                                <StackPanel x:Name="Panel_GrammarSuggestions" Visibility="Collapsed">
+                                    <TextBlock Text="Grammar Analysis:"
+                                              FontWeight="Bold"
+                                              FontSize="12"
+                                              Foreground="#2196F3"
+                                              Margin="0,0,0,5"/>
+                                    <Border Background="#1B2A3F"
+                                           BorderBrush="#2196F3"
+                                           BorderThickness="1"
+                                           CornerRadius="4"
+                                           Padding="8"
+                                           Margin="0,0,0,10">
+                                        <TextBlock x:Name="Lbl_GrammarSuggestions"
+                                                  FontSize="14"
+                                                  TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
 
-                    <!-- No Results -->
-                    <StackPanel x:Name="Panel_NoResults" 
-                               HorizontalAlignment="Center"
-                               Visibility="Collapsed"
-                               Margin="0,20">
-                        <TextBlock Text="No results found" 
-                                  FontStyle="Italic"
-                                  Foreground="#999999"/>
-                    </StackPanel>
-                </StackPanel>
-            </ScrollViewer>
+                                <!-- Grammar Loading Indicator -->
+                                <StackPanel x:Name="Panel_GrammarLoading"
+                                           Orientation="Horizontal"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="0,20">
+                                    <TextBlock Text="Checking grammar..."
+                                              FontStyle="Italic"
+                                              Foreground="#999999"/>
+                                </StackPanel>
 
-            <!-- Action Buttons -->
-            <StackPanel Grid.Row="3" 
-                       Orientation="Horizontal" 
-                       HorizontalAlignment="Center"
-                       Margin="10">
-                <Button x:Name="Btn_AddToDict"
-                        Content="Add to Dictionary"
-                        Click="Btn_AddToDict_Click"
-                        Visibility="Collapsed"/>
-                
-                <Button x:Name="Btn_OpenFull"
-                        Content="Open Full View"
-                        Click="Btn_OpenFull_Click"
-                        Visibility="Collapsed"
-                        Margin="5,0,0,0"/>
-                
-                <Button x:Name="Btn_Speak"
-                        Content="🔊"
-                        Width="35"
-                        ToolTip="Speak word"
-                        Click="Btn_Speak_Click"
-                        Visibility="Collapsed"
-                        Margin="5,0,0,0"/>
-            </StackPanel>
+                                <!-- Grammar No Results -->
+                                <StackPanel x:Name="Panel_GrammarNoResults"
+                                           HorizontalAlignment="Center"
+                                           Visibility="Collapsed"
+                                           Margin="0,20">
+                                    <TextBlock Text="No grammar issues found!"
+                                              FontStyle="Italic"
+                                              Foreground="#4CAF50"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- Grammar Action Buttons -->
+                        <StackPanel Grid.Row="2"
+                                   Orientation="Horizontal"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,10">
+                            <Button x:Name="Btn_CopyOriginal"
+                                    Content="📋 Copy Original"
+                                    Click="Btn_CopyOriginal_Click"
+                                    Visibility="Collapsed"/>
+                            
+                            <Button x:Name="Btn_CopyCorrected"
+                                    Content="📋 Copy Corrected"
+                                    Click="Btn_CopyCorrected_Click"
+                                    Visibility="Collapsed"
+                                    Margin="5,0,0,0"/>
+                            
+                            <Button x:Name="Btn_ClearGrammar"
+                                    Content="🗑️ Clear"
+                                    Click="Btn_ClearGrammar_Click"
+                                    Visibility="Collapsed"
+                                    Margin="5,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
         </Grid>
     </Border>
 </Window>

@@ -43,6 +43,10 @@ namespace VR
         private string _lastClipboardText = string.Empty;
         private DispatcherTimer _clipboardTimer;
         private Vocabulary _currentVocabulary;
+        private string _originalGrammarText = string.Empty;
+        private string _correctedGrammarText = string.Empty;
+        private double _originalWindowHeight = 400;
+        private double _grammarWindowHeight = 600;
         
         #endregion
 
@@ -51,6 +55,14 @@ namespace VR
             InitializeComponent();
             InitializeWindow();
             SetupClipboardMonitoring();
+            
+            // Setup grammar placeholder text when loaded
+            this.Loaded += (s, e) =>
+            {
+                SetupGrammarPlaceholderText();
+                SetupTabEventHandlers();
+                _originalWindowHeight = this.Height;
+            };
             
             // Start/stop clipboard monitoring based on window visibility
             this.IsVisibleChanged += FloatingDictionary_IsVisibleChanged;
@@ -523,6 +535,297 @@ namespace VR
                 {
                     Debug.WriteLine($"Error speaking word: {ex.Message}");
                 }
+            }
+        }
+
+        #endregion
+
+        #region Grammar Check Event Handlers
+
+        private void SetupGrammarPlaceholderText()
+        {
+            if (Txt_GrammarInput != null)
+            {
+                Txt_GrammarInput.GotFocus += OnGrammarInputGotFocus;
+                Txt_GrammarInput.LostFocus += OnGrammarInputLostFocus;
+            }
+        }
+
+        private void SetupTabEventHandlers()
+        {
+            // Find the TabControl and add selection changed event
+            var tabControl = this.FindName("MainTabControl") as System.Windows.Controls.TabControl;
+            if (tabControl != null)
+            {
+                tabControl.SelectionChanged += TabControl_SelectionChanged;
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.TabControl tabControl)
+            {
+                var selectedTab = tabControl.SelectedItem as System.Windows.Controls.TabItem;
+                if (selectedTab != null)
+                {
+                    // Check if Grammar tab is selected
+                    if (selectedTab.Name == "Tab_Grammar")
+                    {
+                        // Calculate height difference
+                        double heightDifference = _grammarWindowHeight - this.Height;
+                        
+                        // Adjust window position to grow upward instead of downward
+                        this.Top = Math.Max(0, this.Top - heightDifference);
+                        
+                        // Increase window height for grammar tab
+                        this.Height = _grammarWindowHeight;
+                    }
+                    else if (selectedTab.Name == "Tab_Dictionary")
+                    {
+                        // Calculate height difference
+                        double heightDifference = this.Height - _originalWindowHeight;
+                        
+                        // Reset to original height for dictionary tab
+                        this.Height = _originalWindowHeight;
+                        
+                        // Adjust window position back down
+                        this.Top = this.Top + heightDifference;
+                    }
+                }
+            }
+        }
+
+        private void OnGrammarInputGotFocus(object sender, RoutedEventArgs e)
+        {
+            if (Txt_GrammarInput?.Text == "Type or paste your text here for grammar checking...")
+            {
+                Txt_GrammarInput.Text = string.Empty;
+                Txt_GrammarInput.Foreground = System.Windows.Media.Brushes.White;
+            }
+        }
+
+        private void OnGrammarInputLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(Txt_GrammarInput?.Text))
+            {
+                Txt_GrammarInput.Text = "Type or paste your text here for grammar checking...";
+                Txt_GrammarInput.Foreground = System.Windows.Media.Brushes.Gray;
+            }
+        }
+
+        private async void Txt_GrammarInput_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            {
+                await CheckGrammarAsync(Txt_GrammarInput?.Text);
+            }
+        }
+
+        private async void Btn_CheckGrammar_Click(object sender, RoutedEventArgs e)
+        {
+            await CheckGrammarAsync(Txt_GrammarInput?.Text);
+        }
+
+        private void Btn_CopyOriginal_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_originalGrammarText))
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(_originalGrammarText);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error copying original text: {ex.Message}");
+                }
+            }
+        }
+
+        private void Btn_CopyCorrected_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_correctedGrammarText))
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(_correctedGrammarText);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error copying corrected text: {ex.Message}");
+                }
+            }
+        }
+
+        private void Btn_ClearGrammar_Click(object sender, RoutedEventArgs e)
+        {
+            Txt_GrammarInput.Text = "Type or paste your text here for grammar checking...";
+            Txt_GrammarInput.Foreground = System.Windows.Media.Brushes.Gray;
+            HideAllGrammarResults();
+            _originalGrammarText = string.Empty;
+            _correctedGrammarText = string.Empty;
+        }
+
+        #endregion
+
+        #region Grammar Check Methods
+
+        private async Task CheckGrammarAsync(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text) || text == "Type or paste your text here for grammar checking...")
+                return;
+
+            // Show loading and hide previous results
+            ShowGrammarLoading(true);
+            HideAllGrammarResults();
+
+            try
+            {
+                _originalGrammarText = text;
+
+                // Create LLM service instance
+                if (!LLMProviderFactory.IsCurrentConfigurationValid())
+                {
+                    ShowGrammarError("AI provider not configured. Please check settings.");
+                    return;
+                }
+
+                var llmService = LLMProviderFactory.GetLLMService();
+
+                // Create grammar check prompt
+                var grammarPrompt = $@"Please check the following text for grammar, spelling, punctuation, and style issues.
+
+Original text:
+""{text}""
+
+Please provide:
+1. A corrected version of the text
+2. A brief explanation of the main issues found (if any)
+
+If the text is already correct, just say ""No issues found"" and repeat the original text.
+
+Format your response as:
+CORRECTED: [corrected text here]
+ANALYSIS: [brief explanation of changes made or ""No issues found""]";
+
+                var response = await llmService.GenerateTextAsync(grammarPrompt);
+                
+                if (!string.IsNullOrEmpty(response))
+                {
+                    ParseGrammarResponse(response);
+                    DisplayGrammarResults();
+                }
+                else
+                {
+                    ShowGrammarError("No response received from grammar checker.");
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowGrammarError($"Error checking grammar: {ex.Message}");
+            }
+            finally
+            {
+                ShowGrammarLoading(false);
+            }
+        }
+
+        private void ParseGrammarResponse(string response)
+        {
+            try
+            {
+                var lines = response.Split('\n');
+                var correctedText = "";
+                var analysisText = "";
+                
+                foreach (var line in lines)
+                {
+                    if (line.StartsWith("CORRECTED:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        correctedText = line.Substring(10).Trim();
+                    }
+                    else if (line.StartsWith("ANALYSIS:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        analysisText = line.Substring(9).Trim();
+                    }
+                }
+
+                // If parsing failed, use the entire response as corrected text
+                if (string.IsNullOrEmpty(correctedText))
+                {
+                    correctedText = response.Trim();
+                    analysisText = "Grammar check completed.";
+                }
+
+                _correctedGrammarText = correctedText;
+                
+                // Update UI elements safely
+                if (Lbl_CorrectedText != null)
+                    Lbl_CorrectedText.Text = correctedText;
+                
+                if (Lbl_GrammarSuggestions != null)
+                    Lbl_GrammarSuggestions.Text = analysisText;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error parsing grammar response: {ex.Message}");
+                _correctedGrammarText = response;
+                if (Lbl_CorrectedText != null)
+                    Lbl_CorrectedText.Text = response;
+                if (Lbl_GrammarSuggestions != null)
+                    Lbl_GrammarSuggestions.Text = "Grammar check completed.";
+            }
+        }
+
+        private void DisplayGrammarResults()
+        {
+            // Display corrected text
+            if (!string.IsNullOrEmpty(_correctedGrammarText))
+            {
+                if (Panel_CorrectedText != null)
+                    Panel_CorrectedText.Visibility = Visibility.Visible;
+            }
+
+            // Display analysis
+            if (Panel_GrammarSuggestions != null)
+                Panel_GrammarSuggestions.Visibility = Visibility.Visible;
+
+            // Show action buttons
+            if (Btn_CopyOriginal != null)
+                Btn_CopyOriginal.Visibility = Visibility.Visible;
+            if (Btn_CopyCorrected != null)
+                Btn_CopyCorrected.Visibility = Visibility.Visible;
+            if (Btn_ClearGrammar != null)
+                Btn_ClearGrammar.Visibility = Visibility.Visible;
+        }
+
+        private void ShowGrammarLoading(bool show)
+        {
+            if (Panel_GrammarLoading != null)
+                Panel_GrammarLoading.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void HideAllGrammarResults()
+        {
+            if (Panel_CorrectedText != null)
+                Panel_CorrectedText.Visibility = Visibility.Collapsed;
+            if (Panel_GrammarSuggestions != null)
+                Panel_GrammarSuggestions.Visibility = Visibility.Collapsed;
+            if (Panel_GrammarNoResults != null)
+                Panel_GrammarNoResults.Visibility = Visibility.Collapsed;
+            if (Btn_CopyOriginal != null)
+                Btn_CopyOriginal.Visibility = Visibility.Collapsed;
+            if (Btn_CopyCorrected != null)
+                Btn_CopyCorrected.Visibility = Visibility.Collapsed;
+            if (Btn_ClearGrammar != null)
+                Btn_ClearGrammar.Visibility = Visibility.Collapsed;
+        }
+
+        private void ShowGrammarError(string message)
+        {
+            if (Panel_GrammarNoResults != null)
+            {
+                Panel_GrammarNoResults.Visibility = Visibility.Visible;
+                // Could enhance this to show actual error message
             }
         }
 
