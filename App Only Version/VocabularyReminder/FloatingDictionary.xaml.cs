@@ -341,7 +341,7 @@ namespace VR
             Lbl_IPA.Text = vocab.Ipa ?? "";
             Lbl_Example.Text = "";
             Panel_WordInfo.Visibility = Visibility.Visible;
-            
+
             // Display translation
             if (!string.IsNullOrEmpty(vocab.Translate))
             {
@@ -387,9 +387,23 @@ namespace VR
             }
             
             // Show action buttons
-            Btn_AddToDict.Visibility = Visibility.Visible;
             Btn_OpenFull.Visibility = Visibility.Visible;
             Btn_Speak.Visibility = Visibility.Visible;
+            //Btn_AddToDict.Visibility = Visibility.Visible;
+            //Btn_Review.Visibility = Visibility.Visible;
+
+            // Reset button states
+            Btn_AddToDict.Content = "Add to Dictionary";
+
+            if (_currentVocabulary.Id > 0)
+            {
+                Btn_AddToDict.Visibility = Visibility.Collapsed;
+                Btn_Review.Visibility = Visibility.Visible;
+            } else
+            {
+                Btn_AddToDict.Visibility = Visibility.Visible;
+                Btn_Review.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void ShowLoading(bool show)
@@ -407,6 +421,7 @@ namespace VR
             Btn_AddToDict.Visibility = Visibility.Collapsed;
             Btn_OpenFull.Visibility = Visibility.Collapsed;
             Btn_Speak.Visibility = Visibility.Collapsed;
+            Btn_Review.Visibility = Visibility.Collapsed;
         }
 
         private void ShowError(string message)
@@ -493,6 +508,7 @@ namespace VR
 
                         // Change button text to indicate success
                         Btn_AddToDict.Content = "Added";
+                        Btn_Review.Visibility = Visibility.Collapsed;
                     }
                     else
                     {
@@ -504,6 +520,21 @@ namespace VR
                 {
                     // Keep original text on error
                     Debug.WriteLine($"Error adding word: {ex.Message}");
+                }
+            }
+        }
+
+        private void Btn_Review_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentVocabulary != null)
+            {
+                try
+                {
+                    SpacedRepetitionService.ProcessReview(_currentVocabulary, 1);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error processing review: {ex.Message}");
                 }
             }
         }

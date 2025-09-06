@@ -2,7 +2,7 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.2": {
-      "AutoMapper/10.0.0": {
+      "AutoMapper/10.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -779,7 +779,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win": {
-      "AutoMapper/10.0.0": {
+      "AutoMapper/10.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -1506,7 +1506,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-arm64": {
-      "AutoMapper/10.0.0": {
+      "AutoMapper/10.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -2236,7 +2236,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x64": {
-      "AutoMapper/10.0.0": {
+      "AutoMapper/10.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -2966,7 +2966,7 @@
       }
     },
     ".NETFramework,Version=v4.7.2/win-x86": {
-      "AutoMapper/10.0.0": {
+      "AutoMapper/10.1.1": {
         "type": "package",
         "frameworkAssemblies": [
           "Microsoft.CSharp"
@@ -3697,14 +3697,14 @@
     }
   },
   "libraries": {
-    "AutoMapper/10.0.0": {
-      "sha512": "T09NoqMZBqw0/JEauXulxnmmerl0Zj03e0r6VCcJ0LURWBIaYxZPPoiDv8bHf5Y4x2xcXJp4JPXoCaeOMJfHEA==",
+    "AutoMapper/10.1.1": {
+      "sha512": "uMgbqOdu9ZG5cIOty0C85hzzayBH2i9BthnS5FlMqKtMSHDv4ts81a2jS1VFaDBVhlBeIqJ/kQKjQY95BZde9w==",
       "type": "package",
-      "path": "automapper/10.0.0",
+      "path": "automapper/10.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "automapper.10.0.0.nupkg.sha512",
+        "automapper.10.1.1.nupkg.sha512",
         "automapper.nuspec",
         "icon.png",
         "lib/net461/AutoMapper.dll",
@@ -5055,7 +5055,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.2": [
-      "AutoMapper >= 10.0.0",
+      "AutoMapper >= 10.1.1",
       "EntityFramework >= 6.5.1",
       "Google.Apis.Auth >= 1.69.0",
       "Google.Apis.Drive.v3 >= 1.69.0.3778",
@@ -5076,20 +5076,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\tuan.dao\\.nuget\\packages\\": {}
+    "C:\\Users\\Dell\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+      "projectUniqueName": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
       "projectName": "VocabularyReminder",
-      "projectPath": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
-      "packagesPath": "C:\\Users\\tuan.dao\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tuan.dao\\workspace\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
+      "projectPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\VocabularyReminder.csproj",
+      "packagesPath": "C:\\Users\\Dell\\.nuget\\packages\\",
+      "outputPath": "D:\\WPF-Vocabulary-Reminder\\App Only Version\\VocabularyReminder\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
+      "UsingMicrosoftNETSdk": false,
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\tuan.dao\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5115,7 +5121,7 @@
         "dependencies": {
           "AutoMapper": {
             "target": "Package",
-            "version": "[10.0.0, )"
+            "version": "[10.1.1, )"
           },
           "EntityFramework": {
             "target": "Package",

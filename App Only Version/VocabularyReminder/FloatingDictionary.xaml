@@ -285,7 +285,9 @@
                                     Content="Add to Dictionary"
                                     Click="Btn_AddToDict_Click"
                                     Visibility="Collapsed"/>
-                            
+
+                            <Button x:Name="Btn_Review" Content="Review" Click="Btn_Review_Click" Visibility="Collapsed" Margin="5,0,0,0"/>
+
                             <Button x:Name="Btn_OpenFull"
                                     Content="Open Full View"
                                     Click="Btn_OpenFull_Click"
