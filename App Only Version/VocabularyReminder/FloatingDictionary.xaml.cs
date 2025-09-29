@@ -498,27 +498,45 @@ namespace VR
             {
                 try
                 {
-                    // Check if already exists
+                    var dicId = App.GlobalDicId != (int)DictionaryConsts.All ? App.GlobalDicId : (int)DictionaryConsts.Uncategorized;
+                    // Check if vocabulary exists
                     var existing = await DataService.GetVocabularyByWordAsync(_currentVocabulary.Word);
+
+                    int vocaId;
                     if (existing == null)
                     {
-                        var vocaId = await DataService.AddVocabularyAsync(_currentVocabulary.Word);
+                        // Add vocabulary
+                        vocaId = await DataService.AddVocabularyAsync(_currentVocabulary.Word);
                         if (vocaId > 0)
-                            await DataService.AddVocabularyMappingAsync((int)DictionaryConsts.Uncategorized, vocaId);
-
-                        // Change button text to indicate success
-                        Btn_AddToDict.Content = "Added";
-                        Btn_Review.Visibility = Visibility.Collapsed;
+                        {
+                            await DataService.AddVocabularyMappingAsync(dicId, vocaId);
+                            Btn_AddToDict.Content = "Added";
+                            Btn_Review.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            Btn_AddToDict.Content = "Error Adding Voca";
+                        }
                     }
                     else
                     {
-                        // Change button text to indicate word already exists
-                        Btn_AddToDict.Content = "Already Exists, Ignored";
+                        vocaId = existing.Id;
+                        // Check if mapping exists
+                        var mappingExists = await DataService.VocabularyMappingExistsAsync(dicId, vocaId);
+                        if (!mappingExists)
+                        {
+                            await DataService.AddVocabularyMappingAsync(dicId, vocaId);
+                            Btn_AddToDict.Content = "Added to Dictionary";
+                            Btn_Review.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            Btn_AddToDict.Content = "Already Exists, Ignored";
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Keep original text on error
                     Debug.WriteLine($"Error adding word: {ex.Message}");
                 }
             }

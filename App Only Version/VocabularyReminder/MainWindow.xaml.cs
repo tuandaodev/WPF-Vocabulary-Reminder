@@ -729,7 +729,6 @@ namespace VR
                 RegisterLearningHotKeys();
 
                 IsStarted = true;
-                //App.GlobalDicId = (int)Inp_GlobalDictionaryId.SelectedValue;
                 App.isRandomWords = Inp_RandomOption.IsChecked.GetValueOrDefault();
                 App.isAutoPlaySounds = Inp_AutoPlayOption.IsChecked.GetValueOrDefault();
                 App.showNextOnEasy = Inp_ShowNextOnEasyOption.IsChecked.GetValueOrDefault();
